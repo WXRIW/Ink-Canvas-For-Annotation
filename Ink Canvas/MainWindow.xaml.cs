@@ -3522,7 +3522,13 @@ namespace Ink_Canvas
             e.Handled = true;
         }
 
-        private void HyperlinkSource_Click(object sender, RoutedEventArgs e)
+        private void HyperlinkSourceToPresentRepository_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/ChangSakura/Ink-Canvas-For-Annotation");
+            HideSubPanels();
+        }
+
+        private void HyperlinkSourceToOringinalRepository_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://github.com/WXRIW/Ink-Canvas");
             HideSubPanels();

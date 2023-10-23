@@ -901,12 +901,17 @@
                         <GroupBox Header="关于">
                             <ui:SimpleStackPanel Spacing="12">
                                 <TextBlock Text="*使用和分发本软件前，请您应当且务必知晓相关开源协议，本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成。" TextWrapping="Wrap" Foreground="#666666"/>
-                                
+                                <TextBlock FontSize="14">
+                                <Bold>本项目地址:</Bold>
+                                <Hyperlink Click="HyperlinkSourceToPresentRepository_Click">
+                                    <TextBlock Text="https://github.com/ChangSakura/Ink-Canvas-For-Annotation" TextWrapping="Wrap"></TextBlock>
+                                </Hyperlink>
+                                </TextBlock>
                                 <TextBlock FontSize="14">
                                 <Bold>原项目地址:</Bold>
-                                    <Hyperlink Click="HyperlinkSource_Click">
-                                           <TextBlock Text="https://github.com/WXRIW/Ink-Canvas"></TextBlock>
-                                    </Hyperlink>
+                                <Hyperlink Click="HyperlinkSourceToOringinalRepository_Click">
+                                        <TextBlock Text="https://github.com/WXRIW/Ink-Canvas"></TextBlock>
+                                </Hyperlink>
                                 </TextBlock>
                                 <TextBlock FontSize="14">
                                      <Bold>开发者:</Bold> XY Wang (WXRIW)
