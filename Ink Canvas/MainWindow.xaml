@@ -1,0 +1,1480 @@
+<Window Name="window" x:Class="Ink_Canvas.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ink_Canvas"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:c="clr-namespace:Ink_Canvas.Converter" xmlns:Controls="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+        mc:Ignorable="d"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowState="Maximized"
+        Loaded="Window_Loaded"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Title="Ink Canvas 画板"
+        Topmost="True"
+        KeyDown="Window_KeyDown"
+        Closing="Window_Closing"
+        Closed="Window_Closed"
+        PreviewKeyDown="Main_Grid_PreviewKeyDown"
+        Height="3333" Width="1440"
+        MouseWheel="Window_MouseWheel"
+        Foreground="Black"
+        Stylus.IsPressAndHoldEnabled="False"
+        FontFamily="Microsoft YaHei UI">
+    <!--资源中添加命令-->
+    <Window.Resources>
+        <c:VisibilityConverter x:Key="VisibilityConverter"/>
+        <c:IsEnabledToOpacityConverter x:Key="IsEnabledToOpacityConverter"/>
+        <RoutedUICommand x:Key="KeyExit" Text=" "/>
+        <RoutedUICommand x:Key="back_HotKey_Command" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_Capture" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_Hide" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToDrawTool" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToSelect" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToEraser" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToPen1" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToPen2" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToPen3" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToPen4" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_ChangeToPen5" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_DrawLine" Text=" "/>
+    </Window.Resources>
+    <!--输入命令绑定-->
+    <Window.InputBindings>
+        <KeyBinding Gesture="Shift+Esc" Command="{StaticResource KeyExit}"/>
+        <KeyBinding Modifiers="Control" Key="Z" Command="{StaticResource back_HotKey_Command}"/>
+        <KeyBinding Modifiers="Alt" Key="S" Command="{StaticResource HotKey_ChangeToSelect}" />
+        <KeyBinding Modifiers="Alt" Key="D" Command="{StaticResource HotKey_ChangeToDrawTool}" />
+        <KeyBinding Modifiers="Alt" Key="E" Command="{StaticResource HotKey_ChangeToEraser}" />
+        <KeyBinding Modifiers="Alt" Key="C" Command="{StaticResource HotKey_Capture}" />
+        <KeyBinding Modifiers="Alt" Key="D1" Command="{StaticResource HotKey_ChangeToPen1}" />
+        <KeyBinding Modifiers="Alt" Key="D2" Command="{StaticResource HotKey_ChangeToPen2}" />
+        <KeyBinding Modifiers="Alt" Key="D3" Command="{StaticResource HotKey_ChangeToPen3}" />
+        <KeyBinding Modifiers="Alt" Key="D4" Command="{StaticResource HotKey_ChangeToPen4}" />
+        <KeyBinding Modifiers="Alt" Key="D5" Command="{StaticResource HotKey_ChangeToPen5}" />
+        <KeyBinding Modifiers="Alt" Key="V" Command="{StaticResource HotKey_Hide}" />
+        <KeyBinding Modifiers="Alt" Key="L" Command="{StaticResource HotKey_DrawLine}" />
+    </Window.InputBindings>
+    <!--命令执行方法绑定-->
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource back_HotKey_Command}"
+                    CanExecute="CommandBinding_CanExecute"
+                    Executed="back_HotKey"/>
+        <CommandBinding Command="{StaticResource KeyExit}"
+                    CanExecute="CommandBinding_CanExecute"
+                    Executed="KeyExit"/>
+        <CommandBinding Command="{StaticResource HotKey_ChangeToDrawTool}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="KeyChangeToDrawTool"/>
+        <CommandBinding Command="{StaticResource HotKey_ChangeToSelect}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="KeyChangeToSelect"/>
+        <CommandBinding Command="{StaticResource HotKey_ChangeToEraser}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="KeyChangeToEraser"/>
+        <CommandBinding Command="{StaticResource HotKey_Capture}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="KeyCapture"/>
+        <CommandBinding Command="{StaticResource HotKey_Hide}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="KeyHide"/>
+        <CommandBinding Command="{StaticResource HotKey_DrawLine}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="KeyDrawLine"/>
+    </Window.CommandBindings>
+    <Grid x:Name="Main_Grid" Background="#01FFFFFF">
+        <Grid Name="GridBackgroundCoverHolder">
+            <Grid Name="GridBackgroundCover" Visibility="Collapsed" Background="#1F1F1F"/>
+        </Grid>
+        <Canvas Name="Canvas"/>
+        <Label Name="Label" Visibility="Collapsed" Foreground="Gray" Content="0"/>
+        <InkCanvas x:Name="inkCanvas" Background="Transparent" Cursor="Pen" ForceCursor="False"
+                   ManipulationDelta="Main_Grid_ManipulationDelta"
+                   ManipulationCompleted="Main_Grid_ManipulationCompleted"
+                   ManipulationInertiaStarting="inkCanvas_ManipulationInertiaStarting"
+                   IsManipulationEnabled="True"
+                   EditingModeChanged="inkCanvas_EditingModeChanged"
+                   PreviewTouchDown="inkCanvas_PreviewTouchDown"
+                   PreviewTouchUp="inkCanvas_PreviewTouchUp"
+                   MouseDown="inkCanvas_MouseDown"
+                   MouseMove="inkCanvas_MouseMove"
+                   MouseUp="inkCanvas_MouseUp"
+                   ManipulationStarting="inkCanvas_ManipulationStarting"
+                   SelectionChanged="inkCanvas_SelectionChanged"
+                   StrokeCollected="inkCanvas_StrokeCollected"
+                   >
+        </InkCanvas>
+        <Grid Visibility="{Binding ElementName=inkCanvas, Path=Visibility}">
+            <Grid Name="GridInkCanvasSelectionCover"
+                  MouseDown="GridInkCanvasSelectionCover_MouseDown"
+                  MouseUp="GridInkCanvasSelectionCover_MouseUp"
+                  IsManipulationEnabled="True"
+                  ManipulationStarting="GridInkCanvasSelectionCover_ManipulationStarting"
+                  ManipulationCompleted="GridInkCanvasSelectionCover_ManipulationCompleted"
+                  ManipulationDelta="GridInkCanvasSelectionCover_ManipulationDelta"
+                  PreviewTouchDown="GridInkCanvasSelectionCover_PreviewTouchDown"
+                  PreviewTouchUp="GridInkCanvasSelectionCover_PreviewTouchUp"
+                  TouchDown="GridInkCanvasSelectionCover_TouchDown"
+                  TouchUp="GridInkCanvasSelectionCover_TouchUp"
+                  Background="#01FFFFFF" Opacity="0.01" Visibility="{Binding ElementName=GridInkCanvasSelectionCover, Path=Visibility}"/>
+            <Border Name="BorderStrokeSelectionControl" Visibility="{Binding ElementName=GridInkCanvasSelectionCover, Path=Visibility}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,900,0,0" CornerRadius="5" Height="80" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                <Viewbox Margin="0,-2.5">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Height="60">
+                        <Border Name="BorderStrokeSelectionClone" Margin="0,2,-9,2" Background="Transparent" CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}"
+                                Width="40" MouseDown="Border_MouseDown" MouseUp="BorderStrokeSelectionClone_MouseUp">
+                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="5">
+                                <ui:SymbolIcon Symbol="Copy" Foreground="{DynamicResource ToolBarForeground}"/>
+                                <TextBlock Text="克隆" FontSize="10" Foreground="{DynamicResource ToolBarForeground}"/>
+                            </ui:SimpleStackPanel>
+                        </Border>
+                        <Border Name="BorderStrokeSelectionCloneToNewBoard" Margin="0,2,-9,2" Background="Transparent" CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}"
+                                Width="40" MouseDown="Border_MouseDown" MouseUp="BorderStrokeSelectionCloneToNewBoard_MouseUp" Visibility="{Binding Visibility, ElementName=GridBackgroundCover}">
+                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="5">
+                                <ui:SymbolIcon Symbol="Copy" Foreground="{DynamicResource ToolBarForeground}"/>
+                                <TextBlock Text="克隆至新页" FontSize="8" Foreground="{DynamicResource ToolBarForeground}"/>
+                            </ui:SimpleStackPanel>
+                        </Border>
+                        <Border Width="1" Height="45" BorderBrush="{DynamicResource ToolBarForeground}" Background="{DynamicResource ToolBarForeground}"/>
+                        <Border CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}" Height="40">
+                            <ui:SimpleStackPanel VerticalAlignment="Center" Spacing="5" Margin="0,-10">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="15">
+                                    <Image Source="{DynamicResource Rotate45DrawingImage}" Height="22" MouseDown="Border_MouseDown" MouseUp="ImageRotate45_MouseUp"/>
+                                    <Image Source="{DynamicResource Rotate90DrawingImage}" Height="22" MouseDown="Border_MouseDown" MouseUp="ImageRotate90_MouseUp"/>
+                                </ui:SimpleStackPanel>
+                                <TextBlock Text="旋转" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource ToolBarForeground}"/>
+                            </ui:SimpleStackPanel>
+                        </Border>
+                        <Border Width="1" Height="45" BorderBrush="{DynamicResource ToolBarForeground}" Background="{DynamicResource ToolBarForeground}"/>
+                        <Border Margin="0,0,-6,0" CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}" Height="40">
+                            <ui:SimpleStackPanel VerticalAlignment="Center" Spacing="5" Margin="0,-10">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="15">
+                                    <Image Source="{DynamicResource FlipDrawingImage}" Width="19" Height="22" MouseDown="Border_MouseDown" MouseUp="ImageFlipHorizontal_MouseUp"/>
+                                    <Image Source="{DynamicResource FlipDrawingImage}" Width="19" Height="22" MouseDown="Border_MouseDown" MouseUp="ImageFlipVertical_MouseUp"
+                                           Margin="0,0,8,0" RenderTransformOrigin="0.5,0.5">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform/>
+                                                <RotateTransform Angle="90"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                </ui:SimpleStackPanel>
+                                <TextBlock Text="翻转" FontSize="10" Margin="-8,0,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource ToolBarForeground}"/>
+                            </ui:SimpleStackPanel>
+                        </Border>
+                        <Border Width="1" Height="45" BorderBrush="{DynamicResource ToolBarForeground}" Background="{DynamicResource ToolBarForeground}"/>
+                        <Border CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}" Height="40">
+                            <ui:SimpleStackPanel VerticalAlignment="Center" Spacing="5" Margin="0,-10">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="13">
+                                    <Grid MouseDown="Border_MouseDown" MouseUp="GridPenWidthDecrease_MouseUp">
+                                        <ui:SymbolIcon Symbol="Edit" Foreground="{DynamicResource ToolBarForeground}"/>
+                                        <TextBlock Text="-"  Foreground="{DynamicResource ToolBarForeground}"
+                                                   VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                                   Margin="0,0,-2,-7" FontSize="15"/>
+                                    </Grid>
+                                    <Grid MouseDown="Border_MouseDown" MouseUp="GridPenWidthIncrease_MouseUp">
+                                        <ui:SymbolIcon Symbol="Edit" Foreground="{DynamicResource ToolBarForeground}"/>
+                                        <TextBlock Text="+"  Foreground="{DynamicResource ToolBarForeground}"
+                                                   VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                                   Margin="0,0,-3,-4" FontSize="11"/>
+                                    </Grid>
+                                    <Grid MouseDown="Border_MouseDown" MouseUp="GridPenWidthRestore_MouseUp">
+                                        <ui:SymbolIcon Symbol="Edit" Foreground="{DynamicResource ToolBarForeground}"/>
+                                        <Image Source="{DynamicResource AndroidRefreshDrawingImage}" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                               Margin="0,0,-2,-2" Width="8">
+                                        </Image>
+                                    </Grid>
+                                </ui:SimpleStackPanel>
+                                <TextBlock Text="画笔粗细" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource ToolBarForeground}"/>
+                            </ui:SimpleStackPanel>
+                        </Border>
+                        <Border Width="1" Height="45" BorderBrush="{DynamicResource ToolBarForeground}" Background="{DynamicResource ToolBarForeground}"/>
+                        <Border Margin="-8,0,0,0" CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}" Width="40" MouseDown="Border_MouseDown" MouseUp="BorderStrokeSelectionDelete_MouseUp">
+                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="5">
+                                <ui:SymbolIcon Symbol="Delete" Foreground="{DynamicResource ToolBarForeground}"/>
+                                <TextBlock Text="删除" FontSize="10" Foreground="{DynamicResource ToolBarForeground}"/>
+                            </ui:SimpleStackPanel>
+                        </Border>
+                    </ui:SimpleStackPanel>
+                </Viewbox>
+            </Border>
+        </Grid>
+
+        <Grid Visibility="Collapsed">
+            <Grid Visibility="{Binding ElementName=GridBackgroundCoverHolder, Path=Visibility}">
+                <Viewbox Margin="10" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="5">
+                        <Border MouseUp="GridPPTControlPrevious_MouseUp" Width="36" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid Margin="6">
+                                <Image Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalPreviousSlideNormal}"/>
+                            </Grid>
+                        </Border>
+                        <Border MouseUp="PPTNavigationBtn_Click" Visibility="{Binding ElementName=PptNavigationBtn, Path=Visibility}" Width="36" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding ElementName=PptNavigationTextBlock, Path=Foreground}" FontSize="{Binding ElementName=PptNavigationTextBlock, Path=FontSize}" Text="{Binding ElementName=PptNavigationTextBlock, Path=Text}" />
+                            </Grid>
+                        </Border>
+                        <Border MouseUp="GridPPTControlNext_MouseUp" Width="36" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid Margin="6">
+                                <Image Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalNextSlideNormal}"/>
+                            </Grid>
+                        </Border>
+                    </ui:SimpleStackPanel>
+                </Viewbox>
+            </Grid>
+        </Grid>
+        <!-- BlackBoard 界面 -->
+        <Grid Visibility="{Binding ElementName=GridBackgroundCoverHolder, Path=Visibility}">
+            <!-- 左下角 -->
+            <Grid x:Name="BlackboardLeftSide" Visibility="Visible" Opacity="0.75" Margin="3,0,0,0" Height="55" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <ui:SimpleStackPanel Orientation="Horizontal">
+                    <Border Width="60" Height="55" MouseUp="BtnWhiteBoardSwitchPrevious_Click" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1,1,0,1">
+                        <Grid Margin="6">
+                            <Image Source="/Resources/Icons-png/prev.png" RenderOptions.BitmapScalingMode="HighQuality"  VerticalAlignment="Top" Width="26" Height="26"/>
+                            <TextBlock Text="上一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border Width="60" Height="55" Background="LightGray" Opacity="0.85"  BorderBrush="LightGray" BorderThickness="0,1,0,1">
+                        <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Margin="0,4,0,0" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                            <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
+                        </ui:SimpleStackPanel>
+                    </Border>
+                    <Border Width="60" Height="55" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,1,1">
+                        <Grid Margin="6">
+                            <Image Source="/Resources/Icons-png/next.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                            <TextBlock Text="下一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border Margin="5,0,0,0" Width="55" Height="55" MouseUp="ImageBlackboard_MouseUp" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1">
+                        <Grid Margin="6">
+                            <Image Source="/Resources/Icons-png/最小化.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                            <TextBlock Text="退出" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <!--<Border Width="36" Height="36" MouseUp="BorderMultiTouchMode_MouseUp" CornerRadius="5" Background="White" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                        <Viewbox Margin="8">
+                            <ui:SymbolIcon Name="SymbolIconMultiTouchMode2" Symbol="People" Foreground="{DynamicResource ToolBarForeground}" />
+                        </Viewbox>
+                    </Border>-->
+                </ui:SimpleStackPanel>
+            </Grid>
+            <!-- 中间 -->
+            <Grid x:Name="BlackboardCenterSide" Visibility="Visible" Opacity="0.8" Margin="0" Height="55" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                <ui:SimpleStackPanel Orientation="Horizontal">
+                    <Border Width="65" Height="55" MouseDown="Border_MouseDown" MouseUp="EnableInMultiTouchMode_MouseUp" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/mode.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                            <ui:SimpleStackPanel Margin="0,0,0,1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                                <TextBlock FontSize="9" Text="两指移动: "/>
+                                <TextBlock HorizontalAlignment="Center" FontSize="9" Text="{Binding ElementName=isInMultiTouchMode_Text,Path=Text}"/>
+                            </ui:SimpleStackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Margin="0,0,5,0" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="ToggleSwitchUsingWhiteboard_Btn_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/black_white.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                            <TextBlock Text="背景色" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="BoardSelect" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="SymbolIconSelect_MouseUp" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/selection.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                            <TextBlock Text="选择" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="BoardPen" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="PenIcon_Click" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/画笔.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                            <TextBlock Text="墨迹" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border>
+                        <Grid Margin="0,5,0,5" Width="0" RenderTransformOrigin="0.5,0.5">
+                            <Border x:Name="BoardPenPalette" Visibility="Visible" Background="White" Opacity="0.95"
+                                    BorderBrush="Black" BorderThickness="1" CornerRadius="5" Margin="-175,-255,-115,55">
+                                <Viewbox>
+                                    <StackPanel Margin="15 20">
+                                        <Viewbox Width="320" Height="35" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <ui:SimpleStackPanel Orientation="Horizontal">
+                                                <Label Content="笔锋设置：" Foreground="{DynamicResource ToolBarForeground}" FontSize="15" VerticalAlignment="Center"/>
+                                                <ComboBox Name="ComboBoxPenStyle2" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxPenStyle_SelectionChanged">
+                                                    <ComboBoxItem Content="模拟笔锋（根据墨迹尾部计算）" FontFamily="Microsoft YaHei UI"/>
+                                                    <ComboBoxItem Content="模拟笔锋（根据速度计算）" FontFamily="Microsoft YaHei UI"/>
+                                                    <ComboBoxItem Content="无笔锋"  FontFamily="Microsoft YaHei UI"/>
+                                                </ComboBox>
+                                            </ui:SimpleStackPanel>
+                                        </Viewbox>
+                                        <ui:SimpleStackPanel Width="300">
+                                            <ui:SimpleStackPanel>
+                                                <Viewbox Width="250" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                                    <ui:SimpleStackPanel Orientation="Horizontal">
+                                                        <Label Content="墨迹识别功能" Foreground="{DynamicResource ToolBarForeground}" FontSize="13" VerticalAlignment="Center"/>
+                                                        <Viewbox Margin="10,0,0,0" Height="25">
+                                                            <ui:ToggleSwitch Foreground="{DynamicResource ToolBarForeground}" FontFamily="Microsoft YaHei UI"
+                                                                             Width="70" OnContent="开" OffContent="关"
+                                                                             Toggled="ToggleSwitchEnableInkToShape_Toggled"
+                                                                             IsOn="{Binding ElementName=ToggleSwitchEnableInkToShape, Path=IsOn}"/>
+                                                        </Viewbox>
+                                                    </ui:SimpleStackPanel>
+                                                </Viewbox>
+                                            </ui:SimpleStackPanel>
+                                            <!--<TextBlock FontSize="25">画笔颜色</TextBlock>-->
+                                            <Controls:UniformGrid Rows="2" Height="150">
+                                                <ui:SimpleStackPanel Height="55" Orientation="Horizontal" Width="280">
+                                                    <Controls:UniformGrid Columns="4" Width="280">
+                                                        <Border x:Name="BoardBorderPenColorBlack" Background="Black" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorBlack_Click">
+                                                            <Viewbox Name="BoardViewboxBtnColorBlackContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <Border x:Name="BoardBorderPenColorRed" Background="red" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorRed_Click">
+                                                            <Viewbox Name="BoardViewboxBtnColorRedContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <Border x:Name="BoardBorderPenColorGreen" Background="#169141" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorGreen_Click">
+                                                            <Viewbox Name="BoardViewboxBtnColorGreenContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <Border x:Name="BoardBorderPenColorPurple" Background="#331EB5" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorPurple_Click">
+                                                            <Viewbox x:Name="BoardViewboxBtnColorPurpleContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                    </Controls:UniformGrid>
+                                                </ui:SimpleStackPanel>
+                                                <ui:SimpleStackPanel Height="55" Orientation="Horizontal" Width="280">
+                                                    <Controls:UniformGrid Columns="4" Width="280">
+                                                        <Border x:Name="BoardBorderPenColorPink" Background="#c72ec7" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorPink_Click">
+                                                            <Viewbox x:Name="BoardViewboxBtnColorPinkContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <Border x:Name="BoardBorderPenColorBlue" Background="#239AD6" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorBlue_Click">
+                                                            <Viewbox x:Name="BoardViewboxBtnColorBlueContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="Black"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <Border x:Name="BoardBorderPenColorYellow" Background="#F38B00" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorYellow_Click">
+                                                            <Viewbox x:Name="BoardViewboxBtnColorYellowContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="Black"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <Border x:Name="BoardBorderPenColorWhite" Background="White" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorWhite_Click">
+                                                            <Viewbox x:Name="BoardViewboxBtnColorWhiteContent" Visibility="Collapsed" Margin="6">
+                                                                <ui:SymbolIcon Symbol="Accept" Foreground="Black"/>
+                                                            </Viewbox>
+                                                        </Border>
+                                                    </Controls:UniformGrid>
+                                                </ui:SimpleStackPanel>
+                                            </Controls:UniformGrid>
+                                        </ui:SimpleStackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Slider x:Name="BoardInkWidthSlider" ui:ControlHelper.Header="画笔粗细"
+                                                    Minimum="1" Maximum="15"
+                                                    Width="276" FontFamily="Microsoft YaHei UI" 
+                                                    FontSize="20"
+                                                    Margin="0 5 0 0"
+                                                    IsSnapToTickEnabled="True" Value="5"
+                                                    TickFrequency="1" TickPlacement="Both"
+                                                    ValueChanged="InkWidthSlider_ValueChanged" Height="64"/>
+                                            <TextBlock Text="{Binding Value, ElementName=BoardInkWidthSlider, Mode=OneWay}"
+                                               VerticalAlignment="Bottom" Margin="10,0,0,8"
+                                               FontSize="14"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Viewbox>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="BoardEraser" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BoardEraserIcon_Click" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/outline-eraser.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                            <TextBlock Text="面积擦" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border Width="0" MouseDown="Border_MouseDown" MouseUp="BoardSymbolIconDelete_MouseUp">
+                        <Border x:Name="BoardDeleteIcon" Margin="-60,-55,0,55" Background="LightGray" Opacity="0.85" BorderThickness="1" CornerRadius="5,5,0,0">
+                            <Grid>
+                                <Grid Margin="6">
+                                    <Image VerticalAlignment="Top" Source="/Resources/Icons-png/删除.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                                    <TextBlock Text="清屏" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <Border x:Name="BoardEraserByStrokes" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BoardEraserIconByStrokes_Click" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/eraser-line.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                            <TextBlock Text="墨迹擦" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border Width="0" MouseDown="Border_MouseDown" MouseUp="BoardSymbolIconDelete_MouseUp">
+                        <Border x:Name="BoardDeleteIcon2" Margin="-60,-55,0,55" Background="LightGray" Opacity="0.85" BorderThickness="1" CornerRadius="5,5,0,0">
+                            <Grid>
+                                <Grid Margin="6">
+                                    <Image VerticalAlignment="Top" Source="/Resources/Icons-png/删除.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                                    <TextBlock Text="清屏" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <Border x:Name="BoardGeometry" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="ImageDrawShape_MouseUp" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/geometry.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                            <TextBlock Text="图形" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border Width="0">
+                        <Border x:Name="BoardBorderDrawShape" Margin="-230,-155,-230,60" Visibility="Visible" Background="White" Opacity="0.95" BorderBrush="Black" BorderThickness="1" CornerRadius="8">
+                            <Viewbox>
+                                <ui:SimpleStackPanel Spacing="-8" Orientation="Vertical" Width="380">
+                                    <TextBlock FontSize="16" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left" Margin="10,8">
+                                    <Run Text="图形"/>
+                                    <Run Text="(四种直线支持长按保持选中)" FontSize="10"/>
+                                    </TextBlock>
+                                    <ui:SymbolIcon Margin="0,-20,8,15" Symbol="Pin" MouseDown="Border_MouseDown" MouseUp="SymbolIconPinBorderDrawShape_MouseUp" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Right"/>
+
+                                    <ui:SimpleStackPanel Margin="20,0,0,0" Orientation="Horizontal">
+                                        <ui:SimpleStackPanel Visibility="Collapsed" Margin="58,6,5,6" Width="54">
+                                            <Label Margin="0,0,0,-2" Content="自动隐藏" Foreground="{DynamicResource ToolBarForeground}" FontSize="13" VerticalAlignment="Center"/>
+                                            <Viewbox Height="25">
+                                                <ui:ToggleSwitch Name="BoardToggleSwitchDrawShapeBorderAutoHide" Foreground="{DynamicResource ToolBarForeground}" FontFamily="Microsoft YaHei UI" Width="70" OnContent="开" OffContent="关" IsOn="True"/>
+                                            </Viewbox>
+                                        </ui:SimpleStackPanel>
+                                    </ui:SimpleStackPanel>
+
+                                    <ui:SimpleStackPanel Height="48" Spacing="8" Orientation="Horizontal">
+                                        <Image Margin="10,10,0,13" MouseUp="BtnDrawCone_Click" Source="{DynamicResource DrawShapeImageSource.Cone}"/>
+                                        <Image Margin="0,10,0,12" MouseUp="BtnDrawCuboid_Click" Source="{DynamicResource DrawShapeImageSource.Cuboid}"/>
+
+                                        <Image Name="BoardImageDrawLine" Margin="0,12,0,12" MouseDown="Image_MouseDown" MouseUp="BtnDrawLine_Click" Source="{DynamicResource DrawShapeImageSource.Line}"/>
+                                        <Image Name="BoardImageDrawDashedLine" Margin="0,12,0,12" MouseDown="Image_MouseDown" MouseUp="BtnDrawDashedLine_Click" Source="{DynamicResource DrawShapeImageSource.DashedLine}"/>
+                                        <Image Name="BoardImageDrawArrow" Margin="0,12,0,12" MouseDown="Image_MouseDown" MouseUp="BtnDrawArrow_Click" Source="{DynamicResource DrawShapeImageSource.ArrowLine}"/>
+                                        <Image Name="BoardImageDrawParallelLine" Margin="0,11.5,0,11.5" MouseDown="Image_MouseDown" MouseUp="BtnDrawParallelLine_Click" Source="{DynamicResource DrawShapeImageSource.ParallelLine}"/>
+
+                                        <Image Margin="0,12,0,12" MouseUp="BtnDrawCoordinate1_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate1}"/>
+                                        <Image Margin="0,12" MouseUp="BtnDrawCoordinate2_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate2}"/>
+                                        <Image Margin="0,12" MouseUp="BtnDrawCoordinate3_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate3}"/>
+                                        <Image Margin="0,12" MouseUp="BtnDrawCoordinate4_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate4}"/>
+                                        <Image Margin="-2,11.5,16,11.5" MouseUp="BtnDrawCoordinate5_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate5}"/>
+                                    </ui:SimpleStackPanel>
+
+                                    <ui:SimpleStackPanel Height="48" Spacing="8" Orientation="Horizontal">
+                                        <Image Margin="10,9,0,11" MouseUp="BtnDrawCylinder_Click" Source="{DynamicResource DrawShapeImageSource.Cylinder}"/>
+                                        <Image Margin="0,11,0,11" MouseUp="BtnDrawRectangle_Click" Source="{DynamicResource DrawShapeImageSource.Rectangle}"/>
+                                        <Image Margin="0,11,2,11" MouseUp="BtnDrawRectangleCenter_Click" Source="{DynamicResource DrawShapeImageSource.RectangleCenter}"/>
+                                        <Image Visibility="Collapsed" Margin="0,10" MouseUp="BtnDrawEllipse_Click" Source="{DynamicResource DrawShapeImageSource.Ellipse}"/>
+                                        <Image Margin="0,10" MouseUp="BtnDrawCircle_Click" Source="{DynamicResource DrawShapeImageSource.Circle}"/>
+                                        <Image Margin="0,10" MouseUp="BtnDrawDashedCircle_Click" Source="{DynamicResource DrawShapeImageSource.DashedCircle}"/>
+                                        <Image Margin="0,10" MouseUp="BtnDrawCenterEllipse_Click" Source="{DynamicResource DrawShapeImageSource.EllipseCenter}" Width="30"/>
+                                        <Image Margin="0,10" MouseUp="BtnDrawCenterEllipseWithFocalPoint_Click" Source="{DynamicResource DrawShapeImageSource.EllipseCenterWithFocalPoint}" Width="30"/>
+                                        <Image Margin="0,9,0,11" MouseUp="BtnDrawHyperbolaWithFocalPoint_Click" Width="26" Source="{DynamicResource DrawShapeImageSource.HyperbolaWithFocalPoint}"/>
+                                        <Image Margin="0,10,0,10" MouseUp="BtnDrawParabolaWithFocalPoint_Click" Width="26" Source="{DynamicResource DrawShapeImageSource.ParabolaWithFocalPoint}" RenderTransformOrigin="0.5,0.5">
+                                            <Image.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="90"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </Image.RenderTransform>
+                                        </Image>
+                                        <Image Margin="2.5,10,2,10" MouseUp="BtnDrawParabola1_Click" Width="26" Source="{DynamicResource DrawShapeImageSource.Parabola}"/>
+                                    </ui:SimpleStackPanel>
+                                </ui:SimpleStackPanel>
+                            </Viewbox>
+                        </Border>
+                    </Border>
+                    <Border x:Name="BoardUndo" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="SymbolIconUndo_MouseUp" IsEnabled="{Binding ElementName=BtnUndo, Path=IsEnabled}" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/undo.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="28"
+                                   Opacity="{Binding ElementName=BtnUndo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
+                            <TextBlock Text="撤销" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="BoardRedo" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="SymbolIconRedo_MouseUp" IsEnabled="{Binding ElementName=BtnRedo, Path=IsEnabled}" Background="LightGray" Opacity="0.85">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/redo.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="28"
+                                   Opacity="{Binding ElementName=BtnRedo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
+                            <TextBlock Text="重做" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="SymbolIconTools_MouseUp" Background="LightGray" Opacity="0.85" CornerRadius="0,5,5,0">
+                        <Grid Margin="6">
+                            <Image VerticalAlignment="Top" Source="/Resources/Icons-png/setting.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="28"/>
+                            <TextBlock Text="更多" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border>
+                        <Grid Margin="0,0,0,5" Width="0">
+                            <Border x:Name="BoardBorderTools" Margin="-160,-160,-100,60" CornerRadius="5" Background="White" Opacity="0.95" BorderThickness="1" BorderBrush="Black">
+                                <ui:SimpleStackPanel Margin="10,20,10,15">
+                                    <Label Content="保存 | 打开 | 播放 — 当前页墨迹" FontSize="16" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="30" Spacing="18">
+                                        <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
+                                        <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
+                                        <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"
+                                               MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
+                                    </ui:SimpleStackPanel>
+                                    <Label Margin="0,5,0,0" Content="截图  设置" FontSize="20" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="5,0,0,0" Height="30" Spacing="20">
+                                        <Image Source="/Resources/Icons-png/camera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
+                                        <Image Source="/Resources/Icons-png/settings.png" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
+                                    </ui:SimpleStackPanel>
+                                </ui:SimpleStackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <Border Margin="5,0,0,0" Width="55" Height="55" MouseUp="ImageBlackboard_MouseUp" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1">
+                        <Grid Margin="6">
+                            <Image Source="/Resources/Icons-png/最小化.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                            <TextBlock Text="退出" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                </ui:SimpleStackPanel>
+            </Grid>
+            <!-- 右下角 -->
+            <Grid x:Name="BlackboardRightSide" Visibility="Visible" Opacity="0.75" Margin="0,0,3,0" Height="55" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <ui:SimpleStackPanel Orientation="Horizontal">
+                    <Border Width="60" Height="55" MouseUp="BtnWhiteBoardSwitchPrevious_Click" CornerRadius="3,0,0,3" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1,1,0,1">
+                        <Grid Margin="6">
+                            <Image Source="/Resources/Icons-png/prev.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                            <TextBlock Text="上一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                    <Border Width="60" Height="55" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,0,1">
+                        <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Margin="0,4,0,0" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                            <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
+                        </ui:SimpleStackPanel>
+                    </Border>
+                    <Border Width="60" Height="55" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,1,1">
+                        <Grid Margin="6">
+                            <Image Source="/Resources/Icons-png/next.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                            <TextBlock Text="下一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                        </Grid>
+                    </Border>
+                </ui:SimpleStackPanel>
+            </Grid>
+
+            <ui:SimpleStackPanel Spacing="10" Orientation="Horizontal"
+                             VerticalAlignment="Bottom"
+                             HorizontalAlignment="Right"
+                             Height="50" Margin="10"
+                             Visibility="Collapsed">
+                <Button Name="BtnWhiteBoardAdd" FontFamily="Microsoft YaHei UI"
+                    Width="50" Height="48" FontSize="26" Click="BtnWhiteBoardAdd_Click"
+                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                    Background="{Binding ElementName=BtnExit, Path=Background}">
+                    <ui:SymbolIcon Symbol="Add" />
+                </Button>
+                <Button Name="BtnWhiteBoardSwitchPrevious" FontFamily="Symbol"
+                    Width="50" Height="48" FontSize="25" Click="BtnWhiteBoardSwitchPrevious_Click"
+                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                    Background="{Binding ElementName=BtnExit, Path=Background}"
+                    VerticalContentAlignment="Center"
+                    IsEnabled="False" IsEnabledChanged="Btn_IsEnabledChanged">
+                    <Image RenderTransformOrigin="0.5,0.5" Opacity="0.25">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="-90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                        <Image.Source>
+                            <DrawingImage>
+                                <DrawingImage.Drawing>
+                                    <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
+                                        <DrawingGroup Opacity="1">
+                                            <GeometryDrawing Brush="{Binding ElementName=BtnExit, Path=Foreground}" Geometry="F1 M64,64z M0,0z M32,26.41L16.566,41.844 14.439,39.717 32,22.156 49.561,39.717 47.434,41.844 32,26.41z" />
+                                        </DrawingGroup>
+                                    </DrawingGroup>
+                                </DrawingImage.Drawing>
+                            </DrawingImage>
+                        </Image.Source>
+                    </Image>
+                </Button>
+                <Border Height="48" CornerRadius="2" Margin="3,0">
+                    <TextBlock Name="TextBlockWhiteBoardIndexInfo"
+                               Text="1 / 1"
+                               Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Microsoft YaHei UI" FontSize="18"/>
+                </Border>
+                <Button Name="BtnWhiteBoardSwitchNext" FontFamily="Symbol"
+                    Width="50" Height="48" FontSize="25" Click="BtnWhiteBoardSwitchNext_Click"
+                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                    Background="{Binding ElementName=BtnExit, Path=Background}"
+                    VerticalContentAlignment="Center"
+                    IsEnabled="False" IsEnabledChanged="Btn_IsEnabledChanged">
+                    <Image RenderTransformOrigin="0.5,0.5" Opacity="0.25">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                        <Image.Source>
+                            <DrawingImage>
+                                <DrawingImage.Drawing>
+                                    <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
+                                        <DrawingGroup Opacity="1">
+                                            <GeometryDrawing Brush="{Binding ElementName=BtnExit, Path=Foreground}" Geometry="F1 M64,64z M0,0z M32,26.41L16.566,41.844 14.439,39.717 32,22.156 49.561,39.717 47.434,41.844 32,26.41z" />
+                                        </DrawingGroup>
+                                    </DrawingGroup>
+                                </DrawingImage.Drawing>
+                            </DrawingImage>
+                        </Image.Source>
+                    </Image>
+                </Button>
+                <Button Name="BtnWhiteBoardDelete" Click="BtnWhiteBoardDelete_Click"
+                    FontFamily="Microsoft YaHei UI" Width="50" Height="48" FontSize="26"
+                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                    Background="{Binding ElementName=BtnExit, Path=Background}"
+                    IsEnabled="False">
+                    <ui:SymbolIcon Symbol="Delete" />
+                </Button>
+            </ui:SimpleStackPanel>
+        </Grid>
+        <!-- Settings 设置界面 -->
+        <Border Name="BorderSettings" Background="White" BorderBrush="Black" BorderThickness="1" CornerRadius="10"
+                ui:ThemeManager.RequestedTheme="Light" Width="425" HorizontalAlignment="Center"
+                Margin="0,200,0,200" Visibility="Visible">
+            <Grid>
+                <ScrollViewer Margin="0,50,0,50" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" ui:ThemeManager.RequestedTheme="Light" ManipulationBoundaryFeedback="SCManipulationBoundaryFeedback">
+                    <StackPanel Margin="20,0,20,0">
+                        <GroupBox>
+                            <ui:SimpleStackPanel>
+                                <Border Margin="0,-15,0,10" Height="115" Background="Bisque" CornerRadius="10"
+                                        BorderBrush="Black" BorderThickness="1.5">
+                                    <ui:SimpleStackPanel Spacing="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <ui:SimpleStackPanel Spacing="0" Orientation="Horizontal">
+                                            <Label FontSize="15" HorizontalAlignment="Center">无需进入设置界面，在浮动工具栏点击图标</Label>
+                                            <Image Margin="4,-2,0,0" Source="/Resources/Icons-png/hidden.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22"/>
+                                        </ui:SimpleStackPanel>
+                                        <Label FontSize="15" HorizontalAlignment="Left">即可隐藏软件窗口将其收纳至侧边栏 (●'◡'●)</Label>
+                                        <Border Width="200" Height="40" BorderBrush="LightCyan" BorderThickness="1">
+                                            <Image Source="/Resources/photos/tipForFold.png" RenderOptions.BitmapScalingMode="HighQuality" Width="200" Height="40" />
+                                        </Border>
+                                        <Label FontSize="15" HorizontalAlignment="Left">*进入希沃白板、希沃视频展台时会自动收纳至侧边栏</Label>
+                                    </ui:SimpleStackPanel>
+                                </Border>
+                                <ui:SimpleStackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Border Width="105" Height="45" MouseUp="BtnRestart_Click" Background="FloralWhite" BorderBrush="RosyBrown" BorderThickness="1" CornerRadius="5">
+                                        <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
+                                            <Image Source="/Resources/Icons-png/restart.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="25"/>
+                                            <Label FontSize="16" VerticalAlignment="Center" FontFamily="Dengxian" FontWeight="Bold">重启软件</Label>
+                                        </ui:SimpleStackPanel>
+                                    </Border>
+                                    <Border Width="150" Height="45" MouseUp="FoldFloatingBar_MouseUp" Background="Azure"  BorderBrush="DarkCyan" BorderThickness="1" CornerRadius="5">
+                                        <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
+                                            <Image Source="/Resources/Icons-png/hidden.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25"/>
+                                            <Label FontSize="16" VerticalAlignment="Center" FontFamily="Dengxian" FontWeight="Bold">收纳至侧边栏</Label>
+                                        </ui:SimpleStackPanel>
+                                    </Border>
+                                    <Border Width="105" Height="45" MouseUp="BtnExit_Click" Background="LightPink" BorderBrush="OrangeRed" BorderThickness="1" CornerRadius="5">
+                                        <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
+                                            <Image Source="/Resources/Icons-png/shutdown.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="25"/>
+                                            <Label FontSize="16" VerticalAlignment="Center" FontFamily="Dengxian" FontWeight="Bold">关闭软件</Label>
+                                        </ui:SimpleStackPanel>
+                                    </Border>
+                                </ui:SimpleStackPanel>
+
+                                <ui:SimpleStackPanel Margin="0,5,0,0" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                                    <Label FontSize="18" VerticalAlignment="Center" FontFamily="Dengxian" FontWeight="Bold">开机自启动</Label>
+                                    <ui:ToggleSwitch Name="ToggleSwitchRunAtStartup" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchRunAtStartup_Toggled"/>
+                                </ui:SimpleStackPanel>
+                                <Label FontSize="15" HorizontalAlignment="Center">*设置将自动保存，部分设置需重启后才能生效*</Label>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <TextBlock Text="----------------------------以下为调试功能----------------------------" TextWrapping="Wrap" Foreground="#666666"/>
+                        <GroupBox Header="启动">
+                            <ui:SimpleStackPanel>
+                                <!--
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoHideCanvas" Header="自动隐藏画板" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoHideCanvas_Toggled"/>
+                                -->
+                                <ui:ToggleSwitch Name="ToggleSwitchColorfulViewboxFloatingBar" Header="开启浮动工具栏背景色" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsColorfulViewboxFloatingBar_Toggled"/>
+                                <TextBlock Margin="0,0,0,10" Text="#浮动工具栏背景色功能需重启软件以应用。" TextWrapping="Wrap" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoEnterModeFinger" Header="自动进入手指模式" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoEnterModeFinger_Toggled"/>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <GroupBox Header="画板">
+                            <ui:SimpleStackPanel Spacing="10">
+                                <ui:ToggleSwitch Name="ToggleSwitchShowCursor" Header="显示画笔光标" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowCursor_Toggled"/>
+                                <TextBlock Text="画笔样式" FontFamily="Microsoft YaHei UI" FontSize="14"/>
+                                <ui:ToggleSwitch Header="手指模式" IsOn="{Binding ElementName=ToggleSwitchModeFinger, Path=IsOn}" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关"/>
+                                <TextBlock Text="此选项仅适用于可获取触摸面积的屏幕" TextWrapping="Wrap" Foreground="#666666"/>
+                                <!--
+                                <TextBlock Text="橡皮模式"  FontFamily="Microsoft YaHei UI" FontSize="14"/>
+                                <ComboBox Name="ComboBoxEraserType" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxEraserType_OnSelectionChanged">
+                                    <ComboBoxItem Content="交替切换" FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="面积擦" FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="笔画擦" FontFamily="Microsoft YaHei UI"/>
+                                </ComboBox>
+                                -->
+                                <TextBlock Text="橡皮大小"  FontFamily="Microsoft YaHei UI" FontSize="14"/>
+                                <ComboBox Name="ComboBoxEraserSize" FontFamily="Microsoft YaHei UI" SelectedIndex="2" SelectionChanged="ComboBoxEraserSize_SelectionChanged">
+                                    <ComboBoxItem Content="小" FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="较小" FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="中（默认）" FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="较大"  FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="大"  FontFamily="Microsoft YaHei UI"/>
+                                </ComboBox>
+                                <!--
+                                <ui:ToggleSwitch Name="ToggleSwitchHideStrokeWhenSelecting" Header="退出画板模式后隐藏墨迹" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchHideStrokeWhenSelecting_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchUsingWhiteboard" Header="使用白板 (白色背景)" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchUsingWhiteboard_Toggled"/>
+                                -->
+                                <TextBlock Text="保留双曲线渐近线" FontFamily="Microsoft YaHei UI" FontSize="14"/>
+                                <ComboBox Name="ComboBoxHyperbolaAsymptoteOption" FontFamily="Microsoft YaHei UI" SelectedIndex="2" SelectionChanged="ComboBoxHyperbolaAsymptoteOption_SelectionChanged">
+                                    <ComboBoxItem Content="是" FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="否" FontFamily="Microsoft YaHei UI"/>
+                                    <ComboBoxItem Content="每次询问" FontFamily="Microsoft YaHei UI"/>
+                                </ComboBox>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <GroupBox Header="手势">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerZoom" Header="允许双指缩放" FontFamily="Microsoft YaHei UI" IsOn="True" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerZoom_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerRotation" Header="允许双指旋转" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerRotation_Toggled"/>
+                                <TextBlock Text="允许选中墨迹后对墨迹进行双指或多指缩放操作（此设置不受“允许双指旋转”设置的影响）" TextWrapping="Wrap" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerRotationOnSelection" Header="允许双指旋转选中的墨迹" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerRotation_Toggled"/>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <GroupBox Name="GroupBoxInkRecognition" Header="墨迹识别 (Beta)">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <TextBlock Text="可实现智能识别圆、三角形、矩形，并自动转换为规范图形。" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableInkToShape" Header="启用墨迹识别" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableInkToShape_Toggled" IsOn="True"/>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <GroupBox Name="GroupBoxAppearance" Header="外观">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <ui:ToggleSwitch Name="ToggleSwitchTransparentButtonBackground" Header="按钮背景半透明" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchTransparentButtonBackground_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonExit" Header="显示“退出”按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonExit_Toggled"/>
+                                <Button Content="立即退出" Width="120" Visibility="Collapsed" FontFamily="Microsoft YaHei UI" Click="BtnExit_Click" Margin="0,0,0,10"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonEraser" Header="显示“橡皮”按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonEraser_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonHideControl" Header="显示“⇅ (显示或隐藏控制按钮)”按钮" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonHideControl_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonLRSwitch" Header="显示“⇆ (左右切换)”按钮" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonLRSwitch_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonModeFinger" Header="显示“手指模式”切换按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonModeFinger_Toggled"/>
+                                <StackPanel Visibility="Collapsed" Orientation="Horizontal">
+                                    <Slider x:Name="SideControlOpacitySlider"
+                                            HorizontalAlignment="Left"
+                                            Minimum="1" Maximum="100"
+                                            Width="320" FontFamily="Microsoft YaHei UI" 
+                                            ui:ControlHelper.Header="控制栏透明度"
+                                            IsSnapToTickEnabled="True" Value="100"
+                                            TickFrequency="10" TickPlacement="Both"
+                                            ValueChanged="SideControlOpacitySlider_ValueChanged"/>
+                                    <TextBlock Text="{Binding Value, ElementName=SideControlOpacitySlider, Mode=OneWay}"
+                                               VerticalAlignment="Bottom" Margin="10,0,0,8"
+                                               FontSize="14" Width="25" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <!--
+                        <GroupBox Name="GroupBoxAppearanceNewUI" Header="外观">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <ui:ToggleSwitch Header="显示“橡皮”按钮" IsOn="{Binding ElementName=ToggleSwitchShowButtonEraser, Path=IsOn}" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonPPTNavigation" Header="显示 PPT 浏览切页按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonPPTNavigation_OnToggled"/>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        -->
+                        <GroupBox Header="PowerPoint 相关">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <TextBlock Text="此部分的设置项将会在幻灯片播放时使用，优先级高于其他设置项" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchSupportPowerPoint" Header="Microsoft PowerPoint 支持" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchSupportPowerPoint_Toggled"/>
+                                <TextBlock Text="不推荐使用 WPS Office，鉴于 WPS Office 自身软件的兼容性问题，且对触摸设备的支持较差，并伴随崩溃现象。" TextWrapping="Wrap" Foreground="#666666"/>
+                                <TextBlock Text="对 WPS Office 支持时会导致 WPS Office 关闭时卡顿，仅测试用。" TextWrapping="Wrap" Margin="0,-12,0,0" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchSupportWPS" Header="WPS Office 支持" IsOn="True" IsEnabled="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchSupportWPS_Toggled"/>
+                                <!--
+                                <ui:ToggleSwitch Name="ToggleSwitchShowCanvasAtNewSlideShow" Header="开始放映时自动启动画板" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowCanvasAtNewSlideShow_Toggled"/>
+                                -->
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerGestureInPresentationMode" Header="允许幻灯片模式下的双指手势" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerGestureInPresentationMode_Toggled"/>
+                                <TextBlock Text="允许开启画板时使用手指手势进行幻灯片翻页（启用后，在幻灯片放映模式下，当画板无墨迹时，使用手指（笔尖或手掌无法识别）左右滑动即可控制幻灯片翻页。）" TextWrapping="Wrap" Foreground="#666666"/>
+                                <!--
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableFingerGestureSlideShowControl" Header="允许使用手指手势进行幻灯片翻页" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="True" Toggled="ToggleSwitchEnableFingerGestureSlideShowControl_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoSaveScreenShotInPowerPoint" Header="自动幻灯片截屏" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled"/>
+                                <TextBlock Text="开启后将在结束幻灯片放映时自动将已有墨迹保存至此电脑，并在下次打开时自动加载（文件名和幻灯片页数都要相同）" TextWrapping="Wrap" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoSaveStrokesInPowerPoint" Header="自动保存幻灯片墨迹" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchNotifyPreviousPage" Header="记忆并提示上次播放位置" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNotifyPreviousPage_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchNotifyHiddenPage" Header="提示隐藏幻灯片" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNotifyHiddenPage_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchNoStrokeClearInPowerPoint" Header="退出画板模式时不清除笔迹" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNoStrokeClearInPowerPoint_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowStrokeOnSelectInPowerPoint" Header="退出画板模式时不隐藏笔迹" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowStrokeOnSelectInPowerPoint_Toggled"/>
+                                -->
+                            </ui:SimpleStackPanel>
+
+                        </GroupBox>
+                        <GroupBox Header="高级">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <TextBlock Text="可在手指触摸画板时显示圆形橡皮或手掌触摸画板时显示的橡皮比&#x000A;手掌大很多时调整" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchIsSpecialScreen" Header="特殊屏幕模式" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsSpecialScreen_OnToggled"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility,ElementName=TouchMultiplierSlider}">
+                                    <Slider x:Name="TouchMultiplierSlider"
+                                            HorizontalAlignment="Left"
+                                            Minimum="0" Maximum="1"
+                                            Width="300" FontFamily="Microsoft YaHei UI" 
+                                            ui:ControlHelper.Header="触摸大小倍数"
+                                            IsSnapToTickEnabled="True"
+                                            TickFrequency="0.01" TickPlacement="Both"
+                                            ValueChanged="TouchMultiplierSlider_ValueChanged"
+                                            Visibility="Collapsed"/>
+                                    <TextBlock Text="{Binding Value, ElementName=TouchMultiplierSlider, Mode=OneWay}"
+                                               VerticalAlignment="Bottom" Margin="10,0,0,8"
+                                               FontSize="14" Width="30" HorizontalAlignment="Center"
+                                               Visibility="{Binding Path=Visibility, ElementName=TouchMultiplierSlider, Mode=OneWay}"/>
+
+                                </StackPanel>
+                                <ui:SimpleStackPanel Spacing="8" Margin="0,4,0,4" Visibility="{Binding Visibility,ElementName=TouchMultiplierSlider}">
+                                    <TextBlock FontSize="14" Text="在下方用笔尖点击以估计触摸大小倍数"/>
+                                    <TextBlock Text="数值仅供参考" Foreground="#666666"/>
+                                    <Border CornerRadius="4" Height="48" Background="#cccccc" TouchDown="BorderCalculateMultiplier_TouchDown"/>
+                                    <TextBlock Name="TextBlockShowCalculatedMultiplier" FontSize="14"/>
+                                </ui:SimpleStackPanel>
+                                <ui:ToggleSwitch Name="ToggleSwitchEraserBindTouchMultiplier" Header="橡皮擦绑定触摸大小倍数" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="False" Toggled="ToggleSwitchEraserBindTouchMultiplier_Toggled" Visibility="{Binding Path=Visibility, ElementName=TouchMultiplierSlider, Mode=OneWay}"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchIsQuadIR" Header="四边红外模式" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsQuadIR_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchIsLogEnabled" Header="记录日志" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="True" Toggled="ToggleSwitchIsLogEnabled_Toggled"/>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <!--
+                        <GroupBox Header="重置">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Margin="0,0,0,12"
+                                        Text="重置设置为推荐设置"/>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                                        <Button Content="重置" Width="100" FontFamily="Microsoft YaHei UI" Click="BtnResetToSuggestion_Click" Margin="0,0,0,0"/>
+                                        <ui:SymbolIcon Name="SymbolIconResetSuggestionComplete" Symbol="Accept" Visibility="Collapsed"/>
+                                    </ui:SimpleStackPanel>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Margin="0,0,0,12"
+                                        Text="重置设置为默认设置"/>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                                        <Button Content="重置" Width="100" FontFamily="Microsoft YaHei UI" Click="BtnResetToDefault_Click" Margin="0,0,0,10"/>
+                                        <ui:SymbolIcon Name="SymbolIconResetDefaultComplete" Symbol="Accept" Visibility="Collapsed"/>
+                                    </ui:SimpleStackPanel>
+                                </StackPanel>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        -->
+                        <GroupBox Header="自动">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <!--
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoKillPptService" Header="自动查杀“PPT 小工具”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillPptService_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoKillEasiNote" Header="自动查杀“希沃白板 5”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillEasiNote_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchSaveScreenshotsInDateFolders" Header="截图分日期文件夹保存" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchSaveScreenshotsInDateFolders_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoSaveStrokesAtScreenshot" Header="截图时自动保存墨迹" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveStrokesAtScreenshot_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoSaveStrokesAtClear" Header="清屏时自动截图" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveStrokesAtClear_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchClearExitingWritingMode" Header="切换到鼠标模式后自动清屏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchExitingWritingMode_Toggled"/>
+                                -->
+                                <ui:ToggleSwitch Name="ToggleSwitchSaveScreenshotsInDateFolders" Header="截图分日期文件夹保存" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchSaveScreenshotsInDateFolders_Toggled"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Slider x:Name="SideControlMinimumAutomationSlider"
+                                            HorizontalAlignment="Left"
+                                            Minimum="0" Maximum="10"
+                                            Width="320" FontFamily="Microsoft YaHei UI" 
+                                            ui:ControlHelper.Header="自动截图最小墨迹量"
+                                            IsSnapToTickEnabled="True" Value="0"
+                                            TickFrequency="1" TickPlacement="Both"
+                                            ValueChanged="SideControlMinimumAutomationSlider_ValueChanged"/>
+                                    <TextBlock Text="{Binding Value, ElementName=SideControlMinimumAutomationSlider, Mode=OneWay}"
+                                           VerticalAlignment="Bottom" Margin="10,0,0,8"
+                                           FontSize="14" Width="25" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                        <GroupBox Header="关于">
+                            <ui:SimpleStackPanel Spacing="12">
+                                <TextBlock Text="*使用和分发本软件前，请您应当且务必知晓相关开源协议，本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成。" TextWrapping="Wrap" Foreground="#666666"/>
+                                
+                                <TextBlock FontSize="14">
+                                <Bold>原项目地址:</Bold>
+                                    <Hyperlink Click="HyperlinkSource_Click">
+                                           <TextBlock Text="https://github.com/WXRIW/Ink-Canvas"></TextBlock>
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock FontSize="14">
+                                     <Bold>开发者:</Bold> XY Wang (WXRIW)
+                                </TextBlock>
+                                <TextBlock FontSize="14" TextWrapping="Wrap">
+                                     <Bold>贡献者:</Bold> Kengwang, Raspberry Kan, jiajiaxd, CN-Ironegg, Clover Yan, STBBRD
+                                </TextBlock>
+                                
+                                <TextBlock FontSize="14">
+                                     <Bold>开源协议:</Bold> GNU General Public License v3.0
+                                </TextBlock>
+                            </ui:SimpleStackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+                <Border Background="LightGray" Width="75" Height="35" CornerRadius="2,10,2,2" HorizontalAlignment="Right" VerticalAlignment="Top" MouseUp="BtnSettings_Click">
+                    <Image Source="/Resources/Icons-png/close.png" RenderOptions.BitmapScalingMode="HighQuality" Height="27" Width="27"/>
+                </Border>
+                <Grid Margin="0,15,0,10" Background="Transparent" Width="350" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <Label FontSize="26">详细设置 | Settings</Label>
+                </Grid>
+                <Grid VerticalAlignment="Bottom" Height="50">
+                    <Button FontFamily="Microsoft YaHei UI" Width="350" HorizontalAlignment="Center"  Content="关闭设置窗口" Click="BtnSettings_Click"/>
+                </Grid>
+            </Grid>
+        </Border>
+        <!-- 通知弹窗 -->
+        <Grid Name="GridNotifications" Margin="0,110" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Border CornerRadius="10" Height="50" Background="LightGray" Opacity="0.95" BorderBrush="Purple" BorderThickness="1.5">
+                <TextBlock Name="TextBlockNotice" Text="测试文本" Margin="20,0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+            </Border>
+        </Grid>
+
+        <Viewbox Name="ViewBoxStackPanelMain" Visibility="Visible" Margin="60" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="46">
+            <StackPanel Name="StackPanelMain" Width="46">
+                <StackPanel Name="StackPanelControl">
+                    <Button Name="BtnExit" Content="退出" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnExit_Click" Background="#7F909090"/>
+                    <Button Name="BtnSettings" Content="设置" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnSettings_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    <TextBlock Text="自动&#x000A;粗细" Visibility="Collapsed" Margin="0,10,0,0"
+                           FontSize="14" HorizontalAlignment="Center"
+                           Foreground="{Binding ElementName=BtnExit, Path=Foreground}"/>
+                    <!--<Viewbox Height="30" Visibility="Collapsed">
+                        <ui:ToggleSwitch Name="ToggleSwitchAutoWeight" Header="" Width="40.5" 
+                                     FontFamily="Microsoft YaHei UI" FontSize="19"
+                                     OnContent="" OffContent="" Toggled="ToggleSwitchAutoWeight_Toggled"/>
+                    </Viewbox>-->
+                    <StackPanel Name="StackPanelModeFinger" Background="#01000000">
+                        <TextBlock Text="手指&#x000A;模式" Margin="0,10,0,0"
+                           FontSize="14" HorizontalAlignment="Center"
+                           Foreground="{Binding ElementName=BtnExit, Path=Foreground}"/>
+                        <Viewbox Height="30">
+                            <ui:ToggleSwitch Name="ToggleSwitchModeFinger" Header="" Width="40.5"
+                                     FontFamily="Microsoft YaHei UI" FontSize="19"
+                                     OnContent="" OffContent="" Toggled="ToggleSwitchModeFinger_Toggled"/>
+                        </Viewbox>
+                    </StackPanel>
+                    <Button Name="BtnSwitchTheme" Content="深色" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnSwitchTheme_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    <Button Name="BtnSwitch" Content="背景" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnSwitch_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    <Button Name="BtnClear" Content="清屏" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnClear_Click" MouseDoubleClick="BtnClear_MouseDoubleClick" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    <Button x:Name="BtnHideInkCanvas" Content="隐藏&#x000A;画板" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnHideInkCanvas_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    <Button x:Name="BtnTools" Content="工具" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnTools_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    <Grid Name="StackPanelToolButtons" Margin="-127,-30.5,56,0">
+                        <Border CornerRadius="5" Margin="-7"
+                                Background="White" Visibility="Collapsed"
+                                BorderBrush="#0066BF" BorderThickness="1"/>
+                    </Grid>
+                    <!--
+                    <Button x:Name="BtnScreenshot" Content="截屏" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnScreenshot_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    -->
+                    <Button x:Name="BtnCheckPPT" Visibility="Collapsed" Content="检查" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnCheckPPT_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    <StackPanel Name="StackPanelPPTButtons">
+                        <Button x:Name="BtnPPTSlideShow" Visibility="Collapsed" Content="从头&#x000A;放映" FontFamily="Microsoft YaHei UI"
+                                Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                                Click="BtnPPTSlideShow_Click"  Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                        <Button x:Name="BtnPPTSlideShowEnd" Visibility="Collapsed" Content="结束&#x000A;放映" FontFamily="Microsoft YaHei UI"
+                                Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                                Click="BtnPPTSlideShowEnd_Click"  Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                        <!-- PPT 按钮 -->
+                        <StackPanel Name="StackPanelPPTControls" Visibility="Collapsed">
+                            <Button x:Name="BtnPPTSlidesUp" Content="↑" FontFamily="Microsoft YaHei UI"
+                                    Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                                    Click="BtnPPTSlidesUp_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                                    Background="{Binding ElementName=BtnExit, Path=Background}"
+                                    Opacity="0.75"/>
+                            <Button x:Name="BtnPPTSlidesDown" Content="↓" FontFamily="Microsoft YaHei UI"
+                                    Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                                    Click="BtnPPTSlidesDown_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                                    Background="{Binding ElementName=BtnExit, Path=Background}"
+                                    Opacity="0.75"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button x:Name="BtnSwitchSide" Content="⇆" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnSwitchSide_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                </StackPanel>
+                <Button x:Name="BtnHideControl" Content="⇅" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnHideControl_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+            </StackPanel>
+        </Viewbox>
+        <Viewbox Name="ViewBoxStackPanelShapes" Margin="{Binding ElementName=ViewBoxStackPanelMain, Path=Margin}" Width="46" HorizontalAlignment="Left" VerticalAlignment="Bottom" Visibility="Visible">
+            <StackPanel Name="StackPanelShapes" Width="46">
+                <Slider HorizontalAlignment="Center" Visibility="Collapsed"
+                        Minimum="1" Maximum="20" Orientation="Vertical" 
+                        Height="330" FontFamily="Microsoft YaHei UI" 
+                        ui:ControlHelper.Header="画笔&#x000A;粗细"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="1" TickPlacement="Both" 
+                        RenderTransformOrigin="0.5,0.5"
+                        Value="{Binding ElementName=InkWidthSlider, Path=Value, Mode=TwoWay}">
+                </Slider>
+                <TextBlock Text="画笔&#x000A;粗细" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                           FontSize="14" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+                <Button Name="BtnPenWidthIncrease" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,5" Height="{Binding ElementName=BtnPen, Path=ActualHeight}" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnPenWidthIncrease_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                        Background="{Binding ElementName=BtnExit, Path=Background}">
+                    <!--<ui:SymbolIcon Symbol="Add"/>-->
+                    <Grid Margin="0,2,-5,0">
+                        <TextBlock Text="&lt;" FontFamily="Symbol" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Grid>
+                </Button>
+                <TextBlock Visibility="Visible" Text="{Binding Value, ElementName=InkWidthSlider, Mode=OneWay}"
+                           FontSize="14" HorizontalAlignment="Center" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"/>
+                <Button Name="BtnPenWidthDecrease" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,5,0,0" Height="{Binding ElementName=BtnPen, Path=ActualHeight}" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnPenWidthDecrease_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                        Background="{Binding ElementName=BtnExit, Path=Background}">
+                    <!--<ui:SymbolIcon Symbol="Remove"/>-->
+                    <Grid Margin="0,4,-5,0">
+                        <TextBlock Text="&gt;" FontFamily="Symbol" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Grid>
+                </Button>
+                <Button Name="BtnFingerDragMode" Content="单指&#x000A;拖动" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,25,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnFingerDragMode_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <Button Name="BtnSelect" Content="选择&#x000A;墨迹" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnSelect_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <Button Name="BtnPen" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnPen_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}">
+                    <ui:SymbolIcon Symbol="Edit"/>
+                </Button>
+                <Button Name="BtnErase" Content="橡皮" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnErase_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <Button Name="BtnDrawLine" Content="直线" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,25,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnDrawLine_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <Button Name="BtnDrawArrow" Content="箭头" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnDrawArrow_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <Button Name="BtnDrawRectangle" Content="矩形" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnDrawRectangle_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <Button Name="BtnDrawEllipse" Content="椭圆" Visibility="Visible" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,15" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnDrawEllipse_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <StackPanel IsVisibleChanged="StackPanel_IsVisibleChanged" Visibility="{Binding ElementName=StackPanelPPTButtons, Path=Visibility}">
+                    <StackPanel Visibility="{Binding ElementName=StackPanelPPTControls, Path=Visibility}">
+                        <Button Content="↑" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnPPTSlidesUp_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                        <Button Content="↓" FontFamily="Microsoft YaHei UI"
+                            Margin="0,10,0,15" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                            Click="BtnPPTSlidesDown_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                    </StackPanel>
+                </StackPanel>
+                <Button Content="清屏" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnClear_Click" MouseDoubleClick="BtnClear_MouseDoubleClick" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <Button x:Name="BtnUndo" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnUndo_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                        Background="{Binding ElementName=BtnExit, Path=Background}"
+                        IsEnabled="False" Visibility="Collapsed" IsEnabledChanged="Btn_IsEnabledChanged">
+                    <StackPanel Opacity="0.2">
+                        <ui:SymbolIcon Symbol="Undo"/>
+                        <TextBlock Text="撤销" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BtnRedo" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
+                        Click="BtnRedo_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
+                        Background="{Binding ElementName=BtnExit, Path=Background}"
+                        IsEnabled="False" Visibility="Collapsed" IsEnabledChanged="Btn_IsEnabledChanged">
+                    <StackPanel Opacity="0.2">
+                        <ui:SymbolIcon Symbol="Redo"/>
+                        <TextBlock Text="恢复" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BtnClearAndHideCanvas" Content="清屏&#x000A;&amp;&#x000A;隐藏" Visibility="Collapsed" FontFamily="Microsoft YaHei UI"
+                        Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}" Block.TextAlignment="Center"
+                        Click="BtnSelect_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
+                <!--<Grid Name="GridForLeftSideReservedSpace" Height="{Binding ElementName=StackPanelInfo, Path=ActualHeight}"/>-->
+                <Grid Name="GridForLeftSideReservedSpace" Height="0"/>
+            </StackPanel>
+        </Viewbox>
+
+        <Grid Name="GridForRecoverOldUI">
+            <Grid Visibility="{Binding ElementName=StackPanelPPTControls, Path=Visibility}">
+                <Viewbox Name="ViewboxPPTSidesControl" Visibility="{Binding ElementName=StackPanelPPTButtons, Path=Visibility}" Opacity="0.7" Margin="10" Height="50" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="5">
+                        <Border Width="36" MouseUp="GridPPTControlPrevious_MouseUp" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid Margin="6">
+                                <Image Name="ImagePPTControlPreviousPressed" Visibility="Collapsed" Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalPreviousSlideSelected}"/>
+                                <Image Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalPreviousSlideNormal}"/>
+                            </Grid>
+                        </Border>
+                        <Border x:Name="PptNavigationBtn" Width="36" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid MouseUp="PPTNavigationBtn_Click">
+                                <TextBlock Name="PptNavigationTextBlock" FontSize="10" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Center" VerticalAlignment="Center" Text="0/0" />
+                            </Grid>
+                        </Border>
+                        <Border Width="36" MouseUp="GridPPTControlNext_MouseUp" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid Margin="6">
+                                <Image Name="ImagePPTControlNextPressed" Visibility="Collapsed" Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalNextSlideSelected}"/>
+                                <Image Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalNextSlideNormal}"/>
+                            </Grid>
+                        </Border>
+                    </ui:SimpleStackPanel>
+                </Viewbox>
+                <Viewbox Visibility="{Binding ElementName=StackPanelPPTButtons, Path=Visibility}" Opacity="{Binding ElementName=ViewboxPPTSidesControl, Path=Opacity}" Margin="10" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="5">
+                        <Border Width="36" MouseUp="GridPPTControlPrevious_MouseUp" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid Margin="6">
+                                <Image Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalPreviousSlideNormal}"/>
+                            </Grid>
+                        </Border>
+                        <Border Width="36" Visibility="{Binding ElementName=PptNavigationBtn, Path=Visibility}" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid MouseUp="PPTNavigationBtn_Click">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding ElementName=PptNavigationTextBlock, Path=Foreground}" FontSize="{Binding ElementName=PptNavigationTextBlock, Path=FontSize}" Text="{Binding ElementName=PptNavigationTextBlock, Path=Text}" />
+                            </Grid>
+                        </Border>
+                        <Border Width="36" MouseUp="GridPPTControlNext_MouseUp" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                            <Grid Margin="6">
+                                <Image Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalNextSlideNormal}"/>
+                            </Grid>
+                        </Border>
+                    </ui:SimpleStackPanel>
+                </Viewbox>
+            </Grid>
+        </Grid>
+
+        <Viewbox Name="ViewboxFloatingBar" Opacity="1" Margin="400,20,-2000,-200" HorizontalAlignment="Left" Height="50" VerticalAlignment="Top">
+            <Viewbox.LayoutTransform>
+                <ScaleTransform x:Name="ViewboxFloatingBarScaleTransform" ScaleX="1" ScaleY="1"/>
+            </Viewbox.LayoutTransform>
+            <ui:SimpleStackPanel Orientation="Horizontal" Height="35">
+                <Border x:Name="EnableInMultiTouchModeBtn" Margin="0" Visibility="Visible" Width="66" Height="25"
+                        Background="{DynamicResource ToolBarBackground}" CornerRadius="2" MouseUp="EnableInMultiTouchMode_MouseUp" MouseDown="Border_MouseDown"
+                        BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                    <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock FontSize="10" Text="两指移动: "/>
+                        <TextBlock x:Name="isInMultiTouchMode_Text" FontSize="10" Text="关"/>
+                    </ui:SimpleStackPanel>
+                </Border>
+                <Border x:Name="BorderFloatingBarMoveControls" Margin="2,0" Width="25" Height="25" CornerRadius="50" Background="{DynamicResource ToolBarBackground}"
+                        BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}"
+                        MouseDown="SymbolIconEmoji_MouseDown" MouseUp="SymbolIconEmoji_MouseUp">
+                    <ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" Width="18">
+                        <Image Name="SymbolIconEmoji" Source="/Resources/Icons-png/移动.png" RenderOptions.BitmapScalingMode="HighQuality" Height="18"/>
+                    </ui:SimpleStackPanel>
+                </Border>
+                <Border Padding="2" Visibility="Visible" Height="35" Name="BorderFloatingBarMainControls" Background="{DynamicResource ToolBarBackground}"
+                        CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                    <ui:SimpleStackPanel Margin="0,0,2,0" Name="StackPanelFloatingBar" Orientation="Horizontal">
+
+                        <ui:SimpleStackPanel Name="Cursor_Icon" MouseDown="Border_MouseDown" MouseUp="CursorIcon_Click"
+                                             Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center" Width="30">
+                            <Image Source="/Resources/Icons-png/cursor.png" RenderOptions.BitmapScalingMode="HighQuality" Height="18" Width="30"/>
+                        </ui:SimpleStackPanel>
+                        <ui:SimpleStackPanel Name="Pen_Icon" MouseDown="Border_MouseDown" MouseUp="PenIcon_Click"
+                                             Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center" Width="30">
+                            <Image Source="/Resources/Icons-png/画笔.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="30"/>
+                        </ui:SimpleStackPanel>
+                        <ui:SimpleStackPanel Name="SymbolIconDelete" MouseDown="Border_MouseDown" MouseUp="SymbolIconDelete_MouseUp"
+                                             Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center" Width="30">
+                            <Image Source="/Resources/Icons-png/删除.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="30"/>
+                        </ui:SimpleStackPanel>
+                        <ui:SimpleStackPanel Name="StackPanelCanvasControls" Visibility="Visible" Orientation="Horizontal">
+                            <ui:SimpleStackPanel Width="0" Orientation="{Binding ElementName=StackPanelFloatingBar, Path=Orientation}">
+                                <Grid Margin="0,5,0,5" Width="0" RenderTransformOrigin="0.5,0.5">
+                                    <Border x:Name="PenPalette" Visibility="Visible" Background="white" Opacity="0.95"
+                                            BorderBrush="{DynamicResource ToolBarBorderBrush}" BorderThickness="1" CornerRadius="8"
+                                            Margin="-150,-200,-60,35">
+                                        <Viewbox>
+                                            <StackPanel Margin="15 20">
+                                                <ui:SimpleStackPanel Width="320">
+                                                    <Viewbox Width="320" Height="35" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <ui:SimpleStackPanel Orientation="Horizontal">
+                                                            <Label Content="笔锋设置：" Foreground="{DynamicResource ToolBarForeground}" FontSize="15" VerticalAlignment="Center"/>
+                                                            <ComboBox Name="ComboBoxPenStyle" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxPenStyle_SelectionChanged">
+                                                                <ComboBoxItem Content="模拟笔锋（根据墨迹尾部计算）" FontFamily="Microsoft YaHei UI"/>
+                                                                <ComboBoxItem Content="模拟笔锋（根据速度计算）" FontFamily="Microsoft YaHei UI"/>
+                                                                <ComboBoxItem Content="无笔锋"  FontFamily="Microsoft YaHei UI"/>
+                                                            </ComboBox>
+                                                        </ui:SimpleStackPanel>
+                                                    </Viewbox>
+                                                    <ui:SimpleStackPanel>
+                                                        <Viewbox Width="250" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                                            <ui:SimpleStackPanel Orientation="Horizontal">
+                                                                <Label Content="墨迹识别功能" Foreground="{DynamicResource ToolBarForeground}" FontSize="13" VerticalAlignment="Center"/>
+                                                                <Viewbox Margin="10,0,0,0" Height="25">
+                                                                    <ui:ToggleSwitch Foreground="{DynamicResource ToolBarForeground}" FontFamily="Microsoft YaHei UI" Width="70" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableInkToShape_Toggled" IsOn="{Binding ElementName=ToggleSwitchEnableInkToShape, Path=IsOn}"/>
+                                                                </Viewbox>
+                                                            </ui:SimpleStackPanel>
+                                                        </Viewbox>
+                                                    </ui:SimpleStackPanel>
+                                                    <!--<TextBlock FontSize="25">画笔颜色</TextBlock>-->
+                                                    <Controls:UniformGrid Rows="2" Height="160">
+                                                        <ui:SimpleStackPanel Height="55" Orientation="Horizontal" Width="280">
+                                                            <Controls:UniformGrid Columns="4" Width="280">
+                                                                <Border x:Name="BorderPenColorBlack" Background="Black" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorBlack_Click">
+                                                                    <Viewbox Name="ViewboxBtnColorBlackContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                                <Border x:Name="BorderPenColorRed" Background="red" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorRed_Click">
+                                                                    <Viewbox Name="ViewboxBtnColorRedContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                                <Border x:Name="BorderPenColorGreen" Background="#169141" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorGreen_Click">
+                                                                    <Viewbox Name="ViewboxBtnColorGreenContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                                <Border x:Name="BorderPenColorPurple" Background="#331EB5" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorPurple_Click">
+                                                                    <Viewbox x:Name="ViewboxBtnColorPurpleContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                            </Controls:UniformGrid>
+                                                        </ui:SimpleStackPanel>
+                                                        <ui:SimpleStackPanel Height="55" Orientation="Horizontal" Width="280">
+                                                            <Controls:UniformGrid Columns="4" Width="280">
+                                                                <Border x:Name="BorderPenColorPink" Background="#c72ec7" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorPink_Click">
+                                                                    <Viewbox x:Name="ViewboxBtnColorPinkContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="White"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                                <Border x:Name="BorderPenColorBlue" Background="#239AD6" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorBlue_Click">
+                                                                    <Viewbox x:Name="ViewboxBtnColorBlueContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="Black"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                                <Border x:Name="BorderPenColorYellow" Background="#F38B00" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorYellow_Click">
+                                                                    <Viewbox x:Name="ViewboxBtnColorYellowContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="Black"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                                <Border x:Name="BorderPenColorWhite" Background="White" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Width="55" MouseUp="BtnColorWhite_Click">
+                                                                    <Viewbox x:Name="ViewboxBtnColorWhiteContent" Visibility="Collapsed" Margin="6">
+                                                                        <ui:SymbolIcon Symbol="Accept" Foreground="Black"/>
+                                                                    </Viewbox>
+                                                                </Border>
+                                                            </Controls:UniformGrid>
+                                                        </ui:SimpleStackPanel>
+                                                    </Controls:UniformGrid>
+                                                </ui:SimpleStackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Slider x:Name="InkWidthSlider" ui:ControlHelper.Header="墨迹粗细"
+                                                        Minimum="1" Maximum="15"
+                                                        Width="276" FontFamily="Microsoft YaHei UI" 
+                                                        FontSize="20"
+                                                        Margin="0 5 0 0"
+                                                        IsSnapToTickEnabled="True" Value="5"
+                                                        TickFrequency="1" TickPlacement="Both"
+                                                        ValueChanged="InkWidthSlider_ValueChanged" Height="64"/>
+                                                    <TextBlock Text="{Binding Value, ElementName=InkWidthSlider, Mode=OneWay}"
+                                                               VerticalAlignment="Bottom" Margin="10,0,0,8"
+                                                               FontSize="14"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Viewbox>
+                                    </Border>
+                                </Grid>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Name="Eraser_Icon" MouseUp="EraserIcon_Click" MouseDown="Border_MouseDown"
+                                                 Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-png/outline-eraser.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="30"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Name="EraserByStrokes_Icon" MouseUp="EraserIconByStrokes_Click" MouseDown="Border_MouseDown"
+                                                 Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-png/eraser-line.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="28"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Name="SymbolIconSelect" MouseDown="Border_MouseDown" MouseUp="SymbolIconSelect_MouseUp"
+                                                 Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Margin="0,0,-2,0" Source="/Resources/Icons-png/selection.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="30"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel MouseDown="Border_MouseDown" MouseUp="ImageDrawShape_MouseUp"
+                                                 Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Margin="-2,-1,0,0" Source="/Resources/Icons-png/geometry.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="30"/>
+                            </ui:SimpleStackPanel>
+                            <!--// 图形 //-->
+                            <Grid Width="0">
+                                <Border x:Name="BorderDrawShape" Margin="-175,-130,-175,35" Visibility="Visible" Background="White" Opacity="0.95" BorderBrush="Black" BorderThickness="1" CornerRadius="8">
+                                    <Viewbox>
+                                        <ui:SimpleStackPanel Spacing="-8" Orientation="Vertical" Width="380">
+                                            <TextBlock FontSize="16" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left" Margin="10,8">
+                                                <Run Text="图形"/>
+                                                <Run Text="(四种直线支持长按保持选中)" FontSize="10"/>
+                                            </TextBlock>
+                                            <ui:SymbolIcon Margin="0,-20,8,15" Symbol="Pin" MouseDown="Border_MouseDown" MouseUp="SymbolIconPinBorderDrawShape_MouseUp" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Right"/>
+
+                                            <ui:SimpleStackPanel Margin="20,0,0,0" Orientation="Horizontal">
+                                                <ui:SimpleStackPanel Visibility="Collapsed" Margin="58,6,5,6" Width="54">
+                                                    <Label Margin="0,0,0,-2" Content="自动隐藏" Foreground="{DynamicResource ToolBarForeground}" FontSize="13" VerticalAlignment="Center"/>
+                                                    <Viewbox Height="25">
+                                                        <ui:ToggleSwitch Name="ToggleSwitchDrawShapeBorderAutoHide" Foreground="{DynamicResource ToolBarForeground}" FontFamily="Microsoft YaHei UI" Width="70" OnContent="开" OffContent="关" IsOn="True"/>
+                                                    </Viewbox>
+                                                </ui:SimpleStackPanel>
+                                            </ui:SimpleStackPanel>
+
+                                            <ui:SimpleStackPanel Height="48" Spacing="8" Orientation="Horizontal">
+                                                <Image Margin="10,10,0,13" MouseUp="BtnDrawCone_Click" Source="{DynamicResource DrawShapeImageSource.Cone}"/>
+                                                <Image Margin="0,10,0,12" MouseUp="BtnDrawCuboid_Click" Source="{DynamicResource DrawShapeImageSource.Cuboid}"/>
+
+                                                <Image Name="ImageDrawLine" Margin="0,12,0,12" MouseDown="Image_MouseDown" MouseUp="BtnDrawLine_Click" Source="{DynamicResource DrawShapeImageSource.Line}"/>
+                                                <Image Name="ImageDrawDashedLine" Margin="0,12,0,12" MouseDown="Image_MouseDown" MouseUp="BtnDrawDashedLine_Click" Source="{DynamicResource DrawShapeImageSource.DashedLine}"/>
+                                                <Image Name="ImageDrawArrow" Margin="0,12,0,12" MouseDown="Image_MouseDown" MouseUp="BtnDrawArrow_Click" Source="{DynamicResource DrawShapeImageSource.ArrowLine}"/>
+                                                <Image Name="ImageDrawParallelLine" Margin="0,11.5,0,11.5" MouseDown="Image_MouseDown" MouseUp="BtnDrawParallelLine_Click" Source="{DynamicResource DrawShapeImageSource.ParallelLine}"/>
+
+                                                <Image Margin="0,12,0,12" MouseUp="BtnDrawCoordinate1_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate1}"/>
+                                                <Image Margin="0,12" MouseUp="BtnDrawCoordinate2_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate2}"/>
+                                                <Image Margin="0,12" MouseUp="BtnDrawCoordinate3_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate3}"/>
+                                                <Image Margin="0,12" MouseUp="BtnDrawCoordinate4_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate4}"/>
+                                                <Image Margin="-2,11.5,16,11.5" MouseUp="BtnDrawCoordinate5_Click" Source="{DynamicResource DrawShapeImageSource.Coordinate5}"/>
+                                            </ui:SimpleStackPanel>
+
+                                            <ui:SimpleStackPanel Height="48" Spacing="8" Orientation="Horizontal">
+                                                <Image Margin="10,9,0,11" MouseUp="BtnDrawCylinder_Click" Source="{DynamicResource DrawShapeImageSource.Cylinder}"/>
+                                                <Image Margin="0,11,0,11" MouseUp="BtnDrawRectangle_Click" Source="{DynamicResource DrawShapeImageSource.Rectangle}"/>
+                                                <Image Margin="0,11,2,11" MouseUp="BtnDrawRectangleCenter_Click" Source="{DynamicResource DrawShapeImageSource.RectangleCenter}"/>
+                                                <Image Visibility="Collapsed" Margin="0,10" MouseUp="BtnDrawEllipse_Click" Source="{DynamicResource DrawShapeImageSource.Ellipse}"/>
+                                                <Image Margin="0,10" MouseUp="BtnDrawCircle_Click" Source="{DynamicResource DrawShapeImageSource.Circle}"/>
+                                                <Image Margin="0,10" MouseUp="BtnDrawDashedCircle_Click" Source="{DynamicResource DrawShapeImageSource.DashedCircle}"/>
+                                                <Image Margin="0,10" MouseUp="BtnDrawCenterEllipse_Click" Source="{DynamicResource DrawShapeImageSource.EllipseCenter}" Width="30"/>
+                                                <Image Margin="0,10" MouseUp="BtnDrawCenterEllipseWithFocalPoint_Click" Source="{DynamicResource DrawShapeImageSource.EllipseCenterWithFocalPoint}" Width="30"/>
+                                                <Image Margin="0,9,0,11" MouseUp="BtnDrawHyperbolaWithFocalPoint_Click" Width="26" Source="{DynamicResource DrawShapeImageSource.HyperbolaWithFocalPoint}"/>
+                                                <Image Margin="0,10,0,10" MouseUp="BtnDrawParabolaWithFocalPoint_Click" Width="26" Source="{DynamicResource DrawShapeImageSource.ParabolaWithFocalPoint}" RenderTransformOrigin="0.5,0.5">
+                                                    <Image.RenderTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform/>
+                                                            <SkewTransform/>
+                                                            <RotateTransform Angle="90"/>
+                                                            <TranslateTransform/>
+                                                        </TransformGroup>
+                                                    </Image.RenderTransform>
+                                                </Image>
+                                                <Image Margin="2.5,10,2,10" MouseUp="BtnDrawParabola1_Click" Width="26" Source="{DynamicResource DrawShapeImageSource.Parabola}"/>
+                                            </ui:SimpleStackPanel>
+                                        </ui:SimpleStackPanel>
+                                    </Viewbox>
+                                </Border>
+                            </Grid>
+                            <ui:SimpleStackPanel MouseDown="Border_MouseDown" MouseUp="SymbolIconUndo_MouseUp"
+                                                 Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center"
+                                                 IsEnabled="{Binding ElementName=BtnUndo, Path=IsEnabled}">
+                                <Image Source="/Resources/Icons-png/undo.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="25"
+                                       Opacity="{Binding ElementName=BtnUndo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel MouseDown="Border_MouseDown" MouseUp="SymbolIconRedo_MouseUp"
+                                                 Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center"
+                                                 IsEnabled="{Binding ElementName=BtnRedo, Path=IsEnabled}">
+                                <Image Source="/Resources/Icons-png/redo.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="25"
+                                       Opacity="{Binding ElementName=BtnRedo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel MouseDown="Border_MouseDown" MouseUp="CursorWithDelIcon_Click"
+                                                 Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-png/cursor-with-delete.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="25"/>
+                            </ui:SimpleStackPanel>
+                        </ui:SimpleStackPanel>
+
+                        <Border Margin="0,2" BorderBrush="Black" BorderThickness="1,0,0,0" MouseDown="Border_MouseDown" MouseUp="ImageBlackboard_MouseUp">
+                            <Image Margin="2,0,0,0" Source="/Resources/Icons-png/黑板.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="28"/>
+                        </Border>
+
+                        <ui:SimpleStackPanel MouseDown="Border_MouseDown" MouseUp="SymbolIconTools_MouseUp"
+                                             Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Image Source="/Resources/Icons-png/setting.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="26"/>
+                        </ui:SimpleStackPanel>
+                        <Grid Width="0">
+                            <Border Name="BorderTools" Margin="-100,-112,-60,35" CornerRadius="5" Background="White" Opacity="0.85" BorderThickness="1" BorderBrush="Black">
+                                <ui:SimpleStackPanel Margin="10">
+                                    <Label Content="保存 | 打开 | 播放 — 墨迹" FontSize="12" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
+                                        <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
+                                        <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
+                                        <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"
+                                               MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
+                                    </ui:SimpleStackPanel>
+                                    <Label Content="截图  设置  收纳" FontSize="14" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="30" Spacing="11.5">
+                                        <Image Source="/Resources/Icons-png/camera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="24" Width="24"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
+                                        <Image Source="/Resources/Icons-png/settings.png" RenderOptions.BitmapScalingMode="HighQuality" Height="24" Width="24"
+                                               MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
+                                        <Image x:Name="hiddenButtonInBorderTools" Source="/Resources/Icons-png/hidden.png" RenderOptions.BitmapScalingMode="HighQuality" Height="27" Width="27"
+                                               MouseDown="Border_MouseDown" MouseUp="FoldFloatingBar_MouseUp"/>
+                                    </ui:SimpleStackPanel>
+                                </ui:SimpleStackPanel>
+                            </Border>
+                        </Grid>
+                        <ui:SimpleStackPanel x:Name="Fold_Icon" MouseDown="Border_MouseDown" MouseUp="FoldFloatingBar_MouseUp"
+                                             Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Image Source="/Resources/Icons-png/hidden.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="23"/>
+                        </ui:SimpleStackPanel>
+                    </ui:SimpleStackPanel>
+                </Border>
+                <Border x:Name="BorderFloatingBarExitPPTBtn" Margin="2,0,0,0" Width="34" Height="35" MouseDown="Border_MouseDown" MouseUp="ImagePPTControlEnd_MouseUp"
+                        Background="{DynamicResource ToolBarBackground}" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}"
+                        Visibility="{Binding ElementName=BtnPPTSlideShowEnd, Path=Visibility}">
+                    <Grid>
+                        <Image Source="{DynamicResource ResourceKey=SeewoImageSource.PPTExitNormal}" Visibility="{Binding ElementName=BtnPPTSlideShowEnd, Path=Visibility}" Height="20" Width="30" />
+                    </Grid>
+                </Border>
+            </ui:SimpleStackPanel>
+        </Viewbox>
+        <Grid Name="GridForFloatingBarDraging" Background="#01000000" Visibility="Collapsed"
+              MouseMove="SymbolIconEmoji_MouseMove" MouseUp="SymbolIconEmoji_MouseUp"/>
+        <!-- 播放墨迹 -->
+        <InkCanvas Name="InkCanvasForInkReplay" MouseDown="InkCanvasForInkReplay_MouseDown" Visibility="Collapsed" EditingMode="None" Background="Transparent"/>
+        
+        <!--// 侧边栏 //-->
+        <Viewbox x:Name="LeftSidePanel" MouseUp="UnFoldFloatingBar_MouseUp" Visibility="Visible" Height="50" Width="30" Margin="-15,0,0,-1200" HorizontalAlignment="Left">
+            <ui:SimpleStackPanel>
+                <Border Background="LightGray" Opacity="0.4" CornerRadius="0,5,5,0" Height="50" Width="30">
+                    <Image Margin="0,0,-15,0" Source="/Resources/Icons-png/画笔 - upright.png" RenderOptions.BitmapScalingMode="HighQuality" Height="50" Width="30"/>
+                </Border>
+            </ui:SimpleStackPanel>
+        </Viewbox>
+        <Viewbox x:Name="RightSidePanel" MouseUp="UnFoldFloatingBar_MouseUp" Visibility="{Binding ElementName=LeftSidePanel, Path=Visibility}" Height="50" Width="30" Margin="0,0,-15,-1200" HorizontalAlignment="Right">
+            <ui:SimpleStackPanel>
+                <Border Background="LightGray" Opacity="0.4" CornerRadius="5,0,0,5" Height="50" Width="30">
+                    <Image Margin="-15,0,0,0" Source="/Resources/Icons-png/画笔 - upright.png" RenderOptions.BitmapScalingMode="HighQuality" Height="50" Width="30"/>
+                </Border>
+            </ui:SimpleStackPanel>
+        </Viewbox>
+    </Grid>
+</Window>
