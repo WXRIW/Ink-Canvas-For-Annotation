@@ -70,6 +70,10 @@ namespace Ink_Canvas
         public bool IsAutoEnterModeFinger { get; set; } = false;
 
         public bool IsColorfulViewboxFloatingBar { get; set; } = false;
+
+        public bool EnableViewboxFloatingBarScaleTransform { get; set; } = false;
+
+        public bool EnableViewboxBlackBoardScaleTransform { get; set; } = false;
     }
 
     public class Appearance
