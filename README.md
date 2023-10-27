@@ -1,23 +1,26 @@
 <div align="center">
 
-[![LOGO](Ink%20Canvas/Resources/Ink-Canvas-For-Annotation.png?raw=true "LOGO")](# "LOGO")
+[![LOGO](Ink-Canvas-For-Annotation/Resources/Ink-Canvas-For-Annotation.png?raw=true "LOGO")](# "LOGO")
 
 # Ink-Canvas-For-Annotation
 
+[![software screenshot](Ink-Canvas-For-Annotation%20screenshot.png)](# "software screenshot")
+
 </div>
 
-使用和分发本软件前，请您应当且务必知晓相关开源协议，本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成，本软件倾重心于批注功能，移除了包括但不限于抽奖、倒计时等功能，增添了包括但不限于隐藏到侧边栏等功能，对相关逻辑操作进行更改，降低设置复杂性的同时降低了部分个性化操作方式。对于墨迹功能的相关 issue 提出，应优先查阅 https://github.com/WXRIW/Ink-Canvas/issues 。
+使用和分发本软件前，请您应当且务必知晓相关开源协议，本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成，增添了包括但不限于隐藏到侧边栏等功能，更改了相关操作逻辑。对于墨迹功能的相关 issue 提出，应优先查阅 https://github.com/WXRIW/Ink-Canvas/issues 。
 
 本软件中的部分 Icon 引用自 https://www.iconfont.cn/ ，仅供使用者交流学习使用，不得将本软件用于任何商业用途。
 
 [直接下载](https://github.com/ChangSakura/Ink-Canvas-For-Annotation/releases/latest "Latest Releases")
-——该安装包使用 Inno Setup Compiler 打包，安装时包含 Settings.json 文件，默认启用特殊屏幕模式且触摸大小倍数为 0.15，并包含其他更改后的设置。
+——该安装包使用 Inno Setup Compiler 打包，安装时包含 Settings.json 文件，默认启用特殊屏幕模式且触摸大小倍数为 0.15 及其他更多设置以适配希沃六代机的使用。
 
+---
 以下内容引用自 https://github.com/WXRIW/Ink-Canvas/blob/master/README.md
 
 <div align="center">
 
-[![LOGO](Ink%20Canvas/Resources/InkCanvas.png?raw=true "LOGO")](# "LOGO")
+[![LOGO](Ink-Canvas-For-Annotation/Resources/InkCanvas.png?raw=true "LOGO")](# "LOGO")
 
 
 # Ink-Canvas
