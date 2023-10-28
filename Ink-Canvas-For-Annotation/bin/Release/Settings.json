@@ -20,7 +20,7 @@
     "isAutoKillEasiNote": false,
     "isSaveScreenshotsInDateFolders": false,
     "isAutoSaveStrokesAtScreenshot": false,
-    "isAutoSaveStrokesAtClear": false,
+    "isAutoSaveStrokesAtClear": true,
     "isAutoClearWhenExitingWritingMode": false,
     "minimumAutomationStrokeNumber": 0
   },
@@ -32,7 +32,7 @@
     "isShowCanvasAtNewSlideShow": false,
     "isNoClearStrokeOnSelectWhenInPowerPoint": true,
     "isShowStrokeOnSelectInPowerPoint": false,
-    "isAutoSaveStrokesInPowerPoint": false,
+    "isAutoSaveStrokesInPowerPoint": true,
     "isAutoSaveScreenShotInPowerPoint": true,
     "isNotifyPreviousPage": false,
     "isNotifyHiddenPage": false,

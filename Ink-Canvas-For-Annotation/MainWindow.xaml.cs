@@ -3565,7 +3565,7 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
             Settings.Automation.IsSaveScreenshotsInDateFolders = false;
             Settings.Automation.IsAutoSaveStrokesAtScreenshot = false;
-            Settings.Automation.IsAutoSaveStrokesAtClear = false;
+            Settings.Automation.IsAutoSaveStrokesAtClear = true;
             Settings.Automation.IsAutoClearWhenExitingWritingMode = false;
             Settings.Automation.MinimumAutomationStrokeNumber = 0;
 
@@ -3576,7 +3576,7 @@ namespace Ink_Canvas
             Settings.PowerPointSettings.IsShowCanvasAtNewSlideShow = false;
             Settings.PowerPointSettings.IsNoClearStrokeOnSelectWhenInPowerPoint = true;
             Settings.PowerPointSettings.IsShowStrokeOnSelectInPowerPoint = false;
-            Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = false;
+            Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = true;
             Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = true;
             Settings.PowerPointSettings.IsNotifyPreviousPage = false;
             Settings.PowerPointSettings.IsNotifyHiddenPage = false;
