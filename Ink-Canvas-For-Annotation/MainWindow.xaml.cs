@@ -888,6 +888,15 @@ namespace Ink_Canvas
 
                 ComboBoxHyperbolaAsymptoteOption.SelectedIndex = (int)Settings.Canvas.HyperbolaAsymptoteOption;
 
+                if (Settings.Canvas.AutoSwitchTwoFingerZoom)
+                {
+                    ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = false;
+                }
+
                 if (Settings.Canvas.IsShowCursor)
                 {
                     ToggleSwitchShowCursor.IsOn = true;
@@ -3223,10 +3232,10 @@ namespace Ink_Canvas
         }
         */
 
-        private void ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard_Toggled(object sender, RoutedEventArgs e)
+        private void ToggleSwitchAutoSwitchTwoFingerZoom_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-            Settings.Canvas.DisableTwoFingerZoomWhenQuitBlackboard = ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard.IsOn;
+            Settings.Canvas.AutoSwitchTwoFingerZoom = ToggleSwitchAutoSwitchTwoFingerZoom.IsOn;
 
             SaveSettingsToFile();
         }

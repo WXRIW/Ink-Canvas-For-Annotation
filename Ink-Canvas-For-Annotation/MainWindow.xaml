@@ -771,7 +771,7 @@
                                 </StackPanel>
                                 -->
                                 <TextBlock Text="#开启 自动开关两指缩放功能 后退出画板模式时自动关闭两指缩放功能，进入画板模式时自动开启两指缩放功能" TextWrapping="Wrap" Foreground="#666666"/>
-                                <ui:ToggleSwitch Name="ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard" Header="自动开关两指缩放功能" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoSwitchTwoFingerZoom" Header="自动开关两指缩放功能" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSwitchTwoFingerZoom_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchShowCursor" Header="显示画笔光标" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowCursor_Toggled"/>
                                 <TextBlock Text="画笔样式" FontFamily="Microsoft YaHei UI" FontSize="14"/>
                                 <!--
