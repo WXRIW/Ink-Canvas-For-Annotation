@@ -770,6 +770,8 @@
                                                FontSize="14"/>
                                 </StackPanel>
                                 -->
+                                <TextBlock Text="#开启 自动开关两指缩放功能 后退出画板模式时自动关闭两指缩放功能，进入画板模式时自动开启两指缩放功能" TextWrapping="Wrap" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard" Header="自动开关两指缩放功能" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchShowCursor" Header="显示画笔光标" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowCursor_Toggled"/>
                                 <TextBlock Text="画笔样式" FontFamily="Microsoft YaHei UI" FontSize="14"/>
                                 <!--
@@ -828,7 +830,7 @@
                                 <!--
                                 <ui:ToggleSwitch Header="显示“橡皮”按钮" IsOn="{Binding ElementName=ToggleSwitchShowButtonEraser, Path=IsOn}" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关"/>
                                 -->
-                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonPPTNavigation" Header="显示 PPT 浏览切页按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonPPTNavigation_OnToggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowButtonPPTNavigation" Header="显示 PPT 浏览切页按钮（页码按钮）" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonPPTNavigation_OnToggled"/>
                                 <!--
                                 <TextBlock Text="颜色主题" FontFamily="Microsoft YaHei UI" FontSize="14"/>
                                 <ComboBox Name="ComboBoxTheme" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxTheme_SelectionChanged">
@@ -850,8 +852,9 @@
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerGestureInPresentationMode" Header="允许幻灯片模式下的双指手势" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerGestureInPresentationMode_Toggled"/>
                                 <TextBlock Text="允许开启画板时使用手指手势进行幻灯片翻页（启用后，在幻灯片放映模式下，当画板无墨迹时，使用手指（笔尖或手掌无法识别）左右滑动即可控制幻灯片翻页。）" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableFingerGestureSlideShowControl" Header="允许使用手指手势进行幻灯片翻页" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="True" Toggled="ToggleSwitchEnableFingerGestureSlideShowControl_Toggled"/>
+                                <TextBlock Text="#开启 自动幻灯片截屏 后将会在幻灯片有墨迹时翻页自动截屏" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoSaveScreenShotInPowerPoint" Header="自动幻灯片截屏" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled"/>
-                                <TextBlock Text="开启后将在结束幻灯片放映时自动将已有墨迹保存至此电脑，并在下次打开时自动加载（文件名和幻灯片页数都要相同）" TextWrapping="Wrap" Foreground="#666666"/>
+                                <TextBlock Text="#开启 自动保存幻灯片墨迹 后将在结束幻灯片放映时自动将保存已有墨迹，并在下次打开时自动加载（文件名和幻灯片页数都要相同）" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoSaveStrokesInPowerPoint" Header="自动保存幻灯片墨迹" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchNotifyPreviousPage" Header="记忆并提示上次播放位置" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNotifyPreviousPage_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchNotifyHiddenPage" Header="提示隐藏幻灯片" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNotifyHiddenPage_Toggled"/>

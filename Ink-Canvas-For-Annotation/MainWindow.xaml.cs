@@ -3223,6 +3223,14 @@ namespace Ink_Canvas
         }
         */
 
+        private void ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Canvas.DisableTwoFingerZoomWhenQuitBlackboard = ToggleSwitchDisableTwoFingerZoomWhenQuitBlackboard.IsOn;
+
+            SaveSettingsToFile();
+        }
+
         private void ToggleSwitchShowCursor_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -7442,6 +7450,11 @@ namespace Ink_Canvas
             if (currentMode == 0)
             {
                 //进入黑板
+                if (!Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
+                {
+                    EnableTwoFingerZoomBtn_MouseUp(null, null);
+                }
+
                 Topmost = false;
 
                 if (Not_Enter_Blackboard_fir_Mouse_Click)
@@ -7485,6 +7498,11 @@ namespace Ink_Canvas
             else
             {
                 //关闭黑板
+                if (Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
+                {
+                    EnableTwoFingerZoomBtn_MouseUp(null, null);
+                }
+
 
                 if (/*Settings.Automation.IsAutoSaveStrokesAtClear && */inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
                 {

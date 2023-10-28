@@ -39,6 +39,7 @@
     "isSupportWPS": true
   },
   "canvas": {
+    "DisableTwoFingerZoomWhenQuitBlackboard": true,
     "inkWidth": 2.5,
     "isShowCursor": false,
     "inkStyle": 0,

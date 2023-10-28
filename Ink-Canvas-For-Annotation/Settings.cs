@@ -24,6 +24,8 @@ namespace Ink_Canvas
 
     public class Canvas
     {
+        [JsonProperty("DisableTwoFingerZoomWhenQuitBlackboard")]
+        public bool DisableTwoFingerZoomWhenQuitBlackboard { get; set; } = true;
         [JsonProperty("inkWidth")]
         public double InkWidth { get; set; } = 2.5;
         [JsonProperty("isShowCursor")]
