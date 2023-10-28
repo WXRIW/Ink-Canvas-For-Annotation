@@ -131,7 +131,7 @@ namespace Ink_Canvas
                     if (processes.Length > 0)
                     {
                         arg += " /IM SeewoIwbAssistant.exe" +
-                            " /IM Sia.Guard";
+                            " /IM Sia.Guard.exe";
                     }
                 }
                 if (Settings.Automation.IsAutoKillEasiNote)
@@ -926,7 +926,7 @@ namespace Ink_Canvas
                 {
                     ToggleSwitchAutoKillEasiNote.IsOn = false;
                 }
-
+                /*
                 if (Settings.Automation.IsAutoClearWhenExitingWritingMode)
                 {
                     ToggleSwitchClearExitingWritingMode.IsOn = true;
@@ -935,7 +935,7 @@ namespace Ink_Canvas
                 {
                     ToggleSwitchClearExitingWritingMode.IsOn = false;
                 }
-
+                */
 
                 if (Settings.Automation.IsAutoSaveStrokesAtClear)
                 {
@@ -3268,13 +3268,14 @@ namespace Ink_Canvas
             SaveSettingsToFile();
         }
 
-
+        /*
         private void ToggleSwitchExitingWritingMode_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
             Settings.Automation.IsAutoClearWhenExitingWritingMode = ToggleSwitchClearExitingWritingMode.IsOn;
             SaveSettingsToFile();
         }
+        */
 
         private void ToggleSwitchHideStrokeWhenSelecting_Toggled(object sender, RoutedEventArgs e)
         {
@@ -6055,10 +6056,11 @@ namespace Ink_Canvas
 
         private void BtnWhiteBoardSwitchNext_Click(object sender, EventArgs e)
         {
-            if (Settings.Automation.IsAutoSaveStrokesAtClear && inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
+            if (/*Settings.Automation.IsAutoSaveStrokesAtClear && */inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
             {
                 SaveScreenShot(true);
-                if (Settings.Automation.IsAutoSaveStrokesAtScreenshot) SaveInkCanvasStrokes(false);
+                SaveInkCanvasStrokes(false, false);
+                //if (Settings.Automation.IsAutoSaveStrokesAtScreenshot) SaveInkCanvasStrokes(false, false);
             }
             if (CurrentWhiteboardIndex >= WhiteboardTotalCount)
             {
@@ -7411,6 +7413,13 @@ namespace Ink_Canvas
             else
             {
                 //关闭黑板
+
+                if (/*Settings.Automation.IsAutoSaveStrokesAtClear && */inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
+                {
+                    SaveScreenShot(true);
+                    SaveInkCanvasStrokes(false, false); // 自动保存当前页墨迹
+                }
+
                 Topmost = true;
 
                 if (isInMultiTouchMode) BorderMultiTouchMode_MouseUp(null, null);
@@ -7740,21 +7749,63 @@ namespace Ink_Canvas
 
             GridNotifications.Visibility = Visibility.Collapsed;
 
-            SaveInkCanvasStrokes();
+            SaveInkCanvasStrokes(true, true);
         }
 
-        private void SaveInkCanvasStrokes(bool newNotice = true)
+        private void SaveInkCanvasStrokes(bool newNotice = true, bool saveByUser = false)
         {
             try
             {
                 string savePath;
-                try
+                if (saveByUser) // 用户手动保存
                 {
-                    savePath = @"D:\Ink Canvas\Auto Saved - BlackBoard Strokes";
+                    if (currentMode == 0) // 非黑板模式下
+                    {
+                        try
+                        {
+                            savePath = @"D:\Ink Canvas\User Saved - Desktop Annotation Strokes";
+                        }
+                        catch (IOException) // 用户电脑无 D 盘等情况
+                        {
+                            savePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + @"\Ink Canvas\User Saved - Desktop Annotation Strokes";
+                        }
+                    }
+                    else // 黑板模式下
+                    {
+                        try
+                        {
+                            savePath = @"D:\Ink Canvas\User Saved - BlackBoard Strokes";
+                        }
+                        catch (IOException)
+                        {
+                            savePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + @"\Ink Canvas\User Saved - BlackBoard Strokes";
+                        }
+                    }
                 }
-                catch (IOException)
+                else // 程序自动保存
                 {
-                    savePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + @"\Ink Canvas\Auto Saved - BlackBoard Strokes";
+                    if (currentMode == 0) // 非黑板模式下
+                    {
+                        try
+                        {
+                            savePath = @"D:\Ink Canvas\Auto Saved - Desktop Annotation Strokes";
+                        }
+                        catch (IOException)
+                        {
+                            savePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + @"\Ink Canvas\Auto Saved - Desktop Annotation Strokes";
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            savePath = @"D:\Ink Canvas\Auto Saved - BlackBoard Strokes";
+                        }
+                        catch (IOException)
+                        {
+                            savePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + @"\Ink Canvas\Auto Saved - BlackBoard Strokes";
+                        }
+                    }
                 }
 
                 if (!Directory.Exists(savePath))
@@ -7762,16 +7813,26 @@ namespace Ink_Canvas
                     Directory.CreateDirectory(savePath);
                 }
 
-                FileStream fs = new FileStream(savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".icstk", FileMode.Create);
+                string savePathWithName;
+                if (currentMode != 0) // 黑板模式下
+                {
+                    savePathWithName = savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + " Page-" + CurrentWhiteboardIndex + " StrokesCount-" + inkCanvas.Strokes.Count + ".icstk";
+                }
+                else
+                {
+                    savePathWithName = savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".icstk";
+                }
+
+                FileStream fs = new FileStream(savePathWithName, FileMode.Create);
                 inkCanvas.Strokes.Save(fs);
 
                 if (newNotice)
                 {
-                    ShowNotification("墨迹成功保存至 " + savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".icstk");
+                    ShowNotification("墨迹成功保存至 " + savePathWithName);
                 }
                 else
                 {
-                    AppendNotification("墨迹成功保存至 " + savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".icstk");
+                    AppendNotification("墨迹成功保存至 " + savePathWithName);
                 }
             }
             catch
@@ -7787,8 +7848,14 @@ namespace Ink_Canvas
             AnimationHelper.HideWithSlideAndFade(BoardBorderTools);
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
+
+
             string defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\User Saved";
-            if (Directory.Exists(defaultFolderPath))
+            if (Directory.Exists(@"D:\Ink Canvas"))
+            {
+                openFileDialog.InitialDirectory = @"D:\Ink Canvas";
+            }
+            else if (Directory.Exists(defaultFolderPath))
             {
                 openFileDialog.InitialDirectory = defaultFolderPath;
             }

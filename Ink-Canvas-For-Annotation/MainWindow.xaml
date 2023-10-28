@@ -20,7 +20,7 @@
         Closing="Window_Closing"
         Closed="Window_Closed"
         PreviewKeyDown="Main_Grid_PreviewKeyDown"
-        Height="4000" Width="1440"
+        Height="4300" Width="1440"
         FontFamily="Microsoft YaHei UI"
         MouseWheel="Window_MouseWheel"
         Foreground="Black"
@@ -722,7 +722,7 @@
         </Grid>
         <Border Name="BorderSettings" Background="White" BorderBrush="Black"
                 BorderThickness="1" CornerRadius="5" ui:ThemeManager.RequestedTheme="Light"
-                Width="400" HorizontalAlignment="Center" Margin="0,200,0,200" Visibility="Visible">
+                Width="425" HorizontalAlignment="Center" Margin="0,200,0,200" Visibility="Visible">
             <Grid>
                 <ScrollViewer Margin="0,60,0,50" VerticalScrollBarVisibility="Auto"
                               PanningMode="VerticalOnly" ui:ThemeManager.RequestedTheme="Light"
@@ -917,18 +917,21 @@
                         </GroupBox>
                         <GroupBox Header="自动">
                             <ui:SimpleStackPanel Spacing="12">
+                                <TextBlock Text="*请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillPptService" Header="自动查杀“PPT 小工具”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillPptService_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillEasiNote" Header="自动查杀“希沃白板 5”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillEasiNote_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchSaveScreenshotsInDateFolders" Header="截图分日期文件夹保存" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchSaveScreenshotsInDateFolders_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoSaveStrokesAtScreenshot" Header="截图时自动保存墨迹" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveStrokesAtScreenshot_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoSaveStrokesAtClear" Header="清屏时自动截图" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveStrokesAtClear_Toggled"/>
+                                <!--
                                 <ui:ToggleSwitch Name="ToggleSwitchClearExitingWritingMode" Header="切换到鼠标模式后自动清屏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchExitingWritingMode_Toggled"/>
+                                -->
                                 <StackPanel Orientation="Horizontal">
                                     <Slider x:Name="SideControlMinimumAutomationSlider"
                                             HorizontalAlignment="Left"
                                             Minimum="0" Maximum="10"
-                                            Width="320" FontFamily="Microsoft YaHei UI" 
-                                            ui:ControlHelper.Header="自动截图最小墨迹量"
+                                            Width="335" FontFamily="Microsoft YaHei UI" 
+                                            ui:ControlHelper.Header="自动截图最小墨迹量(数值为 0 即有墨迹时会自动截图)"
                                             IsSnapToTickEnabled="True" Value="0"
                                             TickFrequency="1" TickPlacement="Both"
                                             ValueChanged="SideControlMinimumAutomationSlider_ValueChanged"/>
@@ -941,27 +944,88 @@
                         <GroupBox Header="关于">
                             <ui:SimpleStackPanel Spacing="12">
                                 <TextBlock Text="*使用和分发本软件前，请您应当且务必知晓相关开源协议，本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成。" TextWrapping="Wrap" Foreground="#666666"/>
-                                <TextBlock FontSize="14">
+                                <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock Text="开源协议: " FontSize="15" FontWeight="Bold"/>
+                                    <Image Source="/Resources/Icons-png/balance.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0" Width="20" Height="20"/>
+                                    <TextBlock Text="GNU General Public License v3.0" FontSize="15"/>
+                                </WrapPanel>
+                                <TextBlock FontSize="15">
                                     <Bold>本项目地址:</Bold>
                                     <Hyperlink Click="HyperlinkSourceToPresentRepository_Click">
-                                        <TextBlock Text="https://github.com/ChangSakura/Ink-Canvas-For-Annotation" TextWrapping="Wrap"/>
+                                        <TextBlock Width="250" Text="https://github.com/ChangSakura/Ink-Canvas-For-Annotation" TextWrapping="Wrap"/>
                                     </Hyperlink>
                                 </TextBlock>
-                                <TextBlock FontSize="14">
+                                <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock Text="本项目开发者: " FontSize="15" FontWeight="Bold"/>
+                                    <Image Source="/Resources/DeveloperAvatars/ChangSakura.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20"/>
+                                    <TextBlock Text="CJ Wu (ChangSakura)" FontSize="15"/>
+                                </WrapPanel>
+                                <TextBlock FontSize="15">
                                     <Bold>原项目地址:</Bold>
                                     <Hyperlink Click="HyperlinkSourceToOringinalRepository_Click">
                                         <TextBlock Text="https://github.com/WXRIW/Ink-Canvas"></TextBlock>
                                     </Hyperlink>
                                 </TextBlock>
-                                <TextBlock FontSize="14">
-                                     <Bold>开发者:</Bold> XY Wang (WXRIW)
-                                </TextBlock>
-                                <TextBlock FontSize="14" TextWrapping="Wrap">
-                                     <Bold>贡献者:</Bold> Kengwang, Raspberry Kan, jiajiaxd, CN-Ironegg, Clover Yan, STBBRD
-                                </TextBlock>
-                                <TextBlock FontSize="14">
-                                     <Bold>开源协议:</Bold> GNU General Public License v3.0
-                                </TextBlock>
+                                <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock Text="原项目开发者: " FontSize="15" FontWeight="Bold"/>
+                                    <Image Source="/Resources/DeveloperAvatars/WXRIW.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20">
+                                        <Image.Clip>
+                                            <EllipseGeometry Center="10,10" RadiusX="10" RadiusY="10" />
+                                        </Image.Clip>
+                                    </Image>
+                                    <TextBlock Text=" XY Wang (WXRIW)" FontSize="15"/>
+                                </WrapPanel>
+                                <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock Text="原项目贡献者: " FontSize="15" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <Image Source="/Resources/DeveloperAvatars/Kengwang.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0,3,0" Width="20" Height="20">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="10,10" RadiusX="10" RadiusY="10" />
+                                            </Image.Clip>
+                                        </Image>
+                                        <TextBlock Text="Kengwang" FontSize="15"/>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <Image Source="/Resources/DeveloperAvatars/Raspberry-Monster.jpg" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0,3,0" Width="20" Height="20">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="10,10" RadiusX="10" RadiusY="10" />
+                                            </Image.Clip>
+                                        </Image>
+                                        <TextBlock Text="Raspberry Kan " FontSize="15"/>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <Image Source="/Resources/DeveloperAvatars/jiajiaxd.jpg" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0,3,0" Width="20" Height="20">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="10,10" RadiusX="10" RadiusY="10" />
+                                            </Image.Clip>
+                                        </Image>
+                                        <TextBlock Text="jiajiaxd" FontSize="15"/>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <Image Source="/Resources/DeveloperAvatars/CN-Ironegg.jpg" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0,3,0" Width="20" Height="20">
+                                            <Image.Clip>
+                                            <EllipseGeometry Center="10,10" RadiusX="10" RadiusY="10" />
+                                            </Image.Clip>
+                                        </Image>
+                                        <TextBlock Text="CN-Ironegg" FontSize="15"/>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <Image Source="/Resources/DeveloperAvatars/clover-yan.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0,3,0" Width="20" Height="20">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="10,10" RadiusX="10" RadiusY="10" />
+                                            </Image.Clip>
+                                        </Image>
+                                        <TextBlock Text="Clover Yan" FontSize="15"/>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <Image Source="/Resources/DeveloperAvatars/STBBRD.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0,3,0" Width="20" Height="20">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="10,10" RadiusX="10" RadiusY="10" />
+                                            </Image.Clip>
+                                        </Image>
+                                        <TextBlock Text="STBBRD" FontSize="15"/>
+                                    </ui:SimpleStackPanel>
+                                </WrapPanel>
                             </ui:SimpleStackPanel>
                         </GroupBox>
                     </StackPanel>

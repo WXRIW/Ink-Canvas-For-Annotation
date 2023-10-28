@@ -420,5 +420,18 @@
   <ItemGroup>
     <Resource Include="Ink Canvas Annotation.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DeveloperAvatars\ChangSakura.png" />
+    <Resource Include="Resources\DeveloperAvatars\clover-yan.png" />
+    <Resource Include="Resources\DeveloperAvatars\CN-Ironegg.jpg" />
+    <Resource Include="Resources\DeveloperAvatars\jiajiaxd.jpg" />
+    <Resource Include="Resources\DeveloperAvatars\kengwang.png" />
+    <Resource Include="Resources\DeveloperAvatars\Raspberry-Monster.jpg" />
+    <Resource Include="Resources\DeveloperAvatars\STBBRD.png" />
+    <Resource Include="Resources\DeveloperAvatars\WXRIW.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-png\balance.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
