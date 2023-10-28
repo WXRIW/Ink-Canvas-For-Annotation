@@ -169,6 +169,7 @@
     <Compile Include="Helpers\InkRecognizeHelper.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\MultiTouchInput.cs" />
+    <Compile Include="Helpers\SimulateMouseClick.cs" />
     <Compile Include="Helpers\StoreHelper.cs" />
     <Compile Include="Helpers\TimeMachine.cs" />
     <Compile Include="Helpers\Converters.cs" />
@@ -371,10 +372,9 @@
     <None Include="Resources\TimerDownNotice.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons-png\black_white.png" />
+    <Resource Include="Resources\Icons-png\whiteBlack.png" />
     <Resource Include="Resources\Icons-png\camera.png" />
     <Resource Include="Resources\Icons-png\check-box-background.png" />
-    <Resource Include="Resources\Icons-png\close.png" />
     <Resource Include="Resources\Icons-png\code.png" />
     <Resource Include="Resources\Icons-png\cursor-with-delete.png" />
     <Resource Include="Resources\Icons-png\cursor.png" />
@@ -384,25 +384,23 @@
     <Resource Include="Resources\Icons-png\geometry.png" />
     <Resource Include="Resources\Icons-png\hidden.png" />
     <Resource Include="Resources\Icons-png\mode.png" />
-    <Resource Include="Resources\Icons-png\move.png" />
     <Resource Include="Resources\Icons-png\next.png" />
-    <Resource Include="Resources\Icons-png\outline-eraser.png" />
+    <Resource Include="Resources\Icons-png\eraser-outline.png" />
     <Resource Include="Resources\Icons-png\playCircle.png" />
     <Resource Include="Resources\Icons-png\prev.png" />
     <Resource Include="Resources\Icons-png\redo.png" />
     <Resource Include="Resources\Icons-png\restart.png" />
-    <Resource Include="Resources\Icons-png\screen_shot.png" />
     <Resource Include="Resources\Icons-png\selection.png" />
     <Resource Include="Resources\Icons-png\setting.png" />
     <Resource Include="Resources\Icons-png\settings.png" />
     <Resource Include="Resources\Icons-png\shutdown.png" />
     <Resource Include="Resources\Icons-png\undo.png" />
-    <Resource Include="Resources\Icons-png\删除.png" />
-    <Resource Include="Resources\Icons-png\最小化.png" />
-    <Resource Include="Resources\Icons-png\画笔 - upright.png" />
-    <Resource Include="Resources\Icons-png\画笔.png" />
-    <Resource Include="Resources\Icons-png\移动.png" />
-    <Resource Include="Resources\Icons-png\黑板.png" />
+    <Resource Include="Resources\Icons-png\delete.png" />
+    <Resource Include="Resources\Icons-png\minimize.png" />
+    <Resource Include="Resources\Icons-png\penUpright.png" />
+    <Resource Include="Resources\Icons-png\pen.png" />
+    <Resource Include="Resources\Icons-png\move.png" />
+    <Resource Include="Resources\Icons-png\blackBoard.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons-png\add.png" />
@@ -432,6 +430,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons-png\balance.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-png\arrow-down-bold.png" />
+    <Resource Include="Resources\Icons-png\arrow-up-bold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-png\down.png" />
+    <Resource Include="Resources\Icons-png\up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

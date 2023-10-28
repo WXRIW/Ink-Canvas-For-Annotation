@@ -69,11 +69,11 @@ namespace Ink_Canvas
         public bool IsAutoHideCanvas { get; set; } = true;
         [JsonProperty("isAutoEnterModeFinger")]
         public bool IsAutoEnterModeFinger { get; set; } = false;
-        [JsonProperty("IsColorfulViewboxFloatingBar")]
+        [JsonProperty("isColorfulViewboxFloatingBar")]
         public bool IsColorfulViewboxFloatingBar { get; set; } = false;
-        [JsonProperty("EnableViewboxFloatingBarScaleTransform")]
+        [JsonProperty("enableViewboxFloatingBarScaleTransform")]
         public bool EnableViewboxFloatingBarScaleTransform { get; set; } = false;
-        [JsonProperty("EnableViewboxBlackBoardScaleTransform")]
+        [JsonProperty("enableViewboxBlackBoardScaleTransform")]
         public bool EnableViewboxBlackBoardScaleTransform { get; set; } = false;
     }
 
@@ -99,6 +99,10 @@ namespace Ink_Canvas
     {
         [JsonProperty("isShowPPTNavigation")]
         public bool IsShowPPTNavigation { get; set; } = true;
+        [JsonProperty("isShowBottomPPTNavigationPanel")]
+        public bool IsShowBottomPPTNavigationPanel { get; set; } = true;
+        [JsonProperty("isShowSidePPTNavigationPanel")]
+        public bool IsShowSidePPTNavigationPanel { get; set; } = true;
         [JsonProperty("powerPointSupport")]
         public bool PowerPointSupport { get; set; } = true;
         [JsonProperty("isShowCanvasAtNewSlideShow")]

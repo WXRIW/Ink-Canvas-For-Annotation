@@ -2,7 +2,7 @@
   "advanced": {
     "isSpecialScreen": true,
     "isQuadIR": false,
-    "touchMultiplier": 0.15000000000000002,
+    "touchMultiplier": 0.15,
     "eraserBindTouchMultiplier": true,
     "isLogEnabled": true
   },
@@ -20,18 +20,20 @@
     "isAutoKillEasiNote": false,
     "isSaveScreenshotsInDateFolders": false,
     "isAutoSaveStrokesAtScreenshot": false,
-    "isAutoSaveStrokesAtClear": true,
+    "isAutoSaveStrokesAtClear": false,
     "isAutoClearWhenExitingWritingMode": false,
     "minimumAutomationStrokeNumber": 0
   },
   "behavior": {
     "isShowPPTNavigation": true,
+    "isShowBottomPPTNavigationPanel": false,
+    "isShowSidePPTNavigationPanel": true,
     "powerPointSupport": true,
     "isShowCanvasAtNewSlideShow": false,
     "isNoClearStrokeOnSelectWhenInPowerPoint": true,
     "isShowStrokeOnSelectInPowerPoint": false,
-    "isAutoSaveStrokesInPowerPoint": true,
-    "isAutoSaveScreenShotInPowerPoint": false,
+    "isAutoSaveStrokesInPowerPoint": false,
+    "isAutoSaveScreenShotInPowerPoint": true,
     "isNotifyPreviousPage": false,
     "isNotifyHiddenPage": false,
     "isEnableTwoFingerGestureInPresentationMode": false,
@@ -39,7 +41,7 @@
     "isSupportWPS": true
   },
   "canvas": {
-    "DisableTwoFingerZoomWhenQuitBlackboard": true,
+    "AutoSwitchTwoFingerZoom": true,
     "inkWidth": 2.5,
     "isShowCursor": false,
     "inkStyle": 0,
@@ -60,8 +62,8 @@
   "startup": {
     "isAutoHideCanvas": true,
     "isAutoEnterModeFinger": false,
-    "IsColorfulViewboxFloatingBar": false,
-    "EnableViewboxFloatingBarScaleTransform": false,
-    "EnableViewboxBlackBoardScaleTransform": false
+    "isColorfulViewboxFloatingBar": false,
+    "enableViewboxFloatingBarScaleTransform": false,
+    "enableViewboxBlackBoardScaleTransform": false
   }
 }

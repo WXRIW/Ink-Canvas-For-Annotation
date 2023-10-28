@@ -55,6 +55,8 @@ namespace Ink_Canvas
             BorderTools.Visibility = Visibility.Collapsed;
             BorderSettings.Visibility = Visibility.Collapsed;
             StackPanelToolButtons.Visibility = Visibility.Collapsed;
+            LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+
             CollapseBorderDrawShape();
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
@@ -664,6 +666,10 @@ namespace Ink_Canvas
                 }
                 catch { }
             }
+            else
+            {
+                BtnResetToSuggestion_Click(null, null);
+            }
 
             if (Settings.Startup.IsAutoEnterModeFinger)
             {
@@ -714,6 +720,8 @@ namespace Ink_Canvas
                 ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn = true;
             }
 
+            CursorIcon_Click(null, null);
+            /*
             BtnHideInkCanvas_Click(BtnHideInkCanvas, null);/*
             if (Settings.Startup.IsAutoHideCanvas)
             {
@@ -756,8 +764,10 @@ namespace Ink_Canvas
             */
             PptNavigationBtn.Visibility =
                 Settings.PowerPointSettings.IsShowPPTNavigation ? Visibility.Visible : Visibility.Collapsed;
-            ToggleSwitchShowButtonPPTNavigation.IsOn = Settings.PowerPointSettings.IsShowPPTNavigation;
 
+            ToggleSwitchShowButtonPPTNavigation.IsOn = Settings.PowerPointSettings.IsShowPPTNavigation;
+            ToggleSwitchShowBottomPPTNavigationPanel.IsOn = Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel;
+            ToggleSwitchShowSidePPTNavigationPanel.IsOn = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel;
             /*
             ComboBoxTheme.SelectedIndex = Settings.Appearance.Theme;
             if (Settings.Appearance.IsShowHideControlButton)
@@ -1049,7 +1059,7 @@ namespace Ink_Canvas
                 {
                     ToggleSwitchHideStrokeWhenSelecting.IsOn = false;
                 }
-
+                /*
                 if (Settings.Canvas.UsingWhiteboard)
                 {
                     ToggleSwitchUsingWhiteboard.IsOn = true;
@@ -1058,6 +1068,7 @@ namespace Ink_Canvas
                 {
                     ToggleSwitchUsingWhiteboard.IsOn = false;
                 }
+                */
                 if (Settings.Canvas.UsingWhiteboard)
                 {
                     BtnSwitchTheme.Content = "深色";
@@ -2253,6 +2264,7 @@ namespace Ink_Canvas
         public static Microsoft.Office.Interop.PowerPoint.Slides slides = null;
         public static Microsoft.Office.Interop.PowerPoint.Slide slide = null;
         public static int slidescount = 0;
+        
         private void BtnCheckPPT_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2293,9 +2305,12 @@ namespace Ink_Canvas
             {
                 //BtnCheckPPT.Visibility = Visibility.Visible;
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
+                BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
+                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
                 MessageBox.Show("未找到幻灯片");
             }
         }
+        
         private void ToggleSwitchSupportWPS_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -2611,11 +2626,29 @@ namespace Ink_Canvas
                 //pointPPT = new Point(-1, -1);
 
                 StackPanelPPTControls.Visibility = Visibility.Visible;
+
+                if (Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel)
+                {
+                    BottomViewboxPPTSidesControl.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
+                }
+                if (Settings.PowerPointSettings.IsShowSidePPTNavigationPanel)
+                {
+                    LeftSidePanelForPPTNavigation.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+                }
+
                 BtnPPTSlideShow.Visibility = Visibility.Collapsed;
                 BtnPPTSlideShowEnd.Visibility = Visibility.Visible;
                 ViewBoxStackPanelMain.Margin = new Thickness(10, 10, 10, 10);
 
-                if (isColorfulViewboxFloatingBar) // 2023.10.28 looking
+                if (isColorfulViewboxFloatingBar)
                 {
                     ViewboxFloatingBar.Opacity = 0.95;
                 }
@@ -2781,6 +2814,9 @@ namespace Ink_Canvas
                 BtnPPTSlideShow.Visibility = Visibility.Visible;
                 BtnPPTSlideShowEnd.Visibility = Visibility.Collapsed;
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
+                BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
+                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+
                 ViewBoxStackPanelMain.Margin = new Thickness(10, 10, 10, 55);
 
                 if (currentMode != 0)
@@ -2826,7 +2862,7 @@ namespace Ink_Canvas
                 */
                 ViewboxFloatingBarMarginAnimation(100);
 
-                if (isColorfulViewboxFloatingBar) // 2023.10.28 looking
+                if (isColorfulViewboxFloatingBar)
                 {
                     ViewboxFloatingBar.Opacity = 0.95;
                 }
@@ -2905,6 +2941,8 @@ namespace Ink_Canvas
             {
                 //BtnCheckPPT.Visibility = Visibility.Visible;
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
+                BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
+                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -2933,6 +2971,8 @@ namespace Ink_Canvas
             catch
             {
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
+                BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
+                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -2940,7 +2980,7 @@ namespace Ink_Canvas
         private async void PPTNavigationBtn_Click(object sender, MouseButtonEventArgs e)
         {
             Main_Grid.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
-            BtnHideInkCanvas_Click(sender, e);
+            CursorIcon_Click(null, null);//BtnHideInkCanvas_Click(sender, e);
             pptApplication.SlideShowWindows[1].SlideNavigation.Visible = true;
             // 控制居中
             if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
@@ -3138,10 +3178,26 @@ namespace Ink_Canvas
             if (!isLoaded) return;
 
             Settings.PowerPointSettings.IsShowPPTNavigation = ToggleSwitchShowButtonPPTNavigation.IsOn;
+            PptNavigationBtn.Visibility = Settings.PowerPointSettings.IsShowPPTNavigation ? Visibility.Visible : Visibility.Collapsed;
             SaveSettingsToFile();
+        }
 
-            PptNavigationBtn.Visibility =
-                Settings.PowerPointSettings.IsShowPPTNavigation ? Visibility.Visible : Visibility.Collapsed;
+        private void ToggleSwitchShowBottomPPTNavigationPanel_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+
+            Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel = ToggleSwitchShowBottomPPTNavigationPanel.IsOn;
+            BottomViewboxPPTSidesControl.Visibility = Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+            SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchShowSidePPTNavigationPanel_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+
+            Settings.PowerPointSettings.IsShowSidePPTNavigationPanel = ToggleSwitchShowSidePPTNavigationPanel.IsOn;
+            LeftSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+            SaveSettingsToFile();
         }
         /*
         private void ComboBoxTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -3372,7 +3428,7 @@ namespace Ink_Canvas
             Settings.Canvas.HideStrokeWhenSelecting = ToggleSwitchHideStrokeWhenSelecting.IsOn;
             SaveSettingsToFile();
         }
-
+        /*
         private void ToggleSwitchUsingWhiteboard_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3388,7 +3444,7 @@ namespace Ink_Canvas
             BtnSwitchTheme_Click(sender, e);
             SaveSettingsToFile();
         }
-
+        */
         private void ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3491,12 +3547,64 @@ namespace Ink_Canvas
             bool IsAutoKillPptService = Settings.Automation.IsAutoKillPptService;
             bool IsAutoKillEasiNote = Settings.Automation.IsAutoKillEasiNote;
             Settings = new Settings();
-            Settings.Appearance.IsShowEraserButton = false;
-            Settings.Appearance.IsShowExitButton = false;
-            Settings.Startup.IsAutoHideCanvas = true;
-            Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
+            Settings.Advanced.IsSpecialScreen = true;
+            Settings.Advanced.IsQuadIR = false;
+            Settings.Advanced.TouchMultiplier = 0.15;
+            Settings.Advanced.EraserBindTouchMultiplier = true;
+            Settings.Advanced.IsLogEnabled = true;
+
+            Settings.Appearance.IsTransparentButtonBackground = true;
+            Settings.Appearance.IsShowExitButton = true;
+            Settings.Appearance.IsShowEraserButton = true;
+            Settings.Appearance.IsShowHideControlButton = false;
+            Settings.Appearance.IsShowLRSwitchButton = false;
+            Settings.Appearance.IsShowModeFingerToggleSwitch = true;
+            Settings.Appearance.Theme = 0;
+
             Settings.Automation.IsAutoKillPptService = IsAutoKillPptService;
+            Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
+            Settings.Automation.IsSaveScreenshotsInDateFolders = false;
+            Settings.Automation.IsAutoSaveStrokesAtScreenshot = false;
+            Settings.Automation.IsAutoSaveStrokesAtClear = false;
+            Settings.Automation.IsAutoClearWhenExitingWritingMode = false;
+            Settings.Automation.MinimumAutomationStrokeNumber = 0;
+
+            Settings.PowerPointSettings.IsShowPPTNavigation = true;
+            Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel = false;
+            Settings.PowerPointSettings.IsShowSidePPTNavigationPanel = true;
+            Settings.PowerPointSettings.PowerPointSupport = true;
+            Settings.PowerPointSettings.IsShowCanvasAtNewSlideShow = false;
+            Settings.PowerPointSettings.IsNoClearStrokeOnSelectWhenInPowerPoint = true;
+            Settings.PowerPointSettings.IsShowStrokeOnSelectInPowerPoint = false;
+            Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = false;
+            Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = true;
+            Settings.PowerPointSettings.IsNotifyPreviousPage = false;
+            Settings.PowerPointSettings.IsNotifyHiddenPage = false;
+            Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode = false;
+            Settings.PowerPointSettings.IsEnableFingerGestureSlideShowControl = false;
+            Settings.PowerPointSettings.IsSupportWPS = true;
+
+            Settings.Canvas.AutoSwitchTwoFingerZoom = true;
             Settings.Canvas.InkWidth = 2.5;
+            Settings.Canvas.IsShowCursor = false;
+            Settings.Canvas.InkStyle = 0;
+            Settings.Canvas.EraserSize = 3;
+            Settings.Canvas.EraserType = 0;
+            Settings.Canvas.HideStrokeWhenSelecting = false;
+            Settings.Canvas.UsingWhiteboard = false;
+            Settings.Canvas.HyperbolaAsymptoteOption = 0;
+
+            Settings.Gesture.IsEnableTwoFingerZoom = false;
+            Settings.Gesture.IsEnableTwoFingerRotation = false;
+            Settings.Gesture.IsEnableTwoFingerRotationOnSelection = false;
+
+            Settings.InkToShape.IsInkToShapeEnabled = true;
+
+            Settings.Startup.IsAutoHideCanvas = true;
+            Settings.Startup.IsAutoEnterModeFinger = false;
+            Settings.Startup.IsColorfulViewboxFloatingBar = false;
+            Settings.Startup.EnableViewboxFloatingBarScaleTransform = false;
+            Settings.Startup.EnableViewboxBlackBoardScaleTransform = false;
         }
 
         private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
@@ -3516,6 +3624,8 @@ namespace Ink_Canvas
             }
             catch { }
             SymbolIconResetSuggestionComplete.Visibility = Visibility.Visible;
+            ShowNotification("设置已重置为默认推荐设置~");
+            /*
             new Thread(new ThreadStart(() =>
             {
                 Thread.Sleep(5000);
@@ -3524,6 +3634,7 @@ namespace Ink_Canvas
                     SymbolIconResetSuggestionComplete.Visibility = Visibility.Collapsed;
                 });
             })).Start();
+            */
         }
         /*
         private void BtnResetToDefault_Click(object sender, RoutedEventArgs e)
@@ -7469,8 +7580,8 @@ namespace Ink_Canvas
                 if (Not_Enter_Blackboard_fir_Mouse_Click)
                 {// BUG-Fixed_tmp：程序启动后直接进入白板会导致后续撤销功能、退出白板无法恢复墨迹
                     BtnColorRed_Click(BorderPenColorRed, null);
-                    await Task.Delay(100);
-                    SimulateMouseClick();
+                    await Task.Delay(200);
+                    SimulateMouseClick.SimulateMouseClickAtTopLeft();
                     await Task.Delay(10);
                     Not_Enter_Blackboard_fir_Mouse_Click = false;
                 }
@@ -8136,80 +8247,16 @@ namespace Ink_Canvas
             isFloatingBarChangingHideMode = false;
         }
 
-        #region SimulateMouseClick
-        private void SimulateMouseClick()
-        {
-            // 获取指定位置的屏幕坐标
-            int x = 100;
-            int y = 100;
-            System.Drawing.Point originalMousePosition = System.Windows.Forms.Cursor.Position;
-            // 创建一个INPUT结构，用于模拟鼠标按下和释放事件
-            INPUT[] inputs = new INPUT[2];
-            inputs[0] = new INPUT
-            {
-                Type = InputType.MOUSE,
-                Data = new MOUSEINPUT { dwFlags = MouseEventFlags.MOUSEEVENTF_LEFTDOWN }
-            };
-            inputs[1] = new INPUT
-            {
-                Type = InputType.MOUSE,
-                Data = new MOUSEINPUT { dwFlags = MouseEventFlags.MOUSEEVENTF_LEFTUP }
-            };
-
-            // 移动鼠标到指定位置
-            System.Windows.Forms.Cursor.Position = new System.Drawing.Point(x, y);
-            // 发送输入事件
-            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
-            // 恢复鼠标位置
-            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
-            {
-                System.Windows.Forms.Cursor.Position = originalMousePosition;
-            }));
-        }
-
-        // 定义INPUT结构和相关枚举
-        [StructLayout(LayoutKind.Sequential)]
-        private struct INPUT
-        {
-            public InputType Type;
-            public MOUSEINPUT Data;
-        }
-
-        private struct MOUSEINPUT
-        {
-            public int dx;
-            public int dy;
-            public uint mouseData;
-            public MouseEventFlags dwFlags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        private enum InputType : uint
-        {
-            MOUSE = 0,
-        }
-
-        [Flags]
-        private enum MouseEventFlags : uint
-        {
-            MOUSEEVENTF_LEFTDOWN = 0x0002,
-            MOUSEEVENTF_LEFTUP = 0x0004,
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
-
-        #endregion
-
-
         #endregion Auto Fold
-
 
         bool isViewboxFloatingBarMarginAnimationRunning = false;
 
         private async void ViewboxFloatingBarMarginAnimation(int heightFromBottom)
         {
+            if (heightFromBottom == 60)
+            {
+                heightFromBottom = 55;
+            }
             await Dispatcher.InvokeAsync(() =>
             {
                 if (Topmost == false)
@@ -8316,7 +8363,9 @@ namespace Ink_Canvas
             StackPanelCanvasControls.Visibility = Visibility.Collapsed;
 
 
+            HideSubPanels("cursor");
             await Task.Delay(50);
+
             if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
             {
                 ViewboxFloatingBarMarginAnimation(60);
@@ -8325,8 +8374,6 @@ namespace Ink_Canvas
             {
                 ViewboxFloatingBarMarginAnimation(100);
             }
-
-            HideSubPanels("cursor");
         }
 
         private void PenIcon_Click(object sender, RoutedEventArgs e)
@@ -8334,23 +8381,13 @@ namespace Ink_Canvas
             if (Pen_Icon.Background == null || StackPanelCanvasControls.Visibility == Visibility.Collapsed)
             {
                 Main_Grid.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
-                /*
-                if (Settings.Canvas.HideStrokeWhenSelecting)
-                {
-                    inkCanvas.Visibility = Visibility.Visible;
-                    inkCanvas.IsHitTestVisible = true;
-                }
-                else
-                {
-                    inkCanvas.IsHitTestVisible = true;
-                    inkCanvas.Visibility = Visibility.Visible;
-                }*/
+                
                 inkCanvas.IsHitTestVisible = true;
                 inkCanvas.Visibility = Visibility.Visible;
+
                 GridBackgroundCoverHolder.Visibility = Visibility.Visible;
                 GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
-                //if (ImageEraserMask.Visibility == Visibility.Visible)
                 if (forceEraser && currentMode == 0)
                     BtnColorRed_Click(sender, null);
 
@@ -8409,6 +8446,7 @@ namespace Ink_Canvas
 
             HideSubPanels("eraser");
         }
+        
         private void EraserIconByStrokes_Click(object sender, RoutedEventArgs e)
         {
             forceEraser = true;
@@ -8430,9 +8468,39 @@ namespace Ink_Canvas
             CursorIcon_Click(null, null);
         }
 
+        private void SelectIcon_MouseUp(object sender, RoutedEvent e)
+        {
+            forceEraser = true;
+            drawingShapeMode = 0;
+            inkCanvas.IsManipulationEnabled = false;
+            if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
+            {
+                inkCanvas.Select(inkCanvas.Strokes);
+            }
+            else
+            {
+                inkCanvas.EditingMode = InkCanvasEditingMode.Select;
+            }
+        }
+
+        private void BoardChangeBackgroundColorBtn_MouseUp(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Canvas.UsingWhiteboard = !Settings.Canvas.UsingWhiteboard;
+            if (!Settings.Canvas.UsingWhiteboard)
+            {
+                BtnSwitchTheme.Content = "浅色";
+            }
+            else
+            {
+                BtnSwitchTheme.Content = "深色";
+            }
+            BtnSwitchTheme_Click(sender, e);
+            SaveSettingsToFile();
+        }
+
         private void BoardEraserIcon_Click(object sender, RoutedEventArgs e)
         {
-            //ShowNotification("" + BoardEraser.Background);
             if (BoardEraser.Background.ToString() == "#FFB37DFF")
             {
                 AnimationHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon);
@@ -8454,7 +8522,6 @@ namespace Ink_Canvas
 
         private void BoardEraserIconByStrokes_Click(object sender, RoutedEventArgs e)
         {
-            //ShowNotification("" + BoardEraser.Background);
             if (BoardEraserByStrokes.Background.ToString() == "#FFB37DFF")
             {
                 AnimationHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon2);
@@ -8494,6 +8561,8 @@ namespace Ink_Canvas
 
         #endregion ViewboxFloatingBar
 
+        #region TwoFingZoomBtn
+
         private void EnableTwoFingerZoomBtn_MouseUp(object sender, RoutedEventArgs e)
         {
             ToggleSwitchEnableTwoFingerZoom.IsOn = !ToggleSwitchEnableTwoFingerZoom.IsOn;
@@ -8517,5 +8586,7 @@ namespace Ink_Canvas
             }
             else EnableTwoFingerZoomBorder.Visibility = Visibility.Collapsed;
         }
+
+        #endregion TwoFingZoomBtn
     }
 }
