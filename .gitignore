@@ -1,1 +1,8 @@
-﻿/.vs
+﻿/Ink-Canvas-For-Annotation/obj
+/Ink-Canvas-For-Annotation/bin/ARM64
+/Ink-Canvas-For-Annotation/bin/Debug
+/Ink-Canvas-For-Annotation/bin/x64
+/Ink-Canvas-For-Annotation/bin/x86
+/Ink-Canvas-For-Annotation/bin/Release/*
+!/Ink-Canvas-For-Annotation/bin/Release/settings.json
+/.vs
