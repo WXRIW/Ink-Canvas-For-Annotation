@@ -797,6 +797,7 @@
                                     <ComboBoxItem Content="较大"  FontFamily="Microsoft YaHei UI"/>
                                     <ComboBoxItem Content="大"  FontFamily="Microsoft YaHei UI"/>
                                 </ComboBox>
+                                <TextBlock Text="#开启 退出画板模式后隐藏墨迹 选项后，进入 PPT 模式时未处于批注模式时不会显示墨迹。" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchHideStrokeWhenSelecting" Header="退出画板模式后隐藏墨迹" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchHideStrokeWhenSelecting_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchUsingWhiteboard" Header="使用白板 (白色背景)" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchUsingWhiteboard_Toggled"/>
                                 <TextBlock Text="#请注意，若不保留双曲线渐近线会有 TimeMachine 相关的 BUG 影响使用。" TextWrapping="Wrap" Foreground="#666666"/>

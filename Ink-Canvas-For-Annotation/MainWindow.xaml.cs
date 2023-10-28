@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -2354,11 +2355,38 @@ namespace Ink_Canvas
                 if (Settings.PowerPointSettings.IsNotifyPreviousPage)
                     Application.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        string defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                                                   @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                        string defaultFolderPath;// = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                        try
+                        {
+                            defaultFolderPath = $@"D:\Ink Canvas\Auto Saved - Presentations\";
+                        }
+                        catch (IOException)
+                        {
+                            defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                        }
                         string folderPath = defaultFolderPath + presentation.Name + "_" + presentation.Slides.Count;
                         if (File.Exists(folderPath + "/Position"))
                         {
+                            if (int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page))
+                            {
+                                if (page <= 0) return;
+                                new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
+                                {
+                                    if (pptApplication.SlideShowWindows.Count >= 1)
+                                    {
+                                        // 如果已经播放了的话, 跳转
+                                        presentation.SlideShowWindow.View.GotoSlide(page);
+                                    }
+                                    else
+                                    {
+                                        presentation.Windows[1].View.GotoSlide(page);
+                                    }
+                                }).ShowDialog();
+                            }
+                        }
+                        else if(defaultFolderPath == $@"D:\Ink Canvas\Auto Saved - Presentations\") // 使用原版 InkCanvas 保存地点
+                        {
+                            defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
                             if (int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page))
                             {
                                 if (page <= 0) return;
@@ -2411,8 +2439,6 @@ namespace Ink_Canvas
                                     }
                                 }).ShowDialog();
                         }
-
-
 
                         BtnPPTSlideShow.Visibility = Visibility.Visible;
                     }, DispatcherPriority.Normal);
@@ -2505,7 +2531,15 @@ namespace Ink_Canvas
                 //检查是否有已有墨迹，并加载
                 if (Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint)
                 {
-                    string defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                    string defaultFolderPath;// = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                    try
+                    {
+                        defaultFolderPath = $@"D:\Ink Canvas\Auto Saved - Presentations\";
+                    }
+                    catch (IOException)
+                    {
+                        defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                    }
                     if (Directory.Exists(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count))
                     {
                         LogHelper.WriteLogToFile("Found saved strokes", LogHelper.LogType.Trace);
@@ -2531,6 +2565,36 @@ namespace Ink_Canvas
                             }
                         }
                         LogHelper.WriteLogToFile(string.Format("Loaded {0} saved strokes", count.ToString()));
+                    }
+                    else if(defaultFolderPath == $@"D:\Ink Canvas\Auto Saved - Presentations\") // 使用原版 InkCanvas 保存地点
+                    {
+                        defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                        if (Directory.Exists(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count))
+                        {
+                            LogHelper.WriteLogToFile("Found saved strokes", LogHelper.LogType.Trace);
+                            FileInfo[] files = new DirectoryInfo(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count).GetFiles();
+                            int count = 0;
+                            foreach (FileInfo file in files)
+                            {
+                                int i = -1;
+                                try
+                                {
+                                    i = int.Parse(System.IO.Path.GetFileNameWithoutExtension(file.Name));
+                                    //var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
+                                    //MemoryStream ms = new MemoryStream(File.ReadAllBytes(file.FullName));
+                                    //new StrokeCollection(fs).Save(ms);
+                                    //ms.Position = 0;
+                                    memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
+                                    memoryStreams[i].Position = 0;
+                                    count++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogHelper.WriteLogToFile(string.Format("Failed to load strokes on Slide {0}\n{1}", i, ex.ToString()), LogHelper.LogType.Error);
+                                }
+                            }
+                            LogHelper.WriteLogToFile(string.Format("Loaded {0} saved strokes", count.ToString()));
+                        }
                     }
                 }
 
@@ -2646,7 +2710,15 @@ namespace Ink_Canvas
             isEnteredSlideShowEndEvent = true;
             if (Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint)
             {
-                string defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                string defaultFolderPath;// = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                try
+                {
+                    defaultFolderPath = $@"D:\Ink Canvas\Auto Saved - Presentations\";
+                }
+                catch (IOException)
+                {
+                    defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                }
                 string folderPath = defaultFolderPath + Pres.Name + "_" + Pres.Slides.Count;
                 if (!Directory.Exists(folderPath))
                 {
@@ -8161,7 +8233,6 @@ namespace Ink_Canvas
 
             if (BtnPPTSlideShowEnd.Visibility != Visibility.Visible)
             {
-                /*
                 if (Settings.Canvas.HideStrokeWhenSelecting)
                     inkCanvas.Visibility = Visibility.Collapsed;
                 else
@@ -8169,10 +8240,6 @@ namespace Ink_Canvas
                     inkCanvas.IsHitTestVisible = false;
                     inkCanvas.Visibility = Visibility.Visible;
                 }
-                */
-                // 非 PPT 模式下不自动隐藏画板
-                inkCanvas.IsHitTestVisible = false;
-                inkCanvas.Visibility = Visibility.Visible;
             }
             else
             {
@@ -8182,16 +8249,14 @@ namespace Ink_Canvas
                     inkCanvas.IsHitTestVisible = true;
                 }
                 else
-                {/*
+                {
                     if (Settings.Canvas.HideStrokeWhenSelecting)
                         inkCanvas.Visibility = Visibility.Collapsed;
                     else
                     {
                         inkCanvas.IsHitTestVisible = false;
                         inkCanvas.Visibility = Visibility.Visible;
-                    }*/
-                    inkCanvas.IsHitTestVisible = true;
-                    inkCanvas.Visibility = Visibility.Visible;
+                    }
                 }
             }
 
