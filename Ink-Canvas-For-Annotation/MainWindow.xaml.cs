@@ -7569,6 +7569,9 @@ namespace Ink_Canvas
         {
             if (currentMode == 0)
             {
+                BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
+                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+
                 //进入黑板
                 if (!Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
                 {
@@ -7617,6 +7620,12 @@ namespace Ink_Canvas
             }
             else
             {
+                if (StackPanelPPTControls.Visibility == Visibility.Visible)
+                {
+                    BottomViewboxPPTSidesControl.Visibility = Visibility.Visible;
+                    LeftSidePanelForPPTNavigation.Visibility = Visibility.Visible;
+                }
+
                 //关闭黑板
                 if (Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
                 {

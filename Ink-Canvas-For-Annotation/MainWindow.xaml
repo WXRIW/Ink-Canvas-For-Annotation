@@ -730,7 +730,7 @@
         <!--// 设置界面 //-->
         <Border Name="BorderSettings" Background="White" BorderBrush="Black"
                 BorderThickness="1" CornerRadius="5" ui:ThemeManager.RequestedTheme="Light"
-                Width="430" HorizontalAlignment="Center" Margin="0,200,0,200" Visibility="Visible">
+                Width="440" HorizontalAlignment="Center" Margin="0,200,0,200" Visibility="Visible">
             <Grid>
                 <ScrollViewer Margin="0,60,0,50" VerticalScrollBarVisibility="Auto"
                               PanningMode="VerticalOnly" ui:ThemeManager.RequestedTheme="Light"

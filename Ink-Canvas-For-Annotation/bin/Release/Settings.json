@@ -26,7 +26,7 @@
   },
   "behavior": {
     "isShowPPTNavigation": true,
-    "isShowBottomPPTNavigationPanel": false,
+    "isShowBottomPPTNavigationPanel": true,
     "isShowSidePPTNavigationPanel": true,
     "powerPointSupport": true,
     "isShowCanvasAtNewSlideShow": false,
