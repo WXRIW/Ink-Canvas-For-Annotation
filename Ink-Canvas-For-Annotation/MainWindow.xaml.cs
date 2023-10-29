@@ -7574,8 +7574,11 @@ namespace Ink_Canvas
         //Point pointDesktop = new Point(-1, -1); //用于记录上次进入PPT或白板时的坐标
         //Point pointPPT = new Point(-1, -1); //用于记录上次在PPT中打开白板时的坐标
         bool Not_Enter_Blackboard_fir_Mouse_Click = true;
+        bool isDisplayingOrHidingBlackboard = false;
         private async void ImageBlackboard_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (isDisplayingOrHidingBlackboard) return;
+            isDisplayingOrHidingBlackboard = true;
             if (currentMode == 0)
             {
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
@@ -7697,6 +7700,15 @@ namespace Ink_Canvas
 
             BtnExit.Foreground = Brushes.White;
             ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+
+            new Thread(new ThreadStart(() =>
+            {
+                Thread.Sleep(200);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    isDisplayingOrHidingBlackboard = false;
+                });
+            })).Start();
         }
 
         private void ImageEraser_MouseUp(object sender, MouseButtonEventArgs e)
