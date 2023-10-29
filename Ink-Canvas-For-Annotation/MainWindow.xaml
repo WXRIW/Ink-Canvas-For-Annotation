@@ -923,7 +923,6 @@
                             <ui:SimpleStackPanel Spacing="12">
                                 <StackPanel>
                                     <TextBlock FontSize="14" Margin="0,0,0,12" Text="重置设置为推荐设置"/>
-                                    <TextBlock FontSize="14" Margin="0,0,0,12" Foreground="#666666" Text="# 重置为推荐设置后请重启软件"/>
                                     <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
                                         <Button Content="重置" Width="100" FontFamily="Microsoft YaHei UI" Click="BtnResetToSuggestion_Click" Margin="0,0,0,0"/>
                                         <ui:SymbolIcon Name="SymbolIconResetSuggestionComplete" Symbol="Accept" Visibility="Collapsed"/>

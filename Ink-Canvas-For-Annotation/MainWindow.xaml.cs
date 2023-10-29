@@ -2657,7 +2657,7 @@ namespace Ink_Canvas
 
                 if (isColorfulViewboxFloatingBar)
                 {
-                    ViewboxFloatingBar.Opacity = 0.95;
+                    ViewboxFloatingBar.Opacity = 0.8;
                 }
                 else
                 {
@@ -3612,7 +3612,7 @@ namespace Ink_Canvas
             Settings.Startup.IsAutoHideCanvas = true;
             Settings.Startup.IsAutoEnterModeFinger = false;
             Settings.Startup.IsColorfulViewboxFloatingBar = false;
-            Settings.Startup.EnableViewboxFloatingBarScaleTransform = false;
+            Settings.Startup.EnableViewboxFloatingBarScaleTransform = true;
             Settings.Startup.EnableViewboxBlackBoardScaleTransform = false;
         }
 
@@ -7634,8 +7634,14 @@ namespace Ink_Canvas
             {
                 if (StackPanelPPTControls.Visibility == Visibility.Visible)
                 {
-                    BottomViewboxPPTSidesControl.Visibility = Visibility.Visible;
-                    LeftSidePanelForPPTNavigation.Visibility = Visibility.Visible;
+                    if (Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel)
+                    {
+                        BottomViewboxPPTSidesControl.Visibility = Visibility.Visible;
+                    }
+                    if (Settings.PowerPointSettings.IsShowSidePPTNavigationPanel)
+                    {
+                        LeftSidePanelForPPTNavigation.Visibility = Visibility.Visible;
+                    }
                 }
 
                 //关闭黑板

@@ -63,7 +63,7 @@
     "isAutoHideCanvas": true,
     "isAutoEnterModeFinger": false,
     "isColorfulViewboxFloatingBar": false,
-    "enableViewboxFloatingBarScaleTransform": false,
+    "enableViewboxFloatingBarScaleTransform": true,
     "enableViewboxBlackBoardScaleTransform": false
   }
 }
