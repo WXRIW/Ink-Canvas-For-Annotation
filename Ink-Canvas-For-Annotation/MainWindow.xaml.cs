@@ -210,8 +210,13 @@ namespace Ink_Canvas
 	            }
 	            else { // 用户在 PPT 放映时进行过收纳浮窗操作
 	            }
+
+            3) 退出 PPT 模式：
+                if (isFloatingBarFolded) {
+                    UnFoldFloatingBar_MouseUp(null, null);
+                }
 	
-            3）希沃白板/希沃视频展台最小化或未启动应用：
+            4）希沃白板/希沃视频展台最小化或未启动应用：
 	            unfoldFloatingBarByUser = false;
 	            if (foldFloatingBarByUser == false) { // 用户未进行收纳操作
 		            若处于收纳状态则展开;
@@ -219,14 +224,14 @@ namespace Ink_Canvas
 	            else { // 用户在希沃软件界面外已进行过收纳操作
 	            }
 	
-            4）希沃白板/希沃视频展台最大化：
+            5）希沃白板/希沃视频展台最大化：
 	            if (unfoldFloatingBarByUser == false) { // 用户未进行展开操作
 		            若处于展开状态则收纳;
 	            }
 	            else { // 用户在希沃软件界面内已进行过展开操作
 	            }
 
-            5）用户操作：
+            6）用户操作：
 	            用户点击收纳按钮：{
 		            foldFloatingBarByUser = true;
 		            unfoldFloatingBarByUser = false;
@@ -2507,6 +2512,8 @@ namespace Ink_Canvas
         //bool isButtonBackgroundTransparent = true; //此变量仅用于保存用于幻灯片放映时的优化
         private void PptApplication_SlideShowBegin(SlideShowWindow Wn)
         {
+            foldFloatingBarByUser = false;
+
             LogHelper.WriteLogToFile("PowerPoint Application Slide Show Begin", LogHelper.LogType.Event);
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -2743,6 +2750,8 @@ namespace Ink_Canvas
         bool isEnteredSlideShowEndEvent = false; //防止重复调用本函数导致墨迹保存失效
         private void PptApplication_SlideShowEnd(Presentation Pres)
         {
+            if (isFloatingBarFolded) UnFoldFloatingBar_MouseUp(null, null);
+
             LogHelper.WriteLogToFile(string.Format("PowerPoint Slide Show End"), LogHelper.LogType.Event);
             if (isEnteredSlideShowEndEvent)
             {
