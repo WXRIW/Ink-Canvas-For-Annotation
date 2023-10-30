@@ -737,11 +737,11 @@
                               ManipulationBoundaryFeedback="SCManipulationBoundaryFeedback">
                     <StackPanel Margin="20,20,20,20">
                         
-                        <Border Margin="10,-15,10,5" Height="30" CornerRadius="5" BorderBrush="Black" BorderThickness="2">
+                        <Border Margin="10,-15,10,-10" Height="30" CornerRadius="5" BorderBrush="Black" BorderThickness="2">
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Margin="0,0,0,0" Text="设置将自动保存，部分设置需要重启软件后生效。"/>
                         </Border>
                         
-                        <GroupBox Header="行为">
+                        <GroupBox>
                             <ui:SimpleStackPanel Spacing="12">
                                 <ui:SimpleStackPanel Spacing="20" Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Width="168" Height="45" Background="Azure" BorderBrush="DarkCyan" BorderThickness="1.5" FontFamily="Microsoft YaHei UI" Click="BtnRestart_Click">
@@ -1060,13 +1060,11 @@
                         </GroupBox>
                     </StackPanel>
                 </ScrollViewer>
-                <Grid Background="White" Margin="10,0,10,0" Height="60" VerticalAlignment="Top">
-                    <Grid Margin="10,20,10,-10">
-                        <TextBlock Text="设置 | Settings" FontSize="26" Margin="0,0,0,12"/>
-                        <Viewbox Visibility="{Binding ElementName=GroupBoxMASEZVersion, Path=Visibility}"
-                                 Margin="0,-15,0,0" Height="45" HorizontalAlignment="Right">
-                        </Viewbox>
-                    </Grid>
+                <Grid Background="White" Margin="20" Height="40" VerticalAlignment="Top">
+                    <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="/Resources/Icons-png/settings.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30"/>
+                        <TextBlock Margin="10,-2,0,0" Text="设置 | Settings" FontSize="26"/>
+                    </ui:SimpleStackPanel>
                 </Grid>
                 <Grid VerticalAlignment="Bottom" Height="50">
                     <Button FontFamily="Microsoft YaHei UI"
@@ -1285,8 +1283,8 @@
         <!--// PPT 工具栏 //-->
         <Grid Name="GridForRecoverOldUI">
             <Grid Visibility="{Binding ElementName=StackPanelPPTControls, Path=Visibility}">
-                <Viewbox Name="BottomViewboxPPTSidesControl" Visibility="Visible" Opacity="0.5" Margin="5" Height="50" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="5">
+                <Viewbox Name="BottomViewboxPPTSidesControl" Visibility="Visible" Opacity="0.5" Margin="5" Height="40" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="3.5">
                         <Border Width="36" MouseUp="GridPPTControlPrevious_MouseUp" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
                             <Grid Margin="6">
                                 <Image Name="ImagePPTControlPreviousPressed" Visibility="Collapsed" Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalPreviousSlideSelected}"/>
@@ -1306,8 +1304,8 @@
                         </Border>
                     </ui:SimpleStackPanel>
                 </Viewbox>
-                <Viewbox Visibility="{Binding ElementName=BottomViewboxPPTSidesControl, Path=Visibility}" Opacity="{Binding ElementName=ViewboxPPTSidesControl, Path=Opacity}" Margin="5" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="5">
+                <Viewbox Visibility="{Binding ElementName=BottomViewboxPPTSidesControl, Path=Visibility}" Opacity="0.5" Margin="5" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="3.5">
                         <Border Width="36" MouseUp="GridPPTControlPrevious_MouseUp" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
                             <Grid Margin="6">
                                 <Image Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalPreviousSlideNormal}"/>
@@ -1558,7 +1556,7 @@
 
                             <Grid Width="0">
                                 <Border x:Name="BorderDrawShape" Visibility="Visible" Background="White" Opacity="0.9" BorderBrush="{DynamicResource ToolBarBorderBrush}" BorderThickness="1"
-                                    CornerRadius="8" Margin="-100,-265,-100,30" Height="240">
+                                    CornerRadius="8" Margin="-100,-262,-100,27" Height="240">
                                     <Viewbox>
                                         <ui:SimpleStackPanel Spacing="-8" Orientation="Vertical">
                                             <TextBlock FontSize="16" Foreground="{DynamicResource ToolBarForeground}"
@@ -1648,30 +1646,32 @@
                             </ui:SimpleStackPanel>
                             <Grid Width="0">
                                 <Border Name="BorderTools" Margin="-80,-152,-80,40" CornerRadius="5" Background="White" Opacity="0.9" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
-                                    <ui:SimpleStackPanel Margin="10">
-                                        <Image HorizontalAlignment="Right" Margin="0,-2,-2,-25" Source="/Resources/Icons-png/close-circle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25" MouseDown="Border_MouseDown" MouseUp="CloseBordertools_MouseUp"/>
-                                        <Label Content="倒计时  随机抽选" FontSize="12" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
-                                        <ui:SimpleStackPanel Margin="2.5,0,0,2" Height="25" Spacing="15" Orientation="Horizontal">
-                                            <Image Source="/Resources/Icons-png/stopwatch.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
-                                            <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
-                                            <Grid Margin="0,-2,0,0" MouseUp="SymbolIconRandOne_MouseUp" MouseDown="Border_MouseDown">
-                                                <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}"/>
-                                                <Border CornerRadius="50" BorderBrush="{DynamicResource ToolBarForeground}" BorderThickness="1" HorizontalAlignment="Center" Margin="-2,0,0,-2" VerticalAlignment="Bottom" Height="9" Width="9">
-                                                    <TextBlock Text="1" FontSize="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-0.8,0,0" Foreground="{DynamicResource ToolBarForeground}" />
-                                                </Border>
-                                            </Grid>
-                                        </ui:SimpleStackPanel>
-                                        <Label Content="保存 | 打开 | 播放 — 墨迹" FontSize="12" HorizontalAlignment="Left"/>
-                                        <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
-                                            <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
-                                            <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
-                                            <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
-                                        </ui:SimpleStackPanel>
-                                        <Label Content="截图 | 设置 | 收纳" FontSize="12" HorizontalAlignment="Left"/>
-                                        <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
-                                            <Image Source="/Resources/Icons-png/camera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
-                                            <Image Source="/Resources/Icons-png/settings.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
-                                            <Image x:Name="hiddenButtonInBorderTools" Source="/Resources/Icons-png/hidden.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="FoldFloatingBar_MouseUp"/>
+                                    <ui:SimpleStackPanel>
+                                        <Image HorizontalAlignment="Right" Margin="0,2,2,-27" Source="/Resources/Icons-png/close-circle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25" MouseDown="Border_MouseDown" MouseUp="CloseBordertools_MouseUp"/>
+                                        <ui:SimpleStackPanel Margin="10">
+                                            <Label Content="倒计时  随机抽选" FontSize="12" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
+                                            <ui:SimpleStackPanel Margin="2.5,0,0,2" Height="25" Spacing="15" Orientation="Horizontal">
+                                                <Image Source="/Resources/Icons-png/stopwatch.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
+                                                <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
+                                                <Grid Margin="0,-2,0,0" MouseUp="SymbolIconRandOne_MouseUp" MouseDown="Border_MouseDown">
+                                                    <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}"/>
+                                                    <Border CornerRadius="50" BorderBrush="{DynamicResource ToolBarForeground}" BorderThickness="1" HorizontalAlignment="Center" Margin="-2,0,0,-2" VerticalAlignment="Bottom" Height="9" Width="9">
+                                                        <TextBlock Text="1" FontSize="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-0.8,0,0" Foreground="{DynamicResource ToolBarForeground}" />
+                                                    </Border>
+                                                </Grid>
+                                            </ui:SimpleStackPanel>
+                                            <Label Content="保存 | 打开 | 播放 — 墨迹" FontSize="12" HorizontalAlignment="Left"/>
+                                            <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
+                                                <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
+                                                <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
+                                                <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
+                                            </ui:SimpleStackPanel>
+                                            <Label Content="截图 | 设置 | 收纳" FontSize="12" HorizontalAlignment="Left"/>
+                                            <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
+                                                <Image Source="/Resources/Icons-png/camera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
+                                                <Image Source="/Resources/Icons-png/settings.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
+                                                <Image x:Name="hiddenButtonInBorderTools" Source="/Resources/Icons-png/hidden.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="FoldFloatingBar_MouseUp"/>
+                                            </ui:SimpleStackPanel>
                                         </ui:SimpleStackPanel>
                                     </ui:SimpleStackPanel>
                                 </Border>
