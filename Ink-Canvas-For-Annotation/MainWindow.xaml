@@ -592,7 +592,7 @@
                                             <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
                                             <Grid MouseUp="SymbolIconRandOne_MouseUp" MouseDown="Border_MouseDown">
                                                 <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}"/>
-                                                <Border CornerRadius="50" BorderBrush="{DynamicResource ToolBarForeground}" BorderThickness="1" HorizontalAlignment="Center" Margin="-2,0,0,-2" VerticalAlignment="Bottom" Height="9" Width="9">
+                                                <Border CornerRadius="50" BorderBrush="{DynamicResource ToolBarForeground}" BorderThickness="1" HorizontalAlignment="Center" Margin="-2,0,0,0" VerticalAlignment="Bottom" Height="9" Width="9">
                                                     <TextBlock Text="1" FontSize="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-0.8,0,0" Foreground="{DynamicResource ToolBarForeground}" />
                                                 </Border>
                                             </Grid>
