@@ -129,6 +129,12 @@ namespace Ink_Canvas
 
     public class Automation
     {
+        [JsonProperty("isAutoFoldInEasiNote")]
+        public bool IsAutoFoldInEasiNote { get; set; } = false;
+
+        [JsonProperty("isAutoFoldInEasiCamera")]
+        public bool IsAutoFoldInEasiCamera { get; set; } = false;
+
         [JsonProperty("isAutoKillPptService")]
         public bool IsAutoKillPptService { get; set; } = false;
 
@@ -156,12 +162,16 @@ namespace Ink_Canvas
     {
         [JsonProperty("isSpecialScreen")]
         public bool IsSpecialScreen { get; set; } = false;
+
         [JsonProperty("isQuadIR")]
         public bool IsQuadIR { get; set; } = false;
+
         [JsonProperty("touchMultiplier")]
         public double TouchMultiplier { get; set; } = 0.25;
+
         [JsonProperty("eraserBindTouchMultiplier")]
         public bool EraserBindTouchMultiplier { get; set; } = false;
+
         [JsonProperty("isLogEnabled")]
         public bool IsLogEnabled { get; set; } = true;
     }

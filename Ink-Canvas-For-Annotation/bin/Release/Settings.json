@@ -16,6 +16,8 @@
     "theme": 0
   },
   "automation": {
+    "isAutoFoldInEasiNote": true,
+    "isAutoFoldInEasiCamera": false,
     "isAutoKillPptService": false,
     "isAutoKillEasiNote": false,
     "isSaveScreenshotsInDateFolders": false,
