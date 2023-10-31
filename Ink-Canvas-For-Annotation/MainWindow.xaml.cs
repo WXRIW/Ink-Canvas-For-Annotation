@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -56,6 +55,7 @@ namespace Ink_Canvas
             BorderSettings.Visibility = Visibility.Collapsed;
             StackPanelToolButtons.Visibility = Visibility.Collapsed;
             LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+            RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
 
             CollapseBorderDrawShape();
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
@@ -114,7 +114,6 @@ namespace Ink_Canvas
 
             timerCheckAutoFold.Elapsed += timerCheckAutoFold_Elapsed;
             timerCheckAutoFold.Interval = 1000;
-            timerCheckAutoFold.Start();
         }
 
         private void TimerKillProcess_Elapsed(object sender, ElapsedEventArgs e)
@@ -143,7 +142,6 @@ namespace Ink_Canvas
                     if (processes.Length > 0)
                     {
                         arg += " /IM EasiNote.exe";
-
                     }
                 }
                 if (arg != "/F")
@@ -155,7 +153,6 @@ namespace Ink_Canvas
 
                     if (arg.Contains("EasiNote"))
                     {
-
                         BtnSwitch_Click(BtnSwitch, null);
                         MessageBox.Show("“希沃白板 5”已自动关闭");
                     }
@@ -934,6 +931,33 @@ namespace Ink_Canvas
 
             if (Settings.Automation != null)
             {
+                if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera)
+                {
+                    timerCheckAutoFold.Start();
+                }
+                else
+                {
+                    timerCheckAutoFold.Stop();
+                }
+
+                if (Settings.Automation.IsAutoFoldInEasiNote)
+                {
+                    ToggleSwitchAutoFoldInEasiNote.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInEasiNote.IsOn = false;
+                }
+
+                if (Settings.Automation.IsAutoFoldInEasiCamera)
+                {
+                    ToggleSwitchAutoFoldInEasiCamera.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInEasiCamera.IsOn = false;
+                }
+
                 if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoKillPptService)
                 {
                     timerKillProcess.Start();
@@ -951,6 +975,16 @@ namespace Ink_Canvas
                 {
                     ToggleSwitchAutoKillEasiNote.IsOn = false;
                 }
+
+                if (Settings.Automation.IsAutoKillPptService)
+                {
+                    ToggleSwitchAutoKillPptService.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoKillPptService.IsOn = false;
+                }
+
                 /*
                 if (Settings.Automation.IsAutoClearWhenExitingWritingMode)
                 {
@@ -969,17 +1003,6 @@ namespace Ink_Canvas
                 else
                 {
                     ToggleSwitchAutoSaveStrokesAtClear.IsOn = false;
-                }
-
-
-
-                if (Settings.Automation.IsAutoKillPptService)
-                {
-                    ToggleSwitchAutoKillPptService.IsOn = true;
-                }
-                else
-                {
-                    ToggleSwitchAutoKillPptService.IsOn = false;
                 }
 
                 if (Settings.Automation.IsSaveScreenshotsInDateFolders)
@@ -2312,6 +2335,7 @@ namespace Ink_Canvas
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
                 LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
                 MessageBox.Show("未找到幻灯片");
             }
         }
@@ -2636,7 +2660,7 @@ namespace Ink_Canvas
 
                 if (Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel)
                 {
-                    BottomViewboxPPTSidesControl.Visibility = Visibility.Visible;
+                    AnimationHelper.ShowWithSlideFromBottomAndFade(BottomViewboxPPTSidesControl);
                 }
                 else
                 {
@@ -2644,11 +2668,13 @@ namespace Ink_Canvas
                 }
                 if (Settings.PowerPointSettings.IsShowSidePPTNavigationPanel)
                 {
-                    LeftSidePanelForPPTNavigation.Visibility = Visibility.Visible;
+                    AnimationHelper.ShowWithScaleFromLeft(LeftSidePanelForPPTNavigation);
+                    AnimationHelper.ShowWithScaleFromRight(RightSidePanelForPPTNavigation);
                 }
                 else
                 {
                     LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+                    RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
                 }
 
                 BtnPPTSlideShow.Visibility = Visibility.Collapsed;
@@ -2825,6 +2851,7 @@ namespace Ink_Canvas
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
                 LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
 
                 ViewBoxStackPanelMain.Margin = new Thickness(10, 10, 10, 55);
 
@@ -2952,6 +2979,7 @@ namespace Ink_Canvas
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
                 LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -2982,6 +3010,7 @@ namespace Ink_Canvas
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
                 LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -3040,11 +3069,10 @@ namespace Ink_Canvas
                 catch { }
             })).Start();
 
-
-            HideSubPanels("cursor");
+            HideSubPanels("cursor", false);
             new Thread(new ThreadStart(() =>
             {
-                Thread.Sleep(150);
+                Thread.Sleep(50);
                 ViewboxFloatingBarMarginAnimation(100);
             })).Start();
         }
@@ -3367,6 +3395,38 @@ namespace Ink_Canvas
 
         #region Automation
 
+        private void ToggleSwitchAutoFoldInEasiNote_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInEasiNote = ToggleSwitchAutoFoldInEasiNote.IsOn;
+            SaveSettingsToFile();
+
+            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera)
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
+        private void ToggleSwitchAutoFoldInEasiCamera_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInEasiCamera = ToggleSwitchAutoFoldInEasiCamera.IsOn;
+            SaveSettingsToFile();
+
+            if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoFoldInEasiCamera)
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
         private void ToggleSwitchAutoKillPptService_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3570,6 +3630,8 @@ namespace Ink_Canvas
             Settings.Appearance.IsShowModeFingerToggleSwitch = true;
             Settings.Appearance.Theme = 0;
 
+            Settings.Automation.IsAutoFoldInEasiNote = true;
+            Settings.Automation.IsAutoFoldInEasiCamera = true;
             Settings.Automation.IsAutoKillPptService = IsAutoKillPptService;
             Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
             Settings.Automation.IsSaveScreenshotsInDateFolders = false;
@@ -7371,7 +7433,7 @@ namespace Ink_Canvas
             BorderSettings.Visibility = Visibility.Collapsed;
         }
 
-        private async void HideSubPanels(String mode = null)
+        private async void HideSubPanels(String mode = null, bool autoAlignCenter = true)
         {
             AnimationHelper.HideWithSlideAndFade(BorderTools);
             AnimationHelper.HideWithSlideAndFade(BoardBorderTools);
@@ -7419,7 +7481,7 @@ namespace Ink_Canvas
                     //ChangeColorCheckPrompt(-1);
                 }
 
-                if (mode != "color") // 控制居中
+                if (mode != "color" && autoAlignCenter) // 控制居中
                 {
                     if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
                     {
@@ -7583,6 +7645,7 @@ namespace Ink_Canvas
             {
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
                 LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
 
                 //进入黑板
                 if (!Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
@@ -7632,19 +7695,22 @@ namespace Ink_Canvas
             }
             else
             {
+                //关闭黑板
+
                 if (StackPanelPPTControls.Visibility == Visibility.Visible)
                 {
                     if (Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel)
                     {
-                        BottomViewboxPPTSidesControl.Visibility = Visibility.Visible;
+                        AnimationHelper.ShowWithSlideFromBottomAndFade(BottomViewboxPPTSidesControl);
                     }
                     if (Settings.PowerPointSettings.IsShowSidePPTNavigationPanel)
                     {
-                        LeftSidePanelForPPTNavigation.Visibility = Visibility.Visible;
+                        AnimationHelper.ShowWithScaleFromLeft(LeftSidePanelForPPTNavigation);
+                        AnimationHelper.ShowWithScaleFromRight(RightSidePanelForPPTNavigation);
                     }
                 }
 
-                //关闭黑板
+
                 if (Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
                 {
                     EnableTwoFingerZoomBtn_MouseUp(null, null);
