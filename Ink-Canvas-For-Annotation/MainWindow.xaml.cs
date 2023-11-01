@@ -176,7 +176,7 @@ namespace Ink_Canvas
                         unfoldFloatingBarByUser = false;
                     }
                 }
-                else if ((WinTabWindowsChecker.IsWindowMinimized("希沃白板") && WinTabWindowsChecker.IsWindowMinimized("希沃视频展台"))) // 窗口已最小化
+                else if (((!Settings.Automation.IsAutoFoldInEasiNote) || WinTabWindowsChecker.IsWindowMinimized("希沃白板")) && ((!Settings.Automation.IsAutoFoldInEasiCamera) || WinTabWindowsChecker.IsWindowMinimized("希沃视频展台"))) // 窗口已最小化
                 {
                     if (foldFloatingBarByUser == false)
                     {
@@ -8262,6 +8262,7 @@ namespace Ink_Canvas
                 isFloatingBarChangingHideMode = true;
                 isFloatingBarFolded = true;
                 if (currentMode != 0) ImageBlackboard_MouseUp(null, null);
+                lastBorderMouseDownObject = sender;
                 CursorWithDelIcon_Click(sender, null);
                 SidePannelMarginAnimation(-200);
             });
@@ -8271,6 +8272,7 @@ namespace Ink_Canvas
             await Dispatcher.InvokeAsync(() =>
             {
                 ViewboxFloatingBarMarginAnimation(-60);
+                HideSubPanels();
                 SidePannelMarginAnimation(-200);
             });
 

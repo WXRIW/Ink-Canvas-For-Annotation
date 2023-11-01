@@ -17,7 +17,7 @@
   },
   "automation": {
     "isAutoFoldInEasiNote": true,
-    "isAutoFoldInEasiCamera": false,
+    "isAutoFoldInEasiCamera": true,
     "isAutoKillPptService": false,
     "isAutoKillEasiNote": false,
     "isSaveScreenshotsInDateFolders": false,
