@@ -909,6 +909,15 @@ namespace Ink_Canvas
                     ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = false;
                 }
 
+                if (Settings.Canvas.UsingWhiteboard)
+                {
+                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
+                }
+                else
+                {
+                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1F1F1F"));
+                }
+
                 if (Settings.Canvas.IsShowCursor)
                 {
                     ToggleSwitchShowCursor.IsOn = true;
@@ -1097,11 +1106,6 @@ namespace Ink_Canvas
                     ToggleSwitchUsingWhiteboard.IsOn = false;
                 }
                 */
-                if (Settings.Canvas.UsingWhiteboard)
-                {
-                    BtnSwitchTheme.Content = "深色";
-                    BtnSwitchTheme_Click(null, null);
-                }
 
                 /*
                 switch (Settings.Canvas.EraserType)
@@ -1419,23 +1423,36 @@ namespace Ink_Canvas
             }
         }
 
-        private void BtnSwitchTheme_Click(object sender, RoutedEventArgs e)
+        private void CheckColorTheme()
         {
-            if (BtnSwitchTheme.Content.ToString() == "深色")
+            if (currentMode == 0)
             {
-                BtnSwitchTheme.Content = "浅色";
-                if (BtnSwitch.Content.ToString() != "屏幕")
+                isUselightThemeColor = false;
+            }
+            else
+            {
+                if (Settings.Canvas.UsingWhiteboard)
                 {
-                    BtnSwitch.Content = "黑板";
+                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
+                    if (inkColor == 0)
+                    {
+                        inkCanvas.DefaultDrawingAttributes.Color = Colors.Black;
+                    }
+                    isUselightThemeColor = false;
                 }
-                BtnExit.Foreground = Brushes.White;
-                GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
-                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
-                if (inkColor == 0)
+                else
                 {
-                    inkCanvas.DefaultDrawingAttributes.Color = Colors.White;
+                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1F1F1F"));
+                    if (inkColor == 0)
+                    {
+                        inkCanvas.DefaultDrawingAttributes.Color = Colors.White;
+                    }
+                    isUselightThemeColor = true;
                 }
-                else if (inkColor == 2)
+            }
+            if (isUselightThemeColor)
+            {
+                if (inkColor == 2)
                 {
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF1ED760");
                 }
@@ -1446,19 +1463,7 @@ namespace Ink_Canvas
             }
             else
             {
-                BtnSwitchTheme.Content = "深色";
-                if (BtnSwitch.Content.ToString() != "屏幕")
-                {
-                    BtnSwitch.Content = "白板";
-                }
-                BtnExit.Foreground = Brushes.Black;
-                GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1A1A1A"));
-                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
-                if (inkColor == 0)
-                {
-                    inkCanvas.DefaultDrawingAttributes.Color = Colors.Black;
-                }
-                else if (inkColor == 2)
+                if (inkColor == 2)
                 {
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF169141");
                 }
@@ -1467,30 +1472,9 @@ namespace Ink_Canvas
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFF38B00");
                 }
             }
-            /*
-            if (!Settings.Appearance.IsTransparentButtonBackground)
-            {
-                ToggleSwitchTransparentButtonBackground_Toggled(ToggleSwitchTransparentButtonBackground, null);
-            }
-            */
         }
 
         int BoundsWidth = 5;
-
-        /*
-        private void ToggleSwitchModeFinger_Toggled(object sender, RoutedEventArgs e)
-        {
-            ToggleSwitchAutoEnterModeFinger.IsOn = ToggleSwitchModeFinger.IsOn;
-            if (ToggleSwitchModeFinger.IsOn)
-            {
-                BoundsWidth = 15; //35
-            }
-            else
-            {
-                BoundsWidth = 5; //20
-            }
-        }
-        */
 
         private void BtnHideInkCanvas_Click(object sender, RoutedEventArgs e)
         {
@@ -1681,6 +1665,7 @@ namespace Ink_Canvas
         #region Right Side Panel (Buttons - Color)
 
         int inkColor = 1;
+        bool isUselightThemeColor = false;
 
         private void ColorSwitchCheck()
         {
@@ -1772,6 +1757,7 @@ namespace Ink_Canvas
                         BoardViewboxBtnColorPinkContent.Visibility = Visibility.Visible;
                         break;
                 }
+                CheckColorTheme();
             }
 
             isLongPressSelected = false;
@@ -1794,12 +1780,10 @@ namespace Ink_Canvas
             if (BtnSwitchTheme.Content.ToString() == "浅色")
             {
                 inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFF3333");
-                //BtnColorRed.Background = new SolidColorBrush(StringToColor("#FFFF3333"));
             }
             else
             {
                 inkCanvas.DefaultDrawingAttributes.Color = Colors.Red;
-                //BtnColorRed.Background = Brushes.Red;
             }
 
             ColorSwitchCheck();
@@ -1812,12 +1796,10 @@ namespace Ink_Canvas
             if (BtnSwitchTheme.Content.ToString() == "浅色")
             {
                 inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF1ED760");
-                //BtnColorGreen.Background = new SolidColorBrush(StringToColor("#FF1ED760"));
             }
             else
             {
                 inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF169141");
-                //BtnColorGreen.Background = new SolidColorBrush(StringToColor("#FF169141"));
             }
 
             ColorSwitchCheck();
@@ -1839,12 +1821,10 @@ namespace Ink_Canvas
             if (BtnSwitchTheme.Content.ToString() == "浅色")
             {
                 inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFFC000");
-                //BtnColorYellow.Background = new SolidColorBrush(StringToColor("#FFFFC000"));
             }
             else
             {
                 inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFF38B00");
-                //BtnColorYellow.Background = new SolidColorBrush(StringToColor("#FFF38B00"));
             }
 
             ColorSwitchCheck();
@@ -7684,6 +7664,7 @@ namespace Ink_Canvas
                         ViewboxFloatingBarMarginAnimation(60);
                     });
                 })).Start();
+
                 if (Settings.Canvas.UsingWhiteboard)
                 {
                     BorderPenColorBlack_MouseUp(BorderPenColorBlack, null);
@@ -7696,6 +7677,7 @@ namespace Ink_Canvas
             else
             {
                 //关闭黑板
+                HideSubPanelsImmediately();
 
                 if (StackPanelPPTControls.Visibility == Visibility.Visible)
                 {
@@ -8591,16 +8573,8 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
             Settings.Canvas.UsingWhiteboard = !Settings.Canvas.UsingWhiteboard;
-            if (!Settings.Canvas.UsingWhiteboard)
-            {
-                BtnSwitchTheme.Content = "浅色";
-            }
-            else
-            {
-                BtnSwitchTheme.Content = "深色";
-            }
-            BtnSwitchTheme_Click(sender, e);
             SaveSettingsToFile();
+            CheckColorTheme();
         }
 
         private void BoardEraserIcon_Click(object sender, RoutedEventArgs e)
@@ -8650,6 +8624,12 @@ namespace Ink_Canvas
         {
             SymbolIconDelete_MouseUp(sender, e);
             PenIcon_Click(null, null);
+        }
+
+        private void BoardLaunchEasiCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ImageBlackboard_MouseUp(null, null);
+            SoftwareLauncher.LaunchEasiCamera("希沃视频展台");
         }
 
         private void CollapseBorderDrawShape()

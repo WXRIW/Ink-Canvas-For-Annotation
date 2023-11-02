@@ -170,6 +170,7 @@
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\MultiTouchInput.cs" />
     <Compile Include="Helpers\SimulateMouseClick.cs" />
+    <Compile Include="Helpers\SoftwareLauncher.cs" />
     <Compile Include="Helpers\StoreHelper.cs" />
     <Compile Include="Helpers\TimeMachine.cs" />
     <Compile Include="Helpers\Converters.cs" />
@@ -438,6 +439,9 @@
   <ItemGroup>
     <Resource Include="Resources\Icons-png\down.png" />
     <Resource Include="Resources\Icons-png\up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-png\EasiCamera.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
