@@ -1,4 +1,5 @@
-﻿using System.Windows.Automation;
+﻿using System.Windows;
+using System.Windows.Automation;
 
 namespace Ink_Canvas.Helpers
 {
@@ -42,7 +43,7 @@ namespace Ink_Canvas.Helpers
                     }
                 }
             }
-            // 未找到希沃白板窗口
+            // 未找到软件白板窗口
             return true;
         }
 

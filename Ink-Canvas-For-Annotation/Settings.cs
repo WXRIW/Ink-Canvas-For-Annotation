@@ -135,6 +135,12 @@ namespace Ink_Canvas
         [JsonProperty("isAutoFoldInEasiCamera")]
         public bool IsAutoFoldInEasiCamera { get; set; } = false;
 
+        [JsonProperty("isAutoFoldInHiteTouchPro")]
+        public bool IsAutoFoldInHiteTouchPro { get; set; } = false;
+
+        [JsonProperty("isAutoFoldInHiteCamera")]
+        public bool IsAutoFoldInHiteCamera { get; set; } = false;
+
         [JsonProperty("isAutoKillPptService")]
         public bool IsAutoKillPptService { get; set; } = false;
 

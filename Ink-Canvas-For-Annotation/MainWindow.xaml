@@ -346,7 +346,7 @@
                                                 <ui:SimpleStackPanel Orientation="Horizontal">
                                                     <Label Content="笔锋设置：" Foreground="{DynamicResource ToolBarForeground}" FontSize="15" VerticalAlignment="Center"/>
                                                     <ComboBox Name="ComboBoxPenStyle2" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxPenStyle_SelectionChanged">
-                                                        <ComboBoxItem Content="模拟笔锋（根据墨迹尾部计算）" FontFamily="Microsoft YaHei UI"/>
+                                                        <ComboBoxItem Content="模拟笔锋（根据墨迹尾部）" FontFamily="Microsoft YaHei UI"/>
                                                         <ComboBoxItem Content="模拟笔锋（根据速度计算）" FontFamily="Microsoft YaHei UI"/>
                                                         <ComboBoxItem Content="无笔锋"  FontFamily="Microsoft YaHei UI"/>
                                                     </ComboBox>
@@ -952,6 +952,8 @@
                             <ui:SimpleStackPanel Spacing="12">
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInEasiNote" Header="进入“希沃白板”时自动收纳至侧边栏" IsOn="true" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInEasiNote_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInEasiCamera" Header="进入“希沃视频展台”时自动收纳至侧边栏" IsOn="true" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInEasiCamera_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInHiteTouchPro" Header="进入“鸿合白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInHiteTouchPro_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInHiteCamera" Header="进入“泓合视频展台”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInHiteCamera_Toggled"/>
                                 <TextBlock Text="# 请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏。" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillPptService" Header="自动查杀“PPT 小工具”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillPptService_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillEasiNote" Header="自动查杀“希沃白板 5”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillEasiNote_Toggled"/>

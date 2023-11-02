@@ -169,6 +169,7 @@
     <Compile Include="Helpers\InkRecognizeHelper.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\MultiTouchInput.cs" />
+    <Compile Include="Helpers\ProcessToCheckWindowHelper.cs" />
     <Compile Include="Helpers\SimulateMouseClick.cs" />
     <Compile Include="Helpers\SoftwareLauncher.cs" />
     <Compile Include="Helpers\StoreHelper.cs" />

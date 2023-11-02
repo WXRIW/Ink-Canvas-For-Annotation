@@ -18,6 +18,8 @@
   "automation": {
     "isAutoFoldInEasiNote": true,
     "isAutoFoldInEasiCamera": true,
+    "isAutoFoldInHiteTouchPro": false,
+    "isAutoFoldInHiteCamera": false,
     "isAutoKillPptService": false,
     "isAutoKillEasiNote": false,
     "isSaveScreenshotsInDateFolders": false,

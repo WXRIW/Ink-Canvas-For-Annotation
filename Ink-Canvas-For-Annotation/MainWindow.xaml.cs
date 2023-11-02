@@ -24,6 +24,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using Application = System.Windows.Application;
 using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
@@ -176,7 +177,10 @@ namespace Ink_Canvas
                         unfoldFloatingBarByUser = false;
                     }
                 }
-                else if (((!Settings.Automation.IsAutoFoldInEasiNote) || WinTabWindowsChecker.IsWindowMinimized("希沃白板")) && ((!Settings.Automation.IsAutoFoldInEasiCamera) || WinTabWindowsChecker.IsWindowMinimized("希沃视频展台"))) // 窗口已最小化
+                else if (((!Settings.Automation.IsAutoFoldInEasiNote) || WinTabWindowsChecker.IsWindowMinimized("希沃白板"))
+                    && ((!Settings.Automation.IsAutoFoldInEasiCamera) || WinTabWindowsChecker.IsWindowMinimized("希沃视频展台"))
+                    && ((!Settings.Automation.IsAutoFoldInHiteTouchPro) || ProcessToCheckWindowHelper.IsProcessMinimized("HiteTouchPro"))
+                    && ((!Settings.Automation.IsAutoFoldInHiteCamera) || WinTabWindowsChecker.IsWindowMinimized("鸿合视频展台"))) // 窗口已最小化
                 {
                     if (foldFloatingBarByUser == false)
                     {
@@ -940,7 +944,8 @@ namespace Ink_Canvas
 
             if (Settings.Automation != null)
             {
-                if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera)
+                if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
+                    || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
                 {
                     timerCheckAutoFold.Start();
                 }
@@ -965,6 +970,24 @@ namespace Ink_Canvas
                 else
                 {
                     ToggleSwitchAutoFoldInEasiCamera.IsOn = false;
+                }
+
+                if (Settings.Automation.IsAutoFoldInHiteTouchPro)
+                {
+                    ToggleSwitchAutoFoldInHiteTouchPro.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInHiteTouchPro.IsOn = false;
+                }
+
+                if (Settings.Automation.IsAutoFoldInHiteCamera)
+                {
+                    ToggleSwitchAutoFoldInHiteCamera.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInHiteCamera.IsOn = false;
                 }
 
                 if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoKillPptService)
@@ -3381,7 +3404,8 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInEasiNote = ToggleSwitchAutoFoldInEasiNote.IsOn;
             SaveSettingsToFile();
 
-            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera)
+            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
+                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
             {
                 timerCheckAutoFold.Start();
             }
@@ -3397,7 +3421,42 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInEasiCamera = ToggleSwitchAutoFoldInEasiCamera.IsOn;
             SaveSettingsToFile();
 
-            if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoFoldInEasiCamera)
+            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
+                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
+        private void ToggleSwitchAutoFoldInHiteTouchPro_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInHiteTouchPro = ToggleSwitchAutoFoldInHiteTouchPro.IsOn;
+            SaveSettingsToFile();
+
+            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
+                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
+        private void ToggleSwitchAutoFoldInHiteCamera_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInHiteCamera = ToggleSwitchAutoFoldInHiteCamera.IsOn;
+            SaveSettingsToFile();
+
+            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
+                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
             {
                 timerCheckAutoFold.Start();
             }
@@ -3612,6 +3671,8 @@ namespace Ink_Canvas
 
             Settings.Automation.IsAutoFoldInEasiNote = true;
             Settings.Automation.IsAutoFoldInEasiCamera = true;
+            Settings.Automation.IsAutoFoldInHiteTouchPro = false;
+            Settings.Automation.IsAutoFoldInHiteCamera = false;
             Settings.Automation.IsAutoKillPptService = IsAutoKillPptService;
             Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
             Settings.Automation.IsSaveScreenshotsInDateFolders = false;
@@ -6734,7 +6795,7 @@ namespace Ink_Canvas
                     }
                     InkToShapeProcess();
                 }
-
+                
                 if (isWindowsnameNotSeewo)
                 {
                     foreach (StylusPoint stylusPoint in e.Stroke.StylusPoints)
@@ -6746,7 +6807,7 @@ namespace Ink_Canvas
                         }
                     }
                 }
-
+                
 
                 try
                 {
