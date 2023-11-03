@@ -67,7 +67,7 @@
   },
   "startup": {
     "isAutoHideCanvas": true,
-    "isAutoEnterModeFinger": false,
+    "isAutoEnterModeFinger": true,
     "isColorfulViewboxFloatingBar": false,
     "enableViewboxFloatingBarScaleTransform": true,
     "enableViewboxBlackBoardScaleTransform": false

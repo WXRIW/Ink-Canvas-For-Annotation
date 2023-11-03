@@ -41,10 +41,6 @@ namespace Ink_Canvas
     {
         #region Window Initialization
 
-        bool isWindowsnameNotSeewo = (Environment.UserName != "seewo") && (Environment.UserName != "Seewo");
-        bool isColorfulViewboxFloatingBar = false;
-        bool EnableViewboxFloatingBarScaleTransform = false;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -681,17 +677,17 @@ namespace Ink_Canvas
 
             if (Settings.Startup.IsAutoEnterModeFinger)
             {
-                //ToggleSwitchModeFinger.IsOn = true;
+                ToggleSwitchModeFinger.IsOn = true;
                 ToggleSwitchAutoEnterModeFinger.IsOn = true;
             }
             else
             {
+                ToggleSwitchModeFinger.IsOn = false;
                 ToggleSwitchAutoEnterModeFinger.IsOn = false;
             }
 
             if (Settings.Startup.IsColorfulViewboxFloatingBar) // 浮动工具栏背景色
             {
-                isColorfulViewboxFloatingBar = true;
                 LinearGradientBrush gradientBrush = new LinearGradientBrush();
 
                 gradientBrush.StartPoint = new Point(0, 0);
@@ -710,7 +706,6 @@ namespace Ink_Canvas
             }
             if (Settings.Startup.EnableViewboxFloatingBarScaleTransform) // 浮动工具栏 UI 缩放 85%
             {
-                EnableViewboxFloatingBarScaleTransform = true;
                 ViewboxFloatingBarScaleTransform.ScaleX = 0.85;
                 ViewboxFloatingBarScaleTransform.ScaleY = 0.85;
 
@@ -798,6 +793,7 @@ namespace Ink_Canvas
                 BtnSwitchSide.Visibility = Visibility.Collapsed;
                 ToggleSwitchShowButtonLRSwitch.IsOn = false;
             }
+            
             if (Settings.Appearance.IsShowModeFingerToggleSwitch)
             {
                 StackPanelModeFinger.Visibility = Visibility.Visible;
@@ -807,7 +803,8 @@ namespace Ink_Canvas
             {
                 StackPanelModeFinger.Visibility = Visibility.Collapsed;
                 ToggleSwitchShowButtonModeFinger.IsOn = false;
-            }*/
+            }
+            */
             if (Settings.Appearance.IsTransparentButtonBackground)
             {
                 BtnExit.Background = new SolidColorBrush(StringToColor("#7F909090"));
@@ -2703,7 +2700,7 @@ namespace Ink_Canvas
                 BtnPPTSlideShowEnd.Visibility = Visibility.Visible;
                 ViewBoxStackPanelMain.Margin = new Thickness(10, 10, 10, 10);
 
-                if (isColorfulViewboxFloatingBar)
+                if (Settings.Startup.IsColorfulViewboxFloatingBar)
                 {
                     ViewboxFloatingBar.Opacity = 0.8;
                 }
@@ -2920,7 +2917,7 @@ namespace Ink_Canvas
                 */
                 ViewboxFloatingBarMarginAnimation(100);
 
-                if (isColorfulViewboxFloatingBar)
+                if (Settings.Startup.IsColorfulViewboxFloatingBar)
                 {
                     ViewboxFloatingBar.Opacity = 0.95;
                 }
@@ -6855,18 +6852,18 @@ namespace Ink_Canvas
                     }
                     InkToShapeProcess();
                 }
-                
-                if (isWindowsnameNotSeewo)
+
+
+                foreach (StylusPoint stylusPoint in e.Stroke.StylusPoints)
                 {
-                    foreach (StylusPoint stylusPoint in e.Stroke.StylusPoints)
+                    // 检查是否是压感笔书写
+                    //if (stylusPoint.PressureFactor != 0.5 && stylusPoint.PressureFactor != 0)
+                    if ((stylusPoint.PressureFactor > 0.501 || stylusPoint.PressureFactor < 0.5) && stylusPoint.PressureFactor != 0)
                     {
-                        // 检查是否是压感笔书写
-                        if (stylusPoint.PressureFactor != 0.5 && stylusPoint.PressureFactor != 0)
-                        {
-                            return;
-                        }
+                        return;
                     }
-                }                
+                }
+
 
                 try
                 {
@@ -8412,13 +8409,13 @@ namespace Ink_Canvas
                 {
                     ViewboxFloatingBarMarginAnimation(100);
                 }
-                SidePannelMarginAnimation(-1200);
+                SidePannelMarginAnimation(-1500);
             });
 
             isFloatingBarChangingHideMode = false;
         }
 
-        private async void SidePannelMarginAnimation(int heightFromBottom) // Possible value: -1200, -200
+        private async void SidePannelMarginAnimation(int heightFromBottom) // Possible value: -1500, -200
         {
             await Dispatcher.InvokeAsync(() =>
             {
@@ -8428,13 +8425,13 @@ namespace Ink_Canvas
                 {
                     Duration = TimeSpan.FromSeconds(0.3),
                     From = LeftSidePanel.Margin,
-                    To = new Thickness(-15, 0, 0, heightFromBottom)
+                    To = new Thickness(-17, 0, 0, heightFromBottom)
                 };
                 ThicknessAnimation RightSidePanelmarginAnimation = new ThicknessAnimation
                 {
                     Duration = TimeSpan.FromSeconds(0.3),
                     From = RightSidePanel.Margin,
-                    To = new Thickness(0, 0, -15, heightFromBottom)
+                    To = new Thickness(0, 0, -17, heightFromBottom)
                 };
 
                 LeftSidePanel.BeginAnimation(FrameworkElement.MarginProperty, LeftSidePanelmarginAnimation);
@@ -8445,8 +8442,8 @@ namespace Ink_Canvas
 
             await Dispatcher.InvokeAsync(() =>
             {
-                LeftSidePanel.Margin = new Thickness(-25, 0, 0, heightFromBottom);
-                RightSidePanel.Margin = new Thickness(0, 0, -25, heightFromBottom);
+                LeftSidePanel.Margin = new Thickness(-17, 0, 0, heightFromBottom);
+                RightSidePanel.Margin = new Thickness(0, 0, -17, heightFromBottom);
 
                 if (heightFromBottom == -1500) LeftSidePanel.Visibility = Visibility.Collapsed;
             });
@@ -8474,7 +8471,7 @@ namespace Ink_Canvas
                     ViewboxFloatingBar.Visibility = Visibility.Visible;
                 }
                 isViewboxFloatingBarMarginAnimationRunning = true;
-                if (EnableViewboxFloatingBarScaleTransform)
+                if (Settings.Startup.EnableViewboxFloatingBarScaleTransform)
                 {
                     pos.X = (SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth * 0.85) / 2;
                     pos.Y = SystemParameters.PrimaryScreenHeight - heightFromBottom * 0.9;
