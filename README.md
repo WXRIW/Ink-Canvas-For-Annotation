@@ -4,7 +4,9 @@
 
 # Ink-Canvas-For-Annotation
 
-[![software screenshot](Ink-Canvas-For-Annotation%20screenshot.png)](# "software screenshot")
+[![software screenshot - 1](Images\Ink-Canvas-For-Annotation%20Screenshot.png)](# "software screenshot - 1")
+
+[![software screenshot - 2](Images\Ink-Canvas-For-Annotation%20Blackboard%20Screenshot.png)](# "software screenshot - 2")
 
 </div>
 
@@ -20,22 +22,12 @@
 
 <div align="center">
 
-[![LOGO](Ink-Canvas-For-Annotation/Resources/InkCanvas.png?raw=true "LOGO")](# "LOGO")
-
-
 # Ink-Canvas
-
-  [直接下载](https://github.com/WXRIW/Ink-Canvas/releases/latest "Latest Releases") | [使用指南](https://github.com/WXRIW/Ink-Canvas/blob/master/Manual.md "说明和指南") | [常见问题](https://github.com/WXRIW/Ink-Canvas#FAQ "FAQ")
   
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FWXRIW%2FInk-Canvas.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FWXRIW%2FInk-Canvas?ref=badge_shield) [![交流群](https://img.shields.io/badge/-%E4%BA%A4%E6%B5%81%E7%BE%A4%20891915376-blue?style=flat&logo=TencentQQ)](https://jq.qq.com/?_wv=1027&k=NvlM1Rgg)  ![GitHub issues](https://img.shields.io/github/issues/WXRIW/Ink-Canvas?logo=github)
 
-
-  
 A fantastic Ink Canvas in WPF/C#, with fantastic support for Seewo Boards.
 
-学校从传统投影仪换成了希沃白板，由于自带的“希沃白板”软件太难用，也没有同类好用的画板软件，所以开发了该画板。  
-
-  [<img src="https://get.microsoft.com/images/zh-CN%20dark.svg" style="width: 200px;"/>](https://www.microsoft.com/store/apps/9NXJFDD97XJ3?cid=ghreadme)
 </div>
 
 ## 🔧 特性
@@ -52,8 +44,6 @@ A fantastic Ink Canvas in WPF/C#, with fantastic support for Seewo Boards.
 
 > 等待是人类的一种智慧
 
- [1] ：对于长文本，可以使用在线剪贴板 （如 https://pastes.dev/ ），粘贴完毕点击 `SAVE` 后复制链接进行分享
- 
 ## 📗 FAQ
 ### 在 Windows 10 以下版本系统中部分图标显示为 “□” 怎么办？
 [点击下载](https://aka.ms/SegoeFonts "SegoeFonts") SegoeFonts 文件，安装压缩包中 `SegMDL2.ttf` 字体后重启即可解决
