@@ -27,6 +27,7 @@ namespace Ink_Canvas.Helpers
                             if (windowPattern != null)
                             {
                                 bool isMinimized = windowPattern.Current.WindowVisualState == WindowVisualState.Minimized;
+                                //LogHelper.WriteLogToFile("" + windowTitle + isMinimized);
                                 return isMinimized;
                             }
                         }

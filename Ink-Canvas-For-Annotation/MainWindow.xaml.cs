@@ -179,9 +179,11 @@ namespace Ink_Canvas
                 }
                 else if (((!Settings.Automation.IsAutoFoldInEasiNote) || WinTabWindowsChecker.IsWindowMinimized("希沃白板"))
                     && ((!Settings.Automation.IsAutoFoldInEasiCamera) || WinTabWindowsChecker.IsWindowMinimized("希沃视频展台"))
+                    && ((!Settings.Automation.IsAutoFoldInEasiNote3C) || WinTabWindowsChecker.IsWindowMinimized("希沃轻白板"))
+                    && ((!Settings.Automation.IsAutoFoldInHiteCamera) || WinTabWindowsChecker.IsWindowMinimized("鸿合视频展台"))
                     && ((!Settings.Automation.IsAutoFoldInHiteTouchPro) || ProcessToCheckWindowHelper.IsProcessMinimized("HiteTouchPro"))
-                    && ((!Settings.Automation.IsAutoFoldInHiteCamera) || WinTabWindowsChecker.IsWindowMinimized("鸿合视频展台"))) // 窗口已最小化
-                {
+                    && ((!Settings.Automation.IsAutoFoldInWxBoardMain) || ProcessToCheckWindowHelper.IsProcessMinimized("WxBoardMain")))
+                { // 窗口已最小化
                     if (foldFloatingBarByUser == false)
                     {
                         if (isFloatingBarFolded) UnFoldFloatingBar_MouseUp(null, null);
@@ -944,8 +946,7 @@ namespace Ink_Canvas
 
             if (Settings.Automation != null)
             {
-                if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
-                    || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
+                if (StartOrStoptimerCheckAutoFold())
                 {
                     timerCheckAutoFold.Start();
                 }
@@ -972,6 +973,15 @@ namespace Ink_Canvas
                     ToggleSwitchAutoFoldInEasiCamera.IsOn = false;
                 }
 
+                if (Settings.Automation.IsAutoFoldInEasiNote3C)
+                {
+                    ToggleSwitchAutoFoldInEasiNote3C.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInEasiNote3C.IsOn = false;
+                }
+
                 if (Settings.Automation.IsAutoFoldInHiteTouchPro)
                 {
                     ToggleSwitchAutoFoldInHiteTouchPro.IsOn = true;
@@ -988,6 +998,15 @@ namespace Ink_Canvas
                 else
                 {
                     ToggleSwitchAutoFoldInHiteCamera.IsOn = false;
+                }
+
+                if (Settings.Automation.IsAutoFoldInWxBoardMain)
+                {
+                    ToggleSwitchAutoFoldInWxBoardMain.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInWxBoardMain.IsOn = false;
                 }
 
                 if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoKillPptService)
@@ -3398,14 +3417,24 @@ namespace Ink_Canvas
 
         #region Automation
 
+        private bool StartOrStoptimerCheckAutoFold()
+        {
+            return (
+                Settings.Automation.IsAutoFoldInEasiNote
+                || Settings.Automation.IsAutoFoldInEasiCamera
+                || Settings.Automation.IsAutoFoldInEasiNote3C
+                || Settings.Automation.IsAutoFoldInHiteTouchPro
+                || Settings.Automation.IsAutoFoldInHiteCamera
+                || Settings.Automation.IsAutoFoldInWxBoardMain);
+        }
+
         private void ToggleSwitchAutoFoldInEasiNote_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiNote = ToggleSwitchAutoFoldInEasiNote.IsOn;
             SaveSettingsToFile();
 
-            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
-                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
+            if (StartOrStoptimerCheckAutoFold())
             {
                 timerCheckAutoFold.Start();
             }
@@ -3421,8 +3450,23 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInEasiCamera = ToggleSwitchAutoFoldInEasiCamera.IsOn;
             SaveSettingsToFile();
 
-            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
-                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
+            if (StartOrStoptimerCheckAutoFold())
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
+        private void ToggleSwitchAutoFoldInEasiNote3C_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInEasiNote3C = ToggleSwitchAutoFoldInEasiNote3C.IsOn;
+            SaveSettingsToFile();
+
+            if (StartOrStoptimerCheckAutoFold())
             {
                 timerCheckAutoFold.Start();
             }
@@ -3438,8 +3482,7 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInHiteTouchPro = ToggleSwitchAutoFoldInHiteTouchPro.IsOn;
             SaveSettingsToFile();
 
-            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
-                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
+            if (StartOrStoptimerCheckAutoFold())
             {
                 timerCheckAutoFold.Start();
             }
@@ -3455,8 +3498,23 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInHiteCamera = ToggleSwitchAutoFoldInHiteCamera.IsOn;
             SaveSettingsToFile();
 
-            if (Settings.Automation.IsAutoFoldInEasiNote || Settings.Automation.IsAutoFoldInEasiCamera
-                || Settings.Automation.IsAutoFoldInHiteTouchPro || Settings.Automation.IsAutoFoldInHiteCamera)
+            if (StartOrStoptimerCheckAutoFold())
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
+        private void ToggleSwitchAutoFoldInWxBoardMain_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInWxBoardMain = ToggleSwitchAutoFoldInWxBoardMain.IsOn;
+            SaveSettingsToFile();
+
+            if (StartOrStoptimerCheckAutoFold())
             {
                 timerCheckAutoFold.Start();
             }
@@ -3671,8 +3729,10 @@ namespace Ink_Canvas
 
             Settings.Automation.IsAutoFoldInEasiNote = true;
             Settings.Automation.IsAutoFoldInEasiCamera = true;
+            Settings.Automation.IsAutoFoldInEasiNote3C = false;
             Settings.Automation.IsAutoFoldInHiteTouchPro = false;
             Settings.Automation.IsAutoFoldInHiteCamera = false;
+            Settings.Automation.IsAutoFoldInWxBoardMain = false;
             Settings.Automation.IsAutoKillPptService = IsAutoKillPptService;
             Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
             Settings.Automation.IsSaveScreenshotsInDateFolders = false;
@@ -6806,8 +6866,7 @@ namespace Ink_Canvas
                             return;
                         }
                     }
-                }
-                
+                }                
 
                 try
                 {
