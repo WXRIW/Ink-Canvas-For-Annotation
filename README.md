@@ -4,9 +4,9 @@
 
 # Ink-Canvas-For-Annotation
 
-[![software screenshot - 1](Images\Ink-Canvas-For-Annotation%20Screenshot.png)](# "software screenshot - 1")
+[![software screenshot - 1](./Images/Ink-Canvas-For-Annotation%20Screenshot.png)](# "software screenshot - 1")
 
-[![software screenshot - 2](Images\Ink-Canvas-For-Annotation%20Blackboard%20Screenshot.png)](# "software screenshot - 2")
+[![software screenshot - 2](./Images/Ink-Canvas-For-Annotation%20Blackboard%20Screenshot.png)](# "software screenshot - 2")
 
 </div>
 
