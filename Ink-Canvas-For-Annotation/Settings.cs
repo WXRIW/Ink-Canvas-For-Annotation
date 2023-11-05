@@ -147,6 +147,12 @@ namespace Ink_Canvas
         [JsonProperty("isAutoFoldInWxBoardMain")]
         public bool IsAutoFoldInWxBoardMain { get; set; } = false;
 
+        [JsonProperty("isAutoFoldInZySmartBoard")]
+        public bool IsAutoFoldInZySmartBoard { get; set; } = false;
+
+        [JsonProperty("isAutoFoldInOldZyBoard")]
+        public bool IsAutoFoldInOldZyBoard { get; set; } = false;
+
         [JsonProperty("isAutoKillPptService")]
         public bool IsAutoKillPptService { get; set; } = false;
 

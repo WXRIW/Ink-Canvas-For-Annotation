@@ -20,7 +20,7 @@
         Closing="Window_Closing"
         Closed="Window_Closed"
         PreviewKeyDown="Main_Grid_PreviewKeyDown"
-        Height="4500" Width="1440"
+        Height="5000" Width="1440"
         FontFamily="Microsoft YaHei UI"
         MouseWheel="Window_MouseWheel"
         Foreground="Black"
@@ -800,8 +800,8 @@
                                 <TextBlock Text="# 开启 自动开关两指缩放功能 后退出画板模式时自动关闭两指缩放功能，进入画板模式时自动开启两指缩放功能" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoSwitchTwoFingerZoom" Header="自动开关两指缩放功能" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSwitchTwoFingerZoom_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchShowCursor" Header="显示画笔光标" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowCursor_Toggled"/>
-                                <TextBlock Text="画笔样式" FontFamily="Microsoft YaHei UI" FontSize="14"/>
                                 <!--
+                                <TextBlock Text="画笔样式" FontFamily="Microsoft YaHei UI" FontSize="14"/>
                                 <ComboBox Name="ComboBoxPenStyle" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxPenStyle_SelectionChanged">
                                     <ComboBoxItem Content="模拟笔锋（根据墨迹尾部计算）" FontFamily="Microsoft YaHei UI"/>
                                     <ComboBoxItem Content="模拟笔锋（根据速度计算）" FontFamily="Microsoft YaHei UI"/>
@@ -956,6 +956,8 @@
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInHiteTouchPro" Header="进入“鸿合白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInHiteTouchPro_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInHiteCamera" Header="进入“鸿合视频展台”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInHiteCamera_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInWxBoardMain" Header="进入“文香白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInWxBoardMain_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInZySmartBoard" Header="进入“中原新白板（相似鸿合）”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInZySmartBoard_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInOldZyBoard" Header="进入“中原旧白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInOldZyBoard_Toggled"/>
                                 <TextBlock Text="# 请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏。" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillPptService" Header="自动查杀“PPT 小工具”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillPptService_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillEasiNote" Header="自动查杀“希沃白板 5”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillEasiNote_Toggled"/>
@@ -1508,10 +1510,9 @@
                                                     </Controls:UniformGrid>
                                                 </ui:SimpleStackPanel>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Slider x:Name="InkWidthSlider" ui:ControlHelper.Header="墨迹粗细"
-                                                            Minimum="1" Maximum="15" Width="276" FontFamily="Microsoft YaHei UI" 
-                                                            FontSize="20" Margin="0 5 0 0" IsSnapToTickEnabled="True" Value="5"
-                                                            TickFrequency="1" TickPlacement="Both" ValueChanged="InkWidthSlider_ValueChanged" Height="64"/>
+                                                    <Slider x:Name="InkWidthSlider" ui:ControlHelper.Header="墨迹粗细" Minimum="1" Maximum="15" Width="276" FontFamily="Microsoft YaHei UI" 
+                                                            FontSize="20" Margin="0 5 0 0" IsSnapToTickEnabled="True" Value="5" TickFrequency="1" TickPlacement="Both" ValueChanged="InkWidthSlider_ValueChanged" Height="64">
+                                                    </Slider>
                                                     <TextBlock Text="{Binding Value, ElementName=InkWidthSlider, Mode=OneWay}" VerticalAlignment="Bottom" Margin="10,0,0,8" FontSize="14"/>
                                                 </StackPanel>
                                             </StackPanel>
@@ -1519,60 +1520,7 @@
                                     </Border>
                                 </Grid>
                             </ui:SimpleStackPanel>
-                            <!--<Grid x:Name="EraserContainer" Width="21" Height="24" Margin="0,1.5,-2,0" MouseDown="Border_MouseDown" MouseUp="ImageEraser_MouseUp" Visibility="{Binding ElementName=BtnErase, Path=Visibility}">
-                                <Image Name="ImageEraser" Margin="0,-4,-1,-2" Source="{DynamicResource ImageSource.RubberNormal}" RenderTransformOrigin="0.5,0.5"/>
-                                <Image Name="ImageEraserMask" Visibility="{Binding Visibility, ElementName=ImageEraser, Converter={StaticResource VisibilityConverter}}" Margin="0,-2.5,0,0" RenderTransformOrigin="0.5,0.5">
-                                    <Image.Source>
-                                        <DrawingImage>
-                                            <DrawingImage.Drawing>
-                                                <DrawingGroup>
-                                                    <DrawingGroup.Children>
-                                                        <GeometryDrawing>
-                                                            <GeometryDrawing.Brush>
-                                                                <SolidColorBrush
-								                                    Color="#FFD8D8D8"
-								                                    Opacity="0" />
-                                                            </GeometryDrawing.Brush>
-                                                            <GeometryDrawing.Pen>
-                                                                <Pen
-								                                    Thickness="1"
-								                                    StartLineCap="Flat"
-								                                    EndLineCap="Flat"
-								                                    LineJoin="Miter">
-                                                                    <Pen.Brush>
-                                                                        <SolidColorBrush
-										                                    Color="#FF979797"
-										                                    Opacity="0" />
-                                                                    </Pen.Brush>
-                                                                </Pen>
-                                                            </GeometryDrawing.Pen>
-                                                            <GeometryDrawing.Geometry>
-                                                                <PathGeometry
-								                                    FillRule="EvenOdd"
-								                                    Figures="M31,31L32,31 32,32 31,32 31,31z M0,0L1,0 1,1 0,1 0,0z" />
-                                                            </GeometryDrawing.Geometry>
-                                                        </GeometryDrawing>
-                                                        <DrawingGroup
-						                                    Transform="-0.707106781186548,-0.707106781186547,-0.707106781186547,0.707106781186548,31.4055917955108,13.0208154846605">
-                                                            <DrawingGroup.Children>
-                                                                <GeometryDrawing x:Name="GeometryDrawingEraser"
-								                                    Brush="#FF666666">
-                                                                    <GeometryDrawing.Geometry>
-                                                                        <PathGeometry
-										                                    FillRule="EvenOdd"
-										                                    Figures="M16.7928932,16.2426407L16.7928932,0.788350252C16.7928932,0.248156103,16.3447877,-0.207106781,15.7920216,-0.207106781L1.79376488,-0.207106781C1.23752408,-0.207106781,0.792893219,0.238574513,0.792893219,0.788350252L0.792893219,16.2426407 16.7928932,16.2426407z M16.7928932,18.2426407L16.7928932,23.7974362C16.7928932,24.3472119,16.3482624,24.7928932,15.7920216,24.7928932L1.79376488,24.7928932C1.24099872,24.7928932,0.792893219,24.3376303,0.792893219,23.7974362L0.792893219,18.2426407 16.7928932,18.2426407z" />
-                                                                    </GeometryDrawing.Geometry>
-                                                                </GeometryDrawing>
-                                                            </DrawingGroup.Children>
-                                                        </DrawingGroup>
-                                                    </DrawingGroup.Children>
-                                                </DrawingGroup>
-                                            </DrawingImage.Drawing>
-                                        </DrawingImage>
-                                    </Image.Source>
-                                </Image>
-                            </Grid>
-                            -->
+                            
                             <ui:SimpleStackPanel Name="Eraser_Icon" MouseUp="EraserIcon_Click" MouseDown="Border_MouseDown" Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Image Source="/Resources/Icons-png/eraser-outline.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="30"/>
                             </ui:SimpleStackPanel>

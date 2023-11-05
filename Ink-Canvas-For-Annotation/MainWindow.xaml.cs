@@ -24,7 +24,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using Application = System.Windows.Application;
 using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
@@ -110,7 +109,7 @@ namespace Ink_Canvas
             timerKillProcess.Interval = 5000;
 
             timerCheckAutoFold.Elapsed += timerCheckAutoFold_Elapsed;
-            timerCheckAutoFold.Interval = 1000;
+            timerCheckAutoFold.Interval = 1500;
         }
 
         private void TimerKillProcess_Elapsed(object sender, ElapsedEventArgs e)
@@ -178,7 +177,9 @@ namespace Ink_Canvas
                     && ((!Settings.Automation.IsAutoFoldInEasiNote3C) || WinTabWindowsChecker.IsWindowMinimized("希沃轻白板"))
                     && ((!Settings.Automation.IsAutoFoldInHiteCamera) || WinTabWindowsChecker.IsWindowMinimized("鸿合视频展台"))
                     && ((!Settings.Automation.IsAutoFoldInHiteTouchPro) || ProcessToCheckWindowHelper.IsProcessMinimized("HiteTouchPro"))
-                    && ((!Settings.Automation.IsAutoFoldInWxBoardMain) || ProcessToCheckWindowHelper.IsProcessMinimized("WxBoardMain")))
+                    && ((!Settings.Automation.IsAutoFoldInWxBoardMain) || ProcessToCheckWindowHelper.IsProcessMinimized("WxBoardMain"))
+                    && ((!Settings.Automation.IsAutoFoldInZySmartBoard) || ProcessToCheckWindowHelper.IsProcessMinimized("SmartBoard"))
+                    && ((!Settings.Automation.IsAutoFoldInOldZyBoard) || (WinTabWindowsChecker.IsWindowMinimized("WhiteBoard - DrawingWindow") && WinTabWindowsChecker.IsWindowMinimized("InstantAnnotationWindow"))))
                 { // 窗口已最小化
                     if (foldFloatingBarByUser == false)
                     {
@@ -1004,6 +1005,24 @@ namespace Ink_Canvas
                 else
                 {
                     ToggleSwitchAutoFoldInWxBoardMain.IsOn = false;
+                }
+                
+                if (Settings.Automation.IsAutoFoldInZySmartBoard)
+                {
+                    ToggleSwitchAutoFoldInZySmartBoard.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInZySmartBoard.IsOn = false;
+                }
+
+                if (Settings.Automation.IsAutoFoldInOldZyBoard)
+                {
+                    ToggleSwitchAutoFoldInOldZyBoard.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInOldZyBoard.IsOn = false;
                 }
 
                 if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoKillPptService)
@@ -3422,7 +3441,9 @@ namespace Ink_Canvas
                 || Settings.Automation.IsAutoFoldInEasiNote3C
                 || Settings.Automation.IsAutoFoldInHiteTouchPro
                 || Settings.Automation.IsAutoFoldInHiteCamera
-                || Settings.Automation.IsAutoFoldInWxBoardMain);
+                || Settings.Automation.IsAutoFoldInWxBoardMain
+                || Settings.Automation.IsAutoFoldInZySmartBoard
+                || Settings.Automation.IsAutoFoldInOldZyBoard);
         }
 
         private void ToggleSwitchAutoFoldInEasiNote_Toggled(object sender, RoutedEventArgs e)
@@ -3509,6 +3530,38 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInWxBoardMain = ToggleSwitchAutoFoldInWxBoardMain.IsOn;
+            SaveSettingsToFile();
+
+            if (StartOrStoptimerCheckAutoFold())
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
+        private void ToggleSwitchAutoFoldInZySmartBoard_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInZySmartBoard = ToggleSwitchAutoFoldInZySmartBoard.IsOn;
+            SaveSettingsToFile();
+
+            if (StartOrStoptimerCheckAutoFold())
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
+        }
+
+        private void ToggleSwitchAutoFoldInOldZyBoard_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInOldZyBoard = ToggleSwitchAutoFoldInOldZyBoard.IsOn;
             SaveSettingsToFile();
 
             if (StartOrStoptimerCheckAutoFold())
@@ -3730,6 +3783,8 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInHiteTouchPro = false;
             Settings.Automation.IsAutoFoldInHiteCamera = false;
             Settings.Automation.IsAutoFoldInWxBoardMain = false;
+            Settings.Automation.IsAutoFoldInZySmartBoard = false;
+            Settings.Automation.IsAutoFoldInOldZyBoard = false;
             Settings.Automation.IsAutoKillPptService = IsAutoKillPptService;
             Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
             Settings.Automation.IsSaveScreenshotsInDateFolders = false;
@@ -5442,16 +5497,34 @@ namespace Ink_Canvas
                     {
                         //第二笔：画双曲线
                         double k = drawMultiStepShapeSpecialParameter3;
-                        a = Math.Sqrt(Math.Abs((endP.X - iniP.X) * (endP.X - iniP.X) - (endP.Y - iniP.Y) * (endP.Y - iniP.Y) / (k * k)));
-                        b = a * k;
-                        pointList = new List<Point>();
-                        for (double i = a; i <= Math.Abs(endP.X - iniP.X); i += 0.5)
-                        {
-                            double rY = Math.Sqrt(Math.Abs(k * k * i * i - b * b));
-                            pointList.Add(new Point(iniP.X + i, iniP.Y - rY));
-                            pointList2.Add(new Point(iniP.X + i, iniP.Y + rY));
-                            pointList3.Add(new Point(iniP.X - i, iniP.Y - rY));
-                            pointList4.Add(new Point(iniP.X - i, iniP.Y + rY));
+                        bool isHyperbolaFocalPointOnXAxis = Math.Abs((endP.Y - iniP.Y) / (endP.X - iniP.X)) < k;
+                        if (isHyperbolaFocalPointOnXAxis)
+                        { // 焦点在 x 轴上
+                            a = Math.Sqrt(Math.Abs((endP.X - iniP.X) * (endP.X - iniP.X) - (endP.Y - iniP.Y) * (endP.Y - iniP.Y) / (k * k)));
+                            b = a * k;
+                            pointList = new List<Point>();
+                            for (double i = a; i <= Math.Abs(endP.X - iniP.X); i += 0.5)
+                            {
+                                double rY = Math.Sqrt(Math.Abs(k * k * i * i - b * b));
+                                pointList.Add(new Point(iniP.X + i, iniP.Y - rY));
+                                pointList2.Add(new Point(iniP.X + i, iniP.Y + rY));
+                                pointList3.Add(new Point(iniP.X - i, iniP.Y - rY));
+                                pointList4.Add(new Point(iniP.X - i, iniP.Y + rY));
+                            }
+                        }
+                        else
+                        { // 焦点在 y 轴上
+                            a = Math.Sqrt(Math.Abs((endP.Y - iniP.Y) * (endP.Y - iniP.Y) - (endP.X - iniP.X) * (endP.X - iniP.X) * (k * k)));
+                            b = a / k;
+                            pointList = new List<Point>();
+                            for (double i = a; i <= Math.Abs(endP.Y - iniP.Y); i += 0.5)
+                            {
+                                double rX = Math.Sqrt(Math.Abs(i * i / k / k - b * b));
+                                pointList.Add(new Point(iniP.X - rX, iniP.Y + i));
+                                pointList2.Add(new Point(iniP.X + rX, iniP.Y + i));
+                                pointList3.Add(new Point(iniP.X - rX, iniP.Y - i));
+                                pointList4.Add(new Point(iniP.X + rX, iniP.Y - i));
+                            }
                         }
                         try
                         {
@@ -5471,12 +5544,12 @@ namespace Ink_Canvas
                             {
                                 //画焦点
                                 c = Math.Sqrt(a * a + b * b);
-                                stylusPoint = new StylusPoint(iniP.X + c, iniP.Y, (float)1.0);
+                                stylusPoint = isHyperbolaFocalPointOnXAxis ? new StylusPoint(iniP.X + c, iniP.Y, (float)1.0) : new StylusPoint(iniP.X, iniP.Y + c, (float)1.0);
                                 point = new StylusPointCollection();
                                 point.Add(stylusPoint);
                                 stroke = new Stroke(point) { DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone() };
                                 strokes.Add(stroke.Clone());
-                                stylusPoint = new StylusPoint(iniP.X - c, iniP.Y, (float)1.0);
+                                stylusPoint = isHyperbolaFocalPointOnXAxis ? new StylusPoint(iniP.X - c, iniP.Y, (float)1.0) : new StylusPoint(iniP.X, iniP.Y - c, (float)1.0);
                                 point = new StylusPointCollection();
                                 point.Add(stylusPoint);
                                 stroke = new Stroke(point) { DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone() };

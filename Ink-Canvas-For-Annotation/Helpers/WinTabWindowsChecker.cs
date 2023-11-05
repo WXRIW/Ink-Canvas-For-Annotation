@@ -13,6 +13,8 @@ namespace Ink_Canvas.Helpers
 
             foreach (AutomationElement window in windows)
             {
+                LogHelper.WriteLogToFile("" + window.Current.Name);
+
                 string windowTitle = window.Current.Name;
 
                 // 如果窗口标题包含 windowName，则进行检查
