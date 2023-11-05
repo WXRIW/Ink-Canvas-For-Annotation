@@ -52,6 +52,7 @@ namespace Ink_Canvas
             StackPanelToolButtons.Visibility = Visibility.Collapsed;
             LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+            BorderSettings.Margin = new Thickness(0,150,0,150);
 
             CollapseBorderDrawShape();
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
@@ -934,6 +935,7 @@ namespace Ink_Canvas
                 }
 
                 ComboBoxPenStyle.SelectedIndex = Settings.Canvas.InkStyle;
+                BoardComboBoxPenStyle.SelectedIndex = Settings.Canvas.InkStyle;
 
                 ComboBoxEraserSize.SelectedIndex = Settings.Canvas.EraserSize;
             }
@@ -3388,7 +3390,16 @@ namespace Ink_Canvas
         private void ComboBoxPenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!isLoaded) return;
-            Settings.Canvas.InkStyle = ComboBoxPenStyle.SelectedIndex;
+            if (sender == ComboBoxPenStyle)
+            {
+                Settings.Canvas.InkStyle = ComboBoxPenStyle.SelectedIndex;
+                BoardComboBoxPenStyle.SelectedIndex = ComboBoxPenStyle.SelectedIndex;
+            }
+            else
+            {
+                Settings.Canvas.InkStyle = BoardComboBoxPenStyle.SelectedIndex;
+                ComboBoxPenStyle.SelectedIndex = BoardComboBoxPenStyle.SelectedIndex;
+            }
             SaveSettingsToFile();
         }
 
@@ -8820,6 +8831,13 @@ namespace Ink_Canvas
         {
             ImageBlackboard_MouseUp(null, null);
             SoftwareLauncher.LaunchEasiCamera("希沃视频展台");
+        }
+
+        private void BoardLaunchDesmos_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            HideSubPanelsImmediately();
+            ImageBlackboard_MouseUp(null, null);
+            Process.Start("https://www.desmos.com/calculator?lang=zh-CN");
         }
 
         private void CollapseBorderDrawShape()

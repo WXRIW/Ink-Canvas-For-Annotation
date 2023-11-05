@@ -444,5 +444,8 @@
   <ItemGroup>
     <Resource Include="Resources\Icons-png\EasiCamera.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-png\Desmos.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

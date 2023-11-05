@@ -23,7 +23,7 @@
     "isAutoFoldInHiteCamera": false,
     "isAutoFoldInWxBoardMain": false,
     "isAutoFoldInZySmartBoard": false,
-    "isAutoFoldInOldZyBoard": true,
+    "isAutoFoldInOldZyBoard": false,
     "isAutoKillPptService": false,
     "isAutoKillEasiNote": false,
     "isSaveScreenshotsInDateFolders": false,

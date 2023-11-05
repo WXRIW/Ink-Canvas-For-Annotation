@@ -345,7 +345,7 @@
                                             <Viewbox Width="320" Height="35" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <ui:SimpleStackPanel Orientation="Horizontal">
                                                     <Label Content="笔锋设置：" Foreground="{DynamicResource ToolBarForeground}" FontSize="15" VerticalAlignment="Center"/>
-                                                    <ComboBox Name="ComboBoxPenStyle2" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxPenStyle_SelectionChanged">
+                                                    <ComboBox Name="BoardComboBoxPenStyle" FontFamily="Microsoft YaHei UI" SelectedIndex="0" SelectionChanged="ComboBoxPenStyle_SelectionChanged">
                                                         <ComboBoxItem Content="模拟笔锋（根据墨迹尾部）" FontFamily="Microsoft YaHei UI"/>
                                                         <ComboBoxItem Content="模拟笔锋（根据速度计算）" FontFamily="Microsoft YaHei UI"/>
                                                         <ComboBoxItem Content="无笔锋"  FontFamily="Microsoft YaHei UI"/>
@@ -575,12 +575,24 @@
                             <Grid Margin="0,0,0,5" Width="0">
                                 <Border Name="BoardBorderTools" Margin="-158,-185,-97,54" CornerRadius="5" Background="White" Opacity="0.9" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
                                     <ui:SimpleStackPanel Margin="10">
-                                        <Border Margin="0,2.5,0,5" BorderBrush="Black" BorderThickness="1.5" Width="150" CornerRadius="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchEasiCamera_MouseUp">
-                                            <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2.5,0,0,0" Height="35" Spacing="7.5">
-                                                <Image Source="/Resources/Icons-png/EasiCamera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30"/>
-                                                <TextBlock Text="希沃视频展台" FontSize="15" VerticalAlignment="Center"/>
-                                            </ui:SimpleStackPanel>
-                                        </Border>
+                                        <ui:SimpleStackPanel Orientation="Horizontal">
+                                            <Border Margin="4,3" BorderBrush="Black" BorderThickness="1.5" Width="110" CornerRadius="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchEasiCamera_MouseUp">
+                                                <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2.5,0,0,0" Height="35" Spacing="5">
+                                                    <Image Source="/Resources/Icons-png/EasiCamera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25"/>
+                                                    <TextBlock Text="视频展台" FontSize="15" VerticalAlignment="Center"/>
+                                                </ui:SimpleStackPanel>
+                                            </Border>
+                                            <Border Margin="4,3" BorderBrush="Black" BorderThickness="1.5" Width="110" CornerRadius="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchDesmos_MouseUp">
+                                                <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2.5,0,0,0" Height="35" Spacing="5">
+                                                    <Image Source="/Resources/Icons-png/Desmos.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25">
+                                                        <Image.Clip>
+                                                            <EllipseGeometry Center="12.5,12.5" RadiusX="12.5" RadiusY="12.5" />
+                                                        </Image.Clip>
+                                                    </Image>
+                                                    <TextBlock Text="Desmos" FontSize="15" VerticalAlignment="Center"/>
+                                                </ui:SimpleStackPanel>
+                                            </Border>
+                                        </ui:SimpleStackPanel>
                                         <Label Content="保存 | 打开 | 播放 — 当前页墨迹" FontSize="16" HorizontalAlignment="Left"/>
                                         <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="35" Spacing="15">
                                             <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
@@ -592,7 +604,7 @@
                                             <Image Source="/Resources/Icons-png/camera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
                                             <Image Source="/Resources/Icons-png/settings.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
 
-                                            <Border Margin="-10,0,0,0" Width="1" Height="30" BorderBrush="{DynamicResource ToolBarForeground}" Background="{DynamicResource ToolBarForeground}"/>
+                                            <Border Margin="-10,0,0,0" Width="1" Height="30" BorderBrush="Black" Background="Black"/>
 
 
                                             <Image Margin="0,0,15,0" Source="/Resources/Icons-png/stopwatch.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
@@ -738,7 +750,7 @@
         <!--// 设置界面 //-->
         <Border Name="BorderSettings" Background="White" BorderBrush="Black"
                 BorderThickness="1" CornerRadius="5" ui:ThemeManager.RequestedTheme="Light"
-                Width="440" HorizontalAlignment="Center" Margin="0,180,0,190" Visibility="Visible">
+                Width="440" HorizontalAlignment="Center" Margin="0,150,0,350" Visibility="Visible">
             <Grid>
                 <ScrollViewer Margin="0,60,0,50" VerticalScrollBarVisibility="Auto"
                               PanningMode="VerticalOnly" ui:ThemeManager.RequestedTheme="Light"
@@ -1625,13 +1637,13 @@
                                 <Image Source="/Resources/Icons-png/hidden.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="23"/>
                             </ui:SimpleStackPanel>
                             <Grid Width="0">
-                                <Border Name="BorderTools" Margin="-80,-152,-80,40" CornerRadius="5" Background="White" Opacity="0.9" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
+                                <Border Name="BorderTools" Margin="-77,-148,-75,40" CornerRadius="5" Background="White" Opacity="0.9" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
                                     <ui:SimpleStackPanel>
                                         <Image HorizontalAlignment="Right" Margin="0,2,2,-27" Source="/Resources/Icons-png/close-circle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25" MouseDown="Border_MouseDown" MouseUp="CloseBordertools_MouseUp"/>
                                         <ui:SimpleStackPanel Margin="10">
-                                            <Label Content="倒计时  随机抽选" FontSize="12" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
-                                            <ui:SimpleStackPanel Margin="6,0,0,2" Height="25" Spacing="12.5" Orientation="Horizontal">
-                                                <Image Source="/Resources/Icons-png/stopwatch.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
+                                            <Label Content="倒计时   抽选   单次抽选" FontSize="9.5" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
+                                            <ui:SimpleStackPanel Margin="2.5,0,0,2" Height="25" Spacing="15" Orientation="Horizontal">
+                                                <Image Margin="-.5,0,-1.5,0" Source="/Resources/Icons-png/stopwatch.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
                                                 <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
                                                 <Grid Margin="0,-2,0,0" MouseUp="SymbolIconRandOne_MouseUp" MouseDown="Border_MouseDown">
                                                     <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}"/>
@@ -1640,7 +1652,7 @@
                                                     </Border>
                                                 </Grid>
                                             </ui:SimpleStackPanel>
-                                            <Label Content="保存 | 打开 | 播放 — 墨迹" FontSize="12" HorizontalAlignment="Left"/>
+                                            <Label Content="保存 | 打开 | 播放 - 墨迹" FontSize="12" HorizontalAlignment="Left"/>
                                             <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
                                                 <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
                                                 <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>

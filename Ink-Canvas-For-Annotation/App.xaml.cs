@@ -1,4 +1,4 @@
-﻿using AutoUpdaterDotNET;
+﻿//using AutoUpdaterDotNET;
 using Ink_Canvas.Helpers;
 using System;
 using System.Linq;
