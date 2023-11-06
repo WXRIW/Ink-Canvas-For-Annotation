@@ -2992,6 +2992,7 @@ namespace Ink_Canvas
 
         private void BtnPPTSlidesUp_Click(object sender, RoutedEventArgs e)
         {
+
             if (currentMode == 1)
             {
                 GridBackgroundCover.Visibility = Visibility.Collapsed;
@@ -3002,6 +3003,12 @@ namespace Ink_Canvas
             }
 
             _isPptClickingBtnTurned = true;
+
+            if (pptApplication.SlideShowWindows[1].View.CurrentShowPosition == 1)
+            { // WPS's bug, app will crash without this part of the code
+                return;
+            }
+
             if (inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber &&
                 Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint)
                 SaveScreenShot(true, pptApplication.SlideShowWindows[1].Presentation.Name + "/" + pptApplication.SlideShowWindows[1].View.CurrentShowPosition);

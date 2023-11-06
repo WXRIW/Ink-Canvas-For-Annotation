@@ -13,7 +13,7 @@ namespace Ink_Canvas.Helpers
 
             foreach (AutomationElement window in windows)
             {
-                LogHelper.WriteLogToFile("" + window.Current.Name);
+                //LogHelper.WriteLogToFile("" + window.Current.Name);
 
                 string windowTitle = window.Current.Name;
 
