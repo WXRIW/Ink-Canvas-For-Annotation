@@ -891,7 +891,7 @@ namespace Ink_Canvas
                 ToggleSwitchEnableFingerGestureSlideShowControl.IsOn = false;
             }
 
-            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\InkCanvas" + ".lnk"))
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\Ink Canvas Annotaion" + ".lnk"))
             {
                 ToggleSwitchRunAtStartup.IsOn = true;
             }
@@ -1343,10 +1343,12 @@ namespace Ink_Canvas
 
         private void CancelSingleFingerDragMode()
         {
-            if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
+            /*if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
             {
                 CollapseBorderDrawShape();
-            }
+            }*/
+            CollapseBorderDrawShape();
+
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
             //Label.Content = "isSingleFingerDragMode=" + isSingleFingerDragMode.ToString();
             if (isSingleFingerDragMode)
@@ -3004,25 +3006,24 @@ namespace Ink_Canvas
 
             _isPptClickingBtnTurned = true;
 
-            if (pptApplication.SlideShowWindows[1].View.CurrentShowPosition == 1)
-            { // WPS's bug, app will crash without this part of the code
-                return;
-            }
-
             if (inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber &&
                 Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint)
                 SaveScreenShot(true, pptApplication.SlideShowWindows[1].Presentation.Name + "/" + pptApplication.SlideShowWindows[1].View.CurrentShowPosition);
+
             try
             {
                 new Thread(new ThreadStart(() =>
                 {
                     pptApplication.SlideShowWindows[1].Activate();
-                    pptApplication.SlideShowWindows[1].View.Previous();
+                    try
+                    {
+                        pptApplication.SlideShowWindows[1].View.Previous();
+                    }
+                    catch { } // Without this catch{}, app will crash when click the pre-page button in the fir page with WPS in special system env.
                 })).Start();
             }
             catch
             {
-                //BtnCheckPPT.Visibility = Visibility.Visible;
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
                 LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
@@ -3135,11 +3136,13 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             if (ToggleSwitchRunAtStartup.IsOn)
             {
-                StartAutomaticallyCreate("InkCanvas");
+                StartAutomaticallyDel("InkCanvas");
+                StartAutomaticallyCreate("Ink Canvas Annotation");
             }
             else
             {
                 StartAutomaticallyDel("InkCanvas");
+                StartAutomaticallyDel("Ink Canvas Annotation");
             }
         }
 
@@ -4824,7 +4827,7 @@ namespace Ink_Canvas
             lastMouseDownSender = null;
             if (isLongPressSelected)
             {
-                CollapseBorderDrawShape();
+                CollapseBorderDrawShape(true);
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawLine.BeginAnimation(OpacityProperty, dA);
             }
@@ -4843,7 +4846,7 @@ namespace Ink_Canvas
             lastMouseDownSender = null;
             if (isLongPressSelected)
             {
-                CollapseBorderDrawShape();
+                CollapseBorderDrawShape(true);
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawDashedLine.BeginAnimation(OpacityProperty, dA);
             }
@@ -4862,7 +4865,7 @@ namespace Ink_Canvas
             lastMouseDownSender = null;
             if (isLongPressSelected)
             {
-                CollapseBorderDrawShape();
+                CollapseBorderDrawShape(true);
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawDotLine.BeginAnimation(OpacityProperty, dA);
             }
@@ -4881,7 +4884,7 @@ namespace Ink_Canvas
             lastMouseDownSender = null;
             if (isLongPressSelected)
             {
-                CollapseBorderDrawShape();
+                CollapseBorderDrawShape(true);
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawArrow.BeginAnimation(OpacityProperty, dA);
             }
@@ -4900,7 +4903,7 @@ namespace Ink_Canvas
             lastMouseDownSender = null;
             if (isLongPressSelected)
             {
-                CollapseBorderDrawShape();
+                CollapseBorderDrawShape(true);
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawParallelLine.BeginAnimation(OpacityProperty, dA);
             }
@@ -7630,7 +7633,11 @@ namespace Ink_Canvas
             AnimationHelper.HideWithSlideAndFade(BoardDeleteIcon);
             AnimationHelper.HideWithSlideAndFade(BoardDeleteIcon2);
             AnimationHelper.HideWithSlideAndFade(BorderSettings, 0.5);
-            if (ToggleSwitchDrawShapeBorderAutoHide.IsOn) CollapseBorderDrawShape();
+            if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
+            {
+                AnimationHelper.HideWithSlideAndFade(BorderDrawShape);
+                AnimationHelper.HideWithSlideAndFade(BoardBorderDrawShape);
+            }
 
             if (mode != null)
             {
@@ -8847,10 +8854,18 @@ namespace Ink_Canvas
             Process.Start("https://www.desmos.com/calculator?lang=zh-CN");
         }
 
-        private void CollapseBorderDrawShape()
+        private void CollapseBorderDrawShape(bool isLongPressSelected = false)
         {
-            AnimationHelper.HideWithSlideAndFade(BorderDrawShape);
-            AnimationHelper.HideWithSlideAndFade(BoardBorderDrawShape);
+            if (isLongPressSelected == true)
+            {
+                HideSubPanels("pen");
+                AnimationHelper.HideWithSlideAndFade(BorderDrawShape);
+                AnimationHelper.HideWithSlideAndFade(BoardBorderDrawShape);
+            }
+            else
+            {
+                HideSubPanels("pen");
+            }
         }
 
         private void CloseBordertools_MouseUp(object sender, MouseButtonEventArgs e)
