@@ -2994,7 +2994,6 @@ namespace Ink_Canvas
 
         private void BtnPPTSlidesUp_Click(object sender, RoutedEventArgs e)
         {
-
             if (currentMode == 1)
             {
                 GridBackgroundCover.Visibility = Visibility.Collapsed;
@@ -3065,18 +3064,13 @@ namespace Ink_Canvas
 
         private async void PPTNavigationBtn_Click(object sender, MouseButtonEventArgs e)
         {
+            if (lastBorderMouseDownObject != sender) return;
             Main_Grid.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
-            CursorIcon_Click(null, null);//BtnHideInkCanvas_Click(sender, e);
+            if (!foldFloatingBarByUser) CursorIcon_Click(null, null);
             pptApplication.SlideShowWindows[1].SlideNavigation.Visible = true;
             // 控制居中
-            if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+            if (!foldFloatingBarByUser && BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
             {
-                /*
-                if (ViewboxFloatingBar.Margin == new Thickness((SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth) / 2, SystemParameters.PrimaryScreenHeight - 60, -2000, -200))
-                {
-                    await Task.Delay(100);
-                    ViewboxFloatingBar.Margin = new Thickness((SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth) / 2, SystemParameters.PrimaryScreenHeight - 60, -2000, -200);
-                }*/
                 await Task.Delay(100);
                 ViewboxFloatingBarMarginAnimation(60);
             }
@@ -8232,11 +8226,13 @@ namespace Ink_Canvas
 
         private void GridPPTControlPrevious_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (lastBorderMouseDownObject != sender) return;
             BtnPPTSlidesUp_Click(BtnPPTSlidesUp, null);
         }
 
         private void GridPPTControlNext_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (lastBorderMouseDownObject != sender) return;
             BtnPPTSlidesDown_Click(BtnPPTSlidesDown, null);
         }
 
@@ -8864,7 +8860,14 @@ namespace Ink_Canvas
             }
             else
             {
-                HideSubPanels("pen");
+                if (StackPanelCanvasControls.Visibility == Visibility.Visible)
+                {
+                    HideSubPanels("pen");
+                }
+                else
+                {
+                    HideSubPanels("cursor");
+                }
             }
         }
 
