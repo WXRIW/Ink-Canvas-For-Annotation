@@ -30,7 +30,8 @@
         <c:VisibilityConverter x:Key="VisibilityConverter"/>
         <c:IsEnabledToOpacityConverter x:Key="IsEnabledToOpacityConverter"/>
         <RoutedUICommand x:Key="KeyExit" Text=" "/>
-        <RoutedUICommand x:Key="back_HotKey_Command" Text=" "/>
+        <RoutedUICommand x:Key="Undo_HotKey_Command" Text=" "/>
+        <RoutedUICommand x:Key="Redo_HotKey_Command" Text=" "/>
         <RoutedUICommand x:Key="HotKey_Capture" Text=" "/>
         <RoutedUICommand x:Key="HotKey_Hide" Text=" "/>
         <RoutedUICommand x:Key="HotKey_ChangeToDrawTool" Text=" "/>
@@ -46,7 +47,8 @@
     <!--输入命令绑定-->
     <Window.InputBindings>
         <KeyBinding Gesture="Shift+Esc" Command="{StaticResource KeyExit}"/>
-        <KeyBinding Modifiers="Control" Key="Z" Command="{StaticResource back_HotKey_Command}"/>
+        <KeyBinding Modifiers="Control" Key="Z" Command="{StaticResource Undo_HotKey_Command}"/>
+        <KeyBinding Modifiers="Control" Key="Y" Command="{StaticResource Redo_HotKey_Command}"/>
         <KeyBinding Modifiers="Alt" Key="S" Command="{StaticResource HotKey_ChangeToSelect}" />
         <KeyBinding Modifiers="Alt" Key="D" Command="{StaticResource HotKey_ChangeToDrawTool}" />
         <KeyBinding Modifiers="Alt" Key="E" Command="{StaticResource HotKey_ChangeToEraser}" />
@@ -61,9 +63,12 @@
     </Window.InputBindings>
     <!--命令执行方法绑定-->
     <Window.CommandBindings>
-        <CommandBinding Command="{StaticResource back_HotKey_Command}"
+        <CommandBinding Command="{StaticResource Undo_HotKey_Command}"
                     CanExecute="CommandBinding_CanExecute"
-                    Executed="back_HotKey"/>
+                    Executed="Undo_HotKey"/>
+        <CommandBinding Command="{StaticResource Redo_HotKey_Command}"
+                    CanExecute="CommandBinding_CanExecute"
+                    Executed="Redo_HotKey"/>
         <CommandBinding Command="{StaticResource KeyExit}"
                     CanExecute="CommandBinding_CanExecute"
                     Executed="KeyExit"/>
@@ -111,13 +116,6 @@
                    SelectionChanged="inkCanvas_SelectionChanged"
                    StrokeCollected="inkCanvas_StrokeCollected"
                    >
-            <!--<InkCanvas.DefaultDrawingAttributes>
-                <DrawingAttributes StylusTip="Ellipse" Height="8" Width="4" IgnorePressure="False" FitToCurve="True" >
-                    <DrawingAttributes.StylusTipTransform>
-                        <Matrix M11="1" M12="1.5" M21="2.2" M22="1"/>
-                    </DrawingAttributes.StylusTipTransform>
-                </DrawingAttributes>
-            </InkCanvas.DefaultDrawingAttributes>-->
         </InkCanvas>
         <Grid Visibility="{Binding ElementName=inkCanvas, Path=Visibility}">
             <Grid Name="GridInkCanvasSelectionCover"
@@ -945,19 +943,8 @@
                                     <TextBlock FontSize="14" Margin="0,0,0,12" Text="重置设置为推荐设置"/>
                                     <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
                                         <Button Content="重置" Width="100" FontFamily="Microsoft YaHei UI" Click="BtnResetToSuggestion_Click" Margin="0,0,0,0"/>
-                                        <ui:SymbolIcon Name="SymbolIconResetSuggestionComplete" Symbol="Accept" Visibility="Collapsed"/>
                                     </ui:SimpleStackPanel>
                                 </StackPanel>
-                                <!--
-                                <StackPanel>
-                                    <TextBlock FontSize="14" Margin="0,0,0,12"
-                                        Text="重置设置为默认设置"/>
-                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
-                                        <Button Content="重置" Width="100" FontFamily="Microsoft YaHei UI" Click="BtnResetToDefault_Click" Margin="0,0,0,10"/>
-                                        <ui:SymbolIcon Name="SymbolIconResetDefaultComplete" Symbol="Accept" Visibility="Collapsed"/>
-                                    </ui:SimpleStackPanel>
-                                </StackPanel>
-                                -->
                             </ui:SimpleStackPanel>
                         </GroupBox>
                         <GroupBox Header="自动">
@@ -1159,9 +1146,7 @@
                     <Button Name="BtnSwitchTheme" Content="深色" FontFamily="Microsoft YaHei UI"
                         Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
                         Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
-                    <!--
-                        Click="BtnSwitchTheme_Click"
-                    -->
+                    <!-- Click="BtnSwitchTheme_Click" -->
                     
                     <Button Name="BtnSwitch" Content="背景" FontFamily="Microsoft YaHei UI"
                         Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
@@ -1172,22 +1157,6 @@
                     <Button x:Name="BtnHideInkCanvas" Content="隐藏&#x000A;画板" FontFamily="Microsoft YaHei UI"
                             Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
                             Click="BtnHideInkCanvas_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
-                    <Button x:Name="BtnTools" Content="工具" FontFamily="Microsoft YaHei UI"
-                            Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                            Click="BtnTools_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
-                    <Grid Name="StackPanelToolButtons" Margin="-127,-30.5,56,0">
-                        <Border CornerRadius="5" Margin="-7"
-                                Background="White" Visibility="Collapsed"
-                                BorderBrush="#0066BF" BorderThickness="1"/>
-                        <ui:SimpleStackPanel  Orientation="Horizontal" Spacing="10">
-                            <Button x:Name="BtnCountdownTimer" Content="计时器" FontFamily="Microsoft YaHei UI"
-                                    Margin="0,0,0,0"
-                                    Click="BtnCountdownTimer_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
-                            <Button x:Name="BtnRand" Content="抽奖" FontFamily="Microsoft YaHei UI"
-                                    Margin="0,0,0,0"
-                                    Click="BtnRand_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>
-                        </ui:SimpleStackPanel>
-                    </Grid>
                     <Button x:Name="BtnScreenshot" Content="截屏" FontFamily="Microsoft YaHei UI"
                             Margin="0,10,0,0" Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
                             Click="BtnScreenshot_Click" Foreground="{Binding ElementName=BtnExit, Path=Foreground}" Background="{Binding ElementName=BtnExit, Path=Background}"/>

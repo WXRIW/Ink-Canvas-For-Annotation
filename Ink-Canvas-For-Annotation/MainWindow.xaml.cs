@@ -49,7 +49,6 @@ namespace Ink_Canvas
             BlackboardRightSide.Visibility = Visibility.Collapsed;
             BorderTools.Visibility = Visibility.Collapsed;
             BorderSettings.Visibility = Visibility.Collapsed;
-            StackPanelToolButtons.Visibility = Visibility.Collapsed;
             LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             BorderSettings.Margin = new Thickness(0,150,0,150);
@@ -371,14 +370,25 @@ namespace Ink_Canvas
             e.CanExecute = true;
         }
 
-        private void back_HotKey(object sender, ExecutedRoutedEventArgs e)
+        private void Undo_HotKey(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
-                inkCanvas.Strokes.Remove(inkCanvas.Strokes[inkCanvas.Strokes.Count - 1]);
+                SymbolIconUndo_MouseUp(lastBorderMouseDownObject, null);
+                //inkCanvas.Strokes.Remove(inkCanvas.Strokes[inkCanvas.Strokes.Count - 1]);
             }
             catch { }
         }
+
+        private void Redo_HotKey(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                SymbolIconRedo_MouseUp(lastBorderMouseDownObject, null);
+            }
+            catch { }
+        }
+
 
         private void KeyExit(object sender, ExecutedRoutedEventArgs e)
         {
@@ -2145,10 +2155,6 @@ namespace Ink_Canvas
                     }
                     else
                     {
-                        //inkCanvas.EraserShape = new RectangleStylusShape(8, 8); //old old
-                        //inkCanvas.EraserShape = forcePointEraser ? new EllipseStylusShape(50, 50) : new EllipseStylusShape(5, 5); //last
-                        //inkCanvas.EraserShape = new EllipseStylusShape(boundsWidth * 1.5, boundsWidth * 1.5); //old old
-                        //inkCanvas.EditingMode = forcePointEraser ? InkCanvasEditingMode.EraseByPoint : InkCanvasEditingMode.EraseByStroke; //last
                         inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
                         inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
                     }
@@ -3856,48 +3862,11 @@ namespace Ink_Canvas
                 LoadSettings(false);
                 isLoaded = true;
 
-                if (ToggleSwitchRunAtStartup.IsOn == false)
-                {
-                    ToggleSwitchRunAtStartup.IsOn = true;
-                }
+                ToggleSwitchRunAtStartup.IsOn = true;
             }
             catch { }
-            SymbolIconResetSuggestionComplete.Visibility = Visibility.Visible;
             ShowNotification("设置已重置为默认推荐设置~");
-            /*
-            new Thread(new ThreadStart(() =>
-            {
-                Thread.Sleep(5000);
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    SymbolIconResetSuggestionComplete.Visibility = Visibility.Collapsed;
-                });
-            })).Start();
-            */
         }
-        /*
-        private void BtnResetToDefault_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                isLoaded = false;
-                File.Delete("settings.json");
-                Settings = new Settings();
-                LoadSettings(false);
-                isLoaded = true;
-            }
-            catch { }
-            SymbolIconResetDefaultComplete.Visibility = Visibility.Visible;
-            new Thread(new ThreadStart(() =>
-            {
-                Thread.Sleep(5000);
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    SymbolIconResetDefaultComplete.Visibility = Visibility.Collapsed;
-                });
-            })).Start();
-        }
-        */
         #endregion
 
         #region Ink To Shape
@@ -7576,34 +7545,6 @@ namespace Ink_Canvas
 
         #endregion
 
-        #region Tools
-
-        private void BtnTools_Click(object sender, RoutedEventArgs e)
-        {
-            if (StackPanelToolButtons.Visibility == Visibility.Visible)
-            {
-                StackPanelToolButtons.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                StackPanelToolButtons.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void BtnCountdownTimer_Click(object sender, RoutedEventArgs e)
-        {
-            StackPanelToolButtons.Visibility = Visibility.Collapsed;
-            new CountdownTimerWindow().Show();
-        }
-
-        private void BtnRand_Click(object sender, RoutedEventArgs e)
-        {
-            StackPanelToolButtons.Visibility = Visibility.Collapsed;
-            new RandWindow().Show();
-        }
-
-        #endregion Tools
-
         #region Float Bar
 
         private void HideSubPanelsImmediately()
@@ -7731,12 +7672,16 @@ namespace Ink_Canvas
 
         private void SymbolIconUndo_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (lastBorderMouseDownObject != sender) return;
+            if (!BtnUndo.IsEnabled) return;
             BtnUndo_Click(BtnUndo, null);
             HideSubPanels();
         }
 
         private void SymbolIconRedo_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (lastBorderMouseDownObject != sender) return;
+            if (!BtnRedo.IsEnabled) return;
             BtnRedo_Click(BtnRedo, null);
             HideSubPanels();
         }
@@ -7995,7 +7940,7 @@ namespace Ink_Canvas
             AnimationHelper.HideWithSlideAndFade(BorderTools);
             AnimationHelper.HideWithSlideAndFade(BoardBorderTools);
 
-            BtnCountdownTimer_Click(BtnCountdownTimer, null);
+            new CountdownTimerWindow().Show();
         }
 
         private void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e)
@@ -8005,7 +7950,7 @@ namespace Ink_Canvas
             AnimationHelper.HideWithSlideAndFade(BorderTools);
             AnimationHelper.HideWithSlideAndFade(BoardBorderTools);
 
-            BtnRand_Click(BtnRand, null);
+            new RandWindow().Show();
         }
 
         private void SymbolIconRandOne_MouseUp(object sender, MouseButtonEventArgs e)
@@ -8041,11 +7986,6 @@ namespace Ink_Canvas
             {
                 foreach (Stroke stroke in strokes)
                 {
-                    //Thread.Sleep(100);
-                    //Application.Current.Dispatcher.Invoke(() =>
-                    //{
-                    //    InkCanvasForInkReplay.Strokes.Add(stroke);
-                    //});
                     StylusPointCollection stylusPoints = new StylusPointCollection();
                     if (stroke.StylusPoints.Count == 629) //圆或椭圆
                     {

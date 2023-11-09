@@ -4,6 +4,11 @@
 
 # Ink-Canvas-For-Annotation
 
+[![UPSTREAM](https://img.shields.io/badge/UpStream-WXRIW%2FInk--Canvas-red.svg "LICENSE")](https://github.com/WXRIW/Ink-Canvas)
+[![LICENSE](https://img.shields.io/badge/License-GPL--3.0-red.svg "LICENSE")](./LICENSE)
+[![Latest release](https://img.shields.io/github/release/ChangSakura/Ink-Canvas-For-Annotation.svg?style=shield)](https://github.com/ChangSakura/Ink-Canvas-For-Annotation/releases/latest)
+[![GitHub issues](https://img.shields.io/github/issues/ChangSakura/Ink-Canvas-For-Annotation?logo=github)](https://github.com/ChangSakura/Ink-Canvas-For-Annotation/issues)
+
 [![software screenshot - 1](./Images/Ink-Canvas-For-Annotation%20Screenshot.png)](# "software screenshot - 1")
 
 [![software screenshot - 2](./Images/Ink-Canvas-For-Annotation%20Blackboard%20Screenshot.png)](# "software screenshot - 2")
