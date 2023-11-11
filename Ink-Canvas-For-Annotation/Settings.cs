@@ -65,20 +65,24 @@ namespace Ink_Canvas
 
     public class Startup
     {
+        [JsonProperty("isAutoUpdate")]
+        public bool IsAutoUpdate { get; set; } = true;
+        [JsonProperty("isAutoUpdateWithSilence")]
+        public bool IsAutoUpdateWithSilence { get; set; } = true;
         [JsonProperty("isAutoHideCanvas")]
         public bool IsAutoHideCanvas { get; set; } = true;
         [JsonProperty("isAutoEnterModeFinger")]
         public bool IsAutoEnterModeFinger { get; set; } = false;
+    }
+
+    public class Appearance
+    {
         [JsonProperty("isColorfulViewboxFloatingBar")]
         public bool IsColorfulViewboxFloatingBar { get; set; } = false;
         [JsonProperty("enableViewboxFloatingBarScaleTransform")]
         public bool EnableViewboxFloatingBarScaleTransform { get; set; } = false;
         [JsonProperty("enableViewboxBlackBoardScaleTransform")]
         public bool EnableViewboxBlackBoardScaleTransform { get; set; } = false;
-    }
-
-    public class Appearance
-    {
         [JsonProperty("isTransparentButtonBackground")]
         public bool IsTransparentButtonBackground { get; set; } = true;
         [JsonProperty("isShowExitButton")]

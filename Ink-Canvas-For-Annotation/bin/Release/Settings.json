@@ -7,6 +7,9 @@
     "isLogEnabled": true
   },
   "appearance": {
+    "isColorfulViewboxFloatingBar": false,
+    "enableViewboxFloatingBarScaleTransform": true,
+    "enableViewboxBlackBoardScaleTransform": false,
     "isTransparentButtonBackground": true,
     "isShowExitButton": true,
     "isShowEraserButton": true,
@@ -56,7 +59,7 @@
     "eraserSize": 3,
     "eraserType": 0,
     "hideStrokeWhenSelecting": false,
-    "usingWhiteboard": false,
+    "usingWhiteboard": true,
     "hyperbolaAsymptoteOption": 0
   },
   "gesture": {
@@ -68,10 +71,9 @@
     "isInkToShapeEnabled": true
   },
   "startup": {
+    "isAutoUpdate": true,
+    "isAutoUpdateWithSilence": false,
     "isAutoHideCanvas": true,
-    "isAutoEnterModeFinger": false,
-    "isColorfulViewboxFloatingBar": false,
-    "enableViewboxFloatingBarScaleTransform": true,
-    "enableViewboxBlackBoardScaleTransform": false
+    "isAutoEnterModeFinger": false
   }
 }

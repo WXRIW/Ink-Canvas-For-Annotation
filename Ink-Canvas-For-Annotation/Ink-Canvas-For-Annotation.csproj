@@ -156,11 +156,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\AutoUpdateHelper.cs" />
     <Compile Include="Windows\ChangeLogWindow.xaml.cs">
       <DependentUpon>ChangeLogWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ClickSensitiveGrid.xaml.cs">
-      <DependentUpon>ClickSensitiveGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\CycleProcessBar.xaml.cs">
       <DependentUpon>CycleProcessBar.xaml</DependentUpon>
@@ -193,10 +191,6 @@
       <DependentUpon>CountdownTimerWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Windows\ChangeLogWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ClickSensitiveGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -529,101 +529,9 @@ namespace Ink_Canvas
         public static Settings Settings = new Settings();
         public static string settingsFileName = "Settings.json";
         bool isLoaded = false;
-        //bool isAutoUpdateEnabled = false;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //new CountdownTimerWindow().ShowDialog();
-            //检查
-            /*
-            new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    string VersionInfo = "";
-                    if (File.Exists(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "VersionInfo.ini"))
-                    {
-                        VersionInfo = File.ReadAllText(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "VersionInfo.ini");
-                    }
-                    string Url = "http://ink.wxriw.cn:1957";
-                    if (VersionInfo != "")
-                    {
-                        Url += "/?verinfo=" + VersionInfo;// + "&pc=" + Environment.MachineName;
-                    }
-                    string response = GetWebClient(Url);
-                    if (response.Contains("Special Version"))
-                    {
-                        //isAutoUpdateEnabled = true;
-
-                        if (response.Contains("<notice>"))
-                        {
-                            string str = Strings.Mid(response, response.IndexOf("<notice>") + 9);
-                            if (str.Contains("<notice>"))
-                            {
-                                str = Strings.Left(str, str.IndexOf("<notice>")).Trim();
-                                if (str.Length > 0)
-                                {
-                                    Application.Current.Dispatcher.Invoke(() =>
-                                    {
-                                        GroupBoxMASEZVersion.Visibility = Visibility.Visible;
-                                        TextBlockMASEZNotice.Text = str;
-                                    });
-                                }
-                            }
-                        }
-                    }
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        Version version = Assembly.GetExecutingAssembly().GetName().Version;
-                        TextBlockVersion.Text = version.ToString();
-
-                        string lastVersion = "";
-                        if (response.Contains("Special Version") && !File.Exists(App.RootPath + "Versions.ini"))
-                        {
-                            LogHelper.WriteLogToFile("Welcome Window Show Dialog", LogHelper.LogType.Event);
-
-                            if (response.Contains("Special Version Alhua"))
-                            {
-                                WelcomeWindow.IsNewBuilding = true;
-                            }
-                            new WelcomeWindow().ShowDialog();
-                        }
-                        else
-                        {
-                            try
-                            {
-                                lastVersion = File.ReadAllText(App.RootPath + "Versions.ini");
-                            }
-                            catch { }
-                            if (response.Contains("Special Version") && !lastVersion.Contains("NewWelcomeConfigured"))
-                            {
-                                LogHelper.WriteLogToFile("Welcome Window Show Dialog (Second time)", LogHelper.LogType.Event);
-
-                                if (response.Contains("Special Version Alhua"))
-                                {
-                                    WelcomeWindow.IsNewBuilding = true;
-                                }
-                                new WelcomeWindow().ShowDialog();
-                            }
-                            try
-                            {
-                                lastVersion = File.ReadAllText(App.RootPath + "Versions.ini");
-                            }
-                            catch { }
-                            if (!lastVersion.Contains(version.ToString()))
-                            {
-                                //LogHelper.WriteLogToFile("Change Log Window Show Dialog", LogHelper.LogType.Event);
-                                //new ChangeLogWindow().ShowDialog();
-                                lastVersion += "\n" + version.ToString();
-                                File.WriteAllText(App.RootPath + "Versions.ini", lastVersion.Trim());
-                            }
-                        }
-                    });
-                }
-                catch { }
-            })).Start();
-            */
             loadPenCanvas();
 
             //加载设置
@@ -671,6 +579,33 @@ namespace Ink_Canvas
             LogHelper.WriteLogToFile("Ink Canvas closed", LogHelper.LogType.Event);
         }
 
+        private async void AutoUpdate()
+        {
+            string IsAvailableLatestVersion = await AutoUpdateHelper.CheckForUpdates();
+            if (IsAvailableLatestVersion != null)
+            {
+                bool IsDownloadSuccessful = await AutoUpdateHelper.DownloadSetupFileAndSaveStatus(IsAvailableLatestVersion);
+                if (IsDownloadSuccessful)
+                {
+                    if (!Settings.Startup.IsAutoUpdateWithSilence)
+                    {
+                        if (MessageBox.Show("软件新版本安装包已下载完成，是否立即更新？", "Ink Canvas Annotation New Version Available", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+                            AutoUpdateHelper.InstallNewVersionApp(IsAvailableLatestVersion, false);
+                        }
+                    }
+                    else
+                    {
+                        AutoUpdateHelper.InstallNewVersionApp(IsAvailableLatestVersion, true);
+                    }
+                }
+            }
+            else
+            {
+                AutoUpdateHelper.DeleteUpdatesFolder();
+            }
+        }
+
         private void LoadSettings(bool isStartup = true)
         {
             if (File.Exists(App.RootPath + settingsFileName))
@@ -696,43 +631,6 @@ namespace Ink_Canvas
             {
                 ToggleSwitchModeFinger.IsOn = false;
                 ToggleSwitchAutoEnterModeFinger.IsOn = false;
-            }
-
-            if (Settings.Startup.IsColorfulViewboxFloatingBar) // 浮动工具栏背景色
-            {
-                LinearGradientBrush gradientBrush = new LinearGradientBrush();
-
-                gradientBrush.StartPoint = new Point(0, 0);
-                gradientBrush.EndPoint = new Point(1, 1);
-                GradientStop blueStop = new GradientStop(Color.FromArgb(0x95, 0x80, 0xB0, 0xFF), 0);
-                GradientStop greenStop = new GradientStop(Color.FromArgb(0x95, 0xC0, 0xFF, 0xC0), 1);
-                gradientBrush.GradientStops.Add(blueStop);
-                gradientBrush.GradientStops.Add(greenStop);
-
-                EnableTwoFingerZoomBorder.Background = gradientBrush;
-                BorderFloatingBarMainControls.Background = gradientBrush;
-                BorderFloatingBarMoveControls.Background = gradientBrush;
-                BorderFloatingBarExitPPTBtn.Background = gradientBrush;
-
-                ToggleSwitchColorfulViewboxFloatingBar.IsOn = true;
-            }
-            if (Settings.Startup.EnableViewboxFloatingBarScaleTransform) // 浮动工具栏 UI 缩放 85%
-            {
-                ViewboxFloatingBarScaleTransform.ScaleX = 0.85;
-                ViewboxFloatingBarScaleTransform.ScaleY = 0.85;
-
-                ToggleSwitchEnableViewboxFloatingBarScaleTransform.IsOn = true;
-            }
-            if (Settings.Startup.EnableViewboxBlackBoardScaleTransform) // 画板 UI 缩放 80%
-            {
-                ViewboxBlackboardLeftSideScaleTransform.ScaleX = 0.8;
-                ViewboxBlackboardLeftSideScaleTransform.ScaleY = 0.8;
-                ViewboxBlackboardCenterSideScaleTransform.ScaleX = 0.8;
-                ViewboxBlackboardCenterSideScaleTransform.ScaleY = 0.8;
-                ViewboxBlackboardRightSideScaleTransform.ScaleX = 0.8;
-                ViewboxBlackboardRightSideScaleTransform.ScaleY = 0.8;
-
-                ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn = true;
             }
 
             CursorIcon_Click(null, null);
@@ -777,6 +675,45 @@ namespace Ink_Canvas
                 ToggleSwitchShowButtonExit.IsOn = false;
             }
             */
+
+
+            if (Settings.Appearance.IsColorfulViewboxFloatingBar) // 浮动工具栏背景色
+            {
+                LinearGradientBrush gradientBrush = new LinearGradientBrush();
+
+                gradientBrush.StartPoint = new Point(0, 0);
+                gradientBrush.EndPoint = new Point(1, 1);
+                GradientStop blueStop = new GradientStop(Color.FromArgb(0x95, 0x80, 0xB0, 0xFF), 0);
+                GradientStop greenStop = new GradientStop(Color.FromArgb(0x95, 0xC0, 0xFF, 0xC0), 1);
+                gradientBrush.GradientStops.Add(blueStop);
+                gradientBrush.GradientStops.Add(greenStop);
+
+                EnableTwoFingerZoomBorder.Background = gradientBrush;
+                BorderFloatingBarMainControls.Background = gradientBrush;
+                BorderFloatingBarMoveControls.Background = gradientBrush;
+                BorderFloatingBarExitPPTBtn.Background = gradientBrush;
+
+                ToggleSwitchColorfulViewboxFloatingBar.IsOn = true;
+            }
+            if (Settings.Appearance.EnableViewboxFloatingBarScaleTransform) // 浮动工具栏 UI 缩放 85%
+            {
+                ViewboxFloatingBarScaleTransform.ScaleX = 0.85;
+                ViewboxFloatingBarScaleTransform.ScaleY = 0.85;
+
+                ToggleSwitchEnableViewboxFloatingBarScaleTransform.IsOn = true;
+            }
+            if (Settings.Appearance.EnableViewboxBlackBoardScaleTransform) // 画板 UI 缩放 80%
+            {
+                ViewboxBlackboardLeftSideScaleTransform.ScaleX = 0.8;
+                ViewboxBlackboardLeftSideScaleTransform.ScaleY = 0.8;
+                ViewboxBlackboardCenterSideScaleTransform.ScaleX = 0.8;
+                ViewboxBlackboardCenterSideScaleTransform.ScaleY = 0.8;
+                ViewboxBlackboardRightSideScaleTransform.ScaleX = 0.8;
+                ViewboxBlackboardRightSideScaleTransform.ScaleY = 0.8;
+
+                ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn = true;
+            }
+
             PptNavigationBtn.Visibility =
                 Settings.PowerPointSettings.IsShowPPTNavigation ? Visibility.Visible : Visibility.Collapsed;
 
@@ -899,6 +836,19 @@ namespace Ink_Canvas
             else
             {
                 ToggleSwitchEnableFingerGestureSlideShowControl.IsOn = false;
+            }
+
+            if (Settings.Startup.IsAutoUpdate)
+            {
+                ToggleSwitchIsAutoUpdate.IsOn = true;
+                AutoUpdate();
+            }
+
+            ToggleSwitchIsAutoUpdateWithSilence.Visibility = ToggleSwitchIsAutoUpdate.IsOn ? Visibility.Visible : Visibility.Collapsed;
+
+            if (Settings.Startup.IsAutoUpdateWithSilence)
+            {
+                ToggleSwitchIsAutoUpdateWithSilence.IsOn = true;
             }
 
             if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\Ink Canvas Annotaion" + ".lnk"))
@@ -2731,7 +2681,7 @@ namespace Ink_Canvas
                 BtnPPTSlideShowEnd.Visibility = Visibility.Visible;
                 ViewBoxStackPanelMain.Margin = new Thickness(10, 10, 10, 10);
 
-                if (Settings.Startup.IsColorfulViewboxFloatingBar)
+                if (Settings.Appearance.IsColorfulViewboxFloatingBar)
                 {
                     ViewboxFloatingBar.Opacity = 0.8;
                 }
@@ -2948,7 +2898,7 @@ namespace Ink_Canvas
                 */
                 ViewboxFloatingBarMarginAnimation(100);
 
-                if (Settings.Startup.IsColorfulViewboxFloatingBar)
+                if (Settings.Appearance.IsColorfulViewboxFloatingBar)
                 {
                     ViewboxFloatingBar.Opacity = 0.95;
                 }
@@ -3133,6 +3083,20 @@ namespace Ink_Canvas
 
         #region Behavior
 
+        private void ToggleSwitchIsAutoUpdate_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Startup.IsAutoUpdate = ToggleSwitchIsAutoUpdate.IsOn;
+            ToggleSwitchIsAutoUpdateWithSilence.Visibility = ToggleSwitchIsAutoUpdate.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            SaveSettingsToFile();
+        }
+        private void ToggleSwitchIsAutoUpdateWithSilence_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Startup.IsAutoUpdateWithSilence = ToggleSwitchIsAutoUpdateWithSilence.IsOn;
+            SaveSettingsToFile();
+        }
+
         private void ToggleSwitchRunAtStartup_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3176,29 +3140,6 @@ namespace Ink_Canvas
         #endregion
 
         #region Startup
-        private void ToggleSwitchIsColorfulViewboxFloatingBar_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-
-            Settings.Startup.IsColorfulViewboxFloatingBar = ToggleSwitchColorfulViewboxFloatingBar.IsOn;
-            SaveSettingsToFile();
-        }
-
-        private void ToggleSwitchEnableViewboxFloatingBarScaleTransform_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-
-            Settings.Startup.EnableViewboxFloatingBarScaleTransform = ToggleSwitchEnableViewboxFloatingBarScaleTransform.IsOn;
-            SaveSettingsToFile();
-        }
-
-        private void ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-
-            Settings.Startup.EnableViewboxBlackBoardScaleTransform = ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn;
-            SaveSettingsToFile();
-        }
 
         /*
         private void ToggleSwitchAutoHideCanvas_Toggled(object sender, RoutedEventArgs e)
@@ -3262,6 +3203,29 @@ namespace Ink_Canvas
         }
         */
 
+        private void ToggleSwitchIsColorfulViewboxFloatingBar_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+
+            Settings.Appearance.IsColorfulViewboxFloatingBar = ToggleSwitchColorfulViewboxFloatingBar.IsOn;
+            SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchEnableViewboxFloatingBarScaleTransform_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+
+            Settings.Appearance.EnableViewboxFloatingBarScaleTransform = ToggleSwitchEnableViewboxFloatingBarScaleTransform.IsOn;
+            SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+
+            Settings.Appearance.EnableViewboxBlackBoardScaleTransform = ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn;
+            SaveSettingsToFile();
+        }
         private void ToggleSwitchShowButtonPPTNavigation_OnToggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3792,6 +3756,9 @@ namespace Ink_Canvas
             Settings.Advanced.EraserBindTouchMultiplier = true;
             Settings.Advanced.IsLogEnabled = true;
 
+            Settings.Appearance.IsColorfulViewboxFloatingBar = false;
+            Settings.Appearance.EnableViewboxFloatingBarScaleTransform = true;
+            Settings.Appearance.EnableViewboxBlackBoardScaleTransform = false;
             Settings.Appearance.IsTransparentButtonBackground = true;
             Settings.Appearance.IsShowExitButton = true;
             Settings.Appearance.IsShowEraserButton = true;
@@ -3849,9 +3816,6 @@ namespace Ink_Canvas
 
             Settings.Startup.IsAutoHideCanvas = true;
             Settings.Startup.IsAutoEnterModeFinger = false;
-            Settings.Startup.IsColorfulViewboxFloatingBar = false;
-            Settings.Startup.EnableViewboxFloatingBarScaleTransform = true;
-            Settings.Startup.EnableViewboxBlackBoardScaleTransform = false;
         }
 
         private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
@@ -8505,7 +8469,7 @@ namespace Ink_Canvas
                     ViewboxFloatingBar.Visibility = Visibility.Visible;
                 }
                 isViewboxFloatingBarMarginAnimationRunning = true;
-                if (Settings.Startup.EnableViewboxFloatingBarScaleTransform)
+                if (Settings.Appearance.EnableViewboxFloatingBarScaleTransform)
                 {
                     pos.X = (SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth * 0.85) / 2;
                     pos.Y = SystemParameters.PrimaryScreenHeight - heightFromBottom * 0.9;

@@ -1,5 +1,4 @@
-﻿//using AutoUpdaterDotNET;
-using Ink_Canvas.Helpers;
+﻿using Ink_Canvas.Helpers;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -48,16 +47,6 @@ namespace Ink_Canvas
             }
 
             StartArgs = e.Args;
-            /*
-            if (!StoreHelper.IsStoreApp)
-            {
-                AutoUpdater.Start($"http://ink.wxriw.cn:1957/update");
-                AutoUpdater.ApplicationExitEvent += () =>
-                {
-                    Environment.Exit(0);
-                };
-            }
-            */
         }
 
         private void ScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
