@@ -71,7 +71,7 @@ namespace Ink_Canvas
                 GroupBoxAppearance.Visibility = Visibility.Collapsed;*/
             ViewBoxStackPanelMain.Visibility = Visibility.Collapsed;
             ViewBoxStackPanelShapes.Visibility = Visibility.Collapsed;
-            HideSubPanels();
+            //HideSubPanels();
             ViewboxFloatingBar.Margin = new Thickness((SystemParameters.WorkArea.Width - 284) / 2, SystemParameters.WorkArea.Height - 60, -2000, -200);
             ViewboxFloatingBarMarginAnimation(100);
             /*}
@@ -370,7 +370,7 @@ namespace Ink_Canvas
             e.CanExecute = true;
         }
 
-        private void Undo_HotKey(object sender, ExecutedRoutedEventArgs e)
+        private void HotKey_Undo(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
@@ -380,7 +380,7 @@ namespace Ink_Canvas
             catch { }
         }
 
-        private void Redo_HotKey(object sender, ExecutedRoutedEventArgs e)
+        private void HotKey_Redo(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
@@ -1495,57 +1495,6 @@ namespace Ink_Canvas
             }
         }
 
-        private void CheckColorTheme()
-        {
-            if (currentMode == 0)
-            {
-                isUselightThemeColor = false;
-            }
-            else
-            {
-                if (Settings.Canvas.UsingWhiteboard)
-                {
-                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
-                    if (inkColor == 0)
-                    {
-                        inkCanvas.DefaultDrawingAttributes.Color = Colors.Black;
-                    }
-                    isUselightThemeColor = false;
-                }
-                else
-                {
-                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1F1F1F"));
-                    if (inkColor == 0)
-                    {
-                        inkCanvas.DefaultDrawingAttributes.Color = Colors.White;
-                    }
-                    isUselightThemeColor = true;
-                }
-            }
-            if (isUselightThemeColor)
-            {
-                if (inkColor == 2)
-                {
-                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF1ED760");
-                }
-                else if (inkColor == 4)
-                {
-                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFFC000");
-                }
-            }
-            else
-            {
-                if (inkColor == 2)
-                {
-                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF169141");
-                }
-                else if (inkColor == 4)
-                {
-                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFF38B00");
-                }
-            }
-        }
-
         int BoundsWidth = 5;
 
         private void BtnHideInkCanvas_Click(object sender, RoutedEventArgs e)
@@ -1737,13 +1686,10 @@ namespace Ink_Canvas
         #region Right Side Panel (Buttons - Color)
 
         int inkColor = 1;
-        bool isUselightThemeColor = false;
 
         private void ColorSwitchCheck()
         {
             HideSubPanels("color");
-            //EraserContainer.Background = null;
-            //ImageEraser.Visibility = Visibility.Visible;
             if (Main_Grid.Background == Brushes.Transparent)
             {
                 if (currentMode == 1)
@@ -1776,71 +1722,167 @@ namespace Ink_Canvas
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 CancelSingleFingerDragMode();
                 forceEraser = false;
-
-                // 改变选中提示
-                ViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-                ViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-                ViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-                ViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-                ViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-                ViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-                ViewboxBtnColorPurpleContent.Visibility = Visibility.Collapsed;
-                ViewboxBtnColorPinkContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorPurpleContent.Visibility = Visibility.Collapsed;
-                BoardViewboxBtnColorPinkContent.Visibility = Visibility.Collapsed;
-                switch (inkColor)
-                {
-                    case 0:
-                        ViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
-                        break;
-                    case 1:
-                        ViewboxBtnColorRedContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorRedContent.Visibility = Visibility.Visible;
-                        break;
-                    case 2:
-                        ViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
-                        break;
-                    case 3:
-                        ViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
-                        break;
-                    case 4:
-                        ViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
-                        break;
-                    case 5:
-                        ViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
-                        break;
-                    case 6:
-                        ViewboxBtnColorPurpleContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorPurpleContent.Visibility = Visibility.Visible;
-                        break;
-                    case 7:
-                        ViewboxBtnColorPinkContent.Visibility = Visibility.Visible;
-                        BoardViewboxBtnColorPinkContent.Visibility = Visibility.Visible;
-                        break;
-                }
                 CheckColorTheme();
             }
 
             isLongPressSelected = false;
         }
 
+        bool isUselightThemeColor = false;
+
+        private void CheckColorTheme()
+        {
+            if (Topmost == true)
+            {
+                isUselightThemeColor = false;
+            }
+            else
+            {
+                if (Settings.Canvas.UsingWhiteboard)
+                {
+                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
+                    if (inkColor == 5)
+                    {
+                        inkColor = 0;
+                    }
+                    isUselightThemeColor = false;
+                }
+                else
+                {
+                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1F1F1F"));
+                    if (inkColor == 0)
+                    {
+                        inkColor = 5;
+                    }
+                    isUselightThemeColor = true;
+                }
+            }
+
+            if (inkColor == 0)
+            { // Black
+                inkCanvas.DefaultDrawingAttributes.Color = Colors.Black;
+            }
+            else if(inkColor == 3)
+            { // Blue
+                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF239AD6");
+            }
+            else if(inkColor == 5)
+            { // White
+                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFEFEFE");
+            }
+            else if (isUselightThemeColor)
+            {
+                if (inkColor == 1)
+                { // Red
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFF3333");
+                }
+                else if (inkColor == 2)
+                { // Green
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF1ED760");
+                }
+                else if (inkColor == 4)
+                { // Yellow
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFFC000");
+                }
+                else if (inkColor == 6)
+                { // Pink
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF#c72ec7");
+                }
+            }
+            else
+            {
+                if (inkColor == 1)
+                { // Red
+                    inkCanvas.DefaultDrawingAttributes.Color = Colors.Red;
+                }
+                else if (inkColor == 2)
+                { // Green
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF169141");
+                }
+                else if (inkColor == 4)
+                { // Yellow
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFF38B00");
+                }
+                else if (inkColor == 6)
+                { // Pink ( Purple )
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF331EB5");
+                }
+            }
+            if (isUselightThemeColor)
+            {
+                BorderPenColorRed.Background = new SolidColorBrush(StringToColor("#FFFF3333"));
+                BorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF1ED760"));
+                BorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFFFC000"));
+                BorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF#c72ec7"));
+                BoardBorderPenColorRed.Background = new SolidColorBrush(StringToColor("#FFFF3333"));
+                BoardBorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF1ED760"));
+                BoardBorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFFFC000"));
+                BoardBorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF#c72ec7"));
+            }
+            else
+            {
+                BorderPenColorRed.Background = new SolidColorBrush(Colors.Red);
+                BorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF169141"));
+                BorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFF38B00"));
+                BorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF331EB5"));
+                BoardBorderPenColorRed.Background = new SolidColorBrush(Colors.Red);
+                BoardBorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF169141"));
+                BoardBorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFF38B00"));
+                BoardBorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF331EB5"));
+            }
+
+            // 改变选中提示
+            ViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
+            ViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
+            ViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
+            ViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
+            ViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
+            ViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
+            ViewboxBtnColorPinkContent.Visibility = Visibility.Collapsed;
+            BoardViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
+            BoardViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
+            BoardViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
+            BoardViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
+            BoardViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
+            BoardViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
+            BoardViewboxBtnColorPinkContent.Visibility = Visibility.Collapsed;
+            switch (inkColor)
+            {
+                case 0:
+                    ViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
+                    BoardViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
+                    break;
+                case 1:
+                    ViewboxBtnColorRedContent.Visibility = Visibility.Visible;
+                    BoardViewboxBtnColorRedContent.Visibility = Visibility.Visible;
+                    break;
+                case 2:
+                    ViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
+                    BoardViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
+                    break;
+                case 3:
+                    ViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
+                    BoardViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
+                    break;
+                case 4:
+                    ViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
+                    BoardViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
+                    break;
+                case 5:
+                    ViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
+                    BoardViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
+                    break;
+                case 6:
+                    ViewboxBtnColorPinkContent.Visibility = Visibility.Visible;
+                    BoardViewboxBtnColorPinkContent.Visibility = Visibility.Visible;
+                    break;
+            }
+        }
+
         private void BtnColorBlack_Click(object sender, RoutedEventArgs e)
         {
             inkColor = 0;
             forceEraser = false;
-            inkCanvas.DefaultDrawingAttributes.Color = Colors.Black;
-
             ColorSwitchCheck();
         }
 
@@ -1848,16 +1890,6 @@ namespace Ink_Canvas
         {
             inkColor = 1;
             forceEraser = false;
-            inkCanvas.DefaultDrawingAttributes.Color = Colors.Red;
-            if (BtnSwitchTheme.Content.ToString() == "浅色")
-            {
-                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFF3333");
-            }
-            else
-            {
-                inkCanvas.DefaultDrawingAttributes.Color = Colors.Red;
-            }
-
             ColorSwitchCheck();
         }
 
@@ -1865,15 +1897,6 @@ namespace Ink_Canvas
         {
             inkColor = 2;
             forceEraser = false;
-            if (BtnSwitchTheme.Content.ToString() == "浅色")
-            {
-                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF1ED760");
-            }
-            else
-            {
-                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF169141");
-            }
-
             ColorSwitchCheck();
         }
 
@@ -1881,8 +1904,6 @@ namespace Ink_Canvas
         {
             inkColor = 3;
             forceEraser = false;
-            inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF239AD6");
-
             ColorSwitchCheck();
         }
 
@@ -1890,39 +1911,20 @@ namespace Ink_Canvas
         {
             inkColor = 4;
             forceEraser = false;
-            if (BtnSwitchTheme.Content.ToString() == "浅色")
-            {
-                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFFC000");
-            }
-            else
-            {
-                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFF38B00");
-            }
-
             ColorSwitchCheck();
         }
+
         private void BtnColorWhite_Click(object sender, RoutedEventArgs e)
         {
             inkColor = 5;
             forceEraser = false;
-            inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFEFEFE");
-            ColorSwitchCheck();
-        }
-        private void BtnColorPurple_Click(object sender, RoutedEventArgs e)
-        {
-            inkColor = 6;
-            forceEraser = false;
-            inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF331EB5");
-            BorderPenColorPurple.Background = new SolidColorBrush(StringToColor("#FF331EB5"));
             ColorSwitchCheck();
         }
 
         private void BtnColorPink_Click(object sender, RoutedEventArgs e)
         {
-            inkColor = 7;
+            inkColor = 6;
             forceEraser = false;
-            inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF#c72ec7");
-            BorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF#c72ec7"));
             ColorSwitchCheck();
         }
 
@@ -7555,7 +7557,6 @@ namespace Ink_Canvas
             PenPalette.Visibility = Visibility.Collapsed;
             BoardPenPalette.Visibility = Visibility.Collapsed;
             BoardDeleteIcon.Visibility = Visibility.Collapsed;
-            BoardDeleteIcon2.Visibility = Visibility.Collapsed;
             BorderSettings.Visibility = Visibility.Collapsed;
         }
 
@@ -7566,7 +7567,6 @@ namespace Ink_Canvas
             AnimationHelper.HideWithSlideAndFade(PenPalette);
             AnimationHelper.HideWithSlideAndFade(BoardPenPalette);
             AnimationHelper.HideWithSlideAndFade(BoardDeleteIcon);
-            AnimationHelper.HideWithSlideAndFade(BoardDeleteIcon2);
             AnimationHelper.HideWithSlideAndFade(BorderSettings, 0.5);
             if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
             {
@@ -8753,7 +8753,7 @@ namespace Ink_Canvas
         {
             if (BoardEraserByStrokes.Background.ToString() == "#FFB37DFF")
             {
-                AnimationHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon2);
+                AnimationHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon);
             }
             else
             {
@@ -8773,8 +8773,8 @@ namespace Ink_Canvas
 
         private void BoardSymbolIconDelete_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            SymbolIconDelete_MouseUp(sender, e);
             PenIcon_Click(null, null);
+            SymbolIconDelete_MouseUp(sender, e);
         }
 
         private void BoardLaunchEasiCamera_MouseUp(object sender, MouseButtonEventArgs e)
