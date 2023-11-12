@@ -59,7 +59,7 @@
     "eraserSize": 3,
     "eraserType": 0,
     "hideStrokeWhenSelecting": false,
-    "usingWhiteboard": true,
+    "usingWhiteboard": false,
     "hyperbolaAsymptoteOption": 0
   },
   "gesture": {
