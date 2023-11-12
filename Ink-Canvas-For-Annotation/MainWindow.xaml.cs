@@ -1691,19 +1691,11 @@ namespace Ink_Canvas
                 if (Settings.Canvas.UsingWhiteboard)
                 {
                     GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
-                    if (inkColor == 5)
-                    {
-                        inkColor = 0;
-                    }
                     isUselightThemeColor = false;
                 }
                 else
                 {
                     GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1F1F1F"));
-                    if (inkColor == 0)
-                    {
-                        inkColor = 5;
-                    }
                     isUselightThemeColor = true;
                 }
             }
@@ -8689,6 +8681,14 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Canvas.UsingWhiteboard = !Settings.Canvas.UsingWhiteboard;
             SaveSettingsToFile();
+            if (Settings.Canvas.UsingWhiteboard)
+            {
+                if (inkColor == 5) inkColor = 0;
+            }
+            else
+            {
+                if (inkColor == 0) inkColor = 5;
+            }
             CheckColorTheme();
         }
 

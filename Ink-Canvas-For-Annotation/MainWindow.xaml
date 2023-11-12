@@ -335,7 +335,7 @@
                         </Border>
                         <Border>
                             <Grid Margin="0,5,0,5" Width="0" RenderTransformOrigin="0.5,0.5">
-                                <Border x:Name="BoardPenPalette" Visibility="Visible" Background="White" CornerRadius="5" BorderBrush="Black" BorderThickness="1.5" Margin="-180,-220,-120,55">
+                                <Border x:Name="BoardPenPalette" Visibility="Visible" Background="LightGray" CornerRadius="5" BorderBrush="Black" BorderThickness="1.5" Margin="-180,-220,-120,55">
                                     <Viewbox>
                                         <StackPanel Margin="15">
                                             <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -450,7 +450,7 @@
                             </Grid>
                         </Border>
                         <Border Width="0">
-                            <Border x:Name="BoardBorderDrawShape" Visibility="Visible" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1.5" CornerRadius="8" Margin="-147,-286,-89,59">
+                            <Border x:Name="BoardBorderDrawShape" Visibility="Visible" Background="LightGray" BorderBrush="Black" BorderThickness="1.5" CornerRadius="8" Margin="-147,-286,-89,59">
                                 <Viewbox>
                                     <ui:SimpleStackPanel Spacing="-8" Orientation="Vertical">
                                         <TextBlock FontSize="16" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left" Margin="10,8">
@@ -546,7 +546,7 @@
                         </Border>
                         <Border>
                             <Grid Margin="0,0,0,5" Width="0">
-                                <Border Name="BoardBorderTools" Margin="-162,-190,-102,54" CornerRadius="5" Background="LightGray" BorderBrush="Black" BorderThickness="1.5" Opacity="0.85">
+                                <Border Name="BoardBorderTools" Margin="-162,-190,-102,54" CornerRadius="5" Background="LightGray" BorderBrush="Black" BorderThickness="1.5">
                                     <ui:SimpleStackPanel Margin="13">
                                         <ui:SimpleStackPanel Orientation="Horizontal">
                                             <Border Margin="4,3" BorderBrush="Black" BorderThickness="1.5" Width="110" CornerRadius="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchEasiCamera_MouseUp">
