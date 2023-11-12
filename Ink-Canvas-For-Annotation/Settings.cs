@@ -68,7 +68,7 @@ namespace Ink_Canvas
         [JsonProperty("isAutoUpdate")]
         public bool IsAutoUpdate { get; set; } = true;
         [JsonProperty("isAutoUpdateWithSilence")]
-        public bool IsAutoUpdateWithSilence { get; set; } = true;
+        public bool IsAutoUpdateWithSilence { get; set; } = false;
         [JsonProperty("isAutoHideCanvas")]
         public bool IsAutoHideCanvas { get; set; } = true;
         [JsonProperty("isAutoEnterModeFinger")]

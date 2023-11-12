@@ -3808,6 +3808,8 @@ namespace Ink_Canvas
 
             Settings.Startup.IsAutoHideCanvas = true;
             Settings.Startup.IsAutoEnterModeFinger = false;
+            Settings.Startup.IsAutoUpdate = true;
+            Settings.Startup.IsAutoUpdateWithSilence = false;
         }
 
         private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
