@@ -53,7 +53,8 @@ namespace Ink_Canvas
             RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             BorderSettings.Margin = new Thickness(0,150,0,150);
 
-            CollapseBorderDrawShape();
+            BorderDrawShape.Visibility = Visibility.Collapsed;
+            BoardBorderDrawShape.Visibility = Visibility.Collapsed;
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
             if (App.StartArgs.Contains("-b")) //-b border
@@ -1303,11 +1304,10 @@ namespace Ink_Canvas
 
         private void CancelSingleFingerDragMode()
         {
-            /*if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
+            if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
             {
                 CollapseBorderDrawShape();
-            }*/
-            CollapseBorderDrawShape();
+            }
 
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
             //Label.Content = "isSingleFingerDragMode=" + isSingleFingerDragMode.ToString();
@@ -2046,12 +2046,6 @@ namespace Ink_Canvas
 
         private void Main_Grid_TouchDown(object sender, TouchEventArgs e)
         {
-            //BorderClearInDelete.Visibility = Visibility.Collapsed;
-            if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
-            {
-                CollapseBorderDrawShape();
-            }
-
             if (NeedUpdateIniP())
             {
                 iniP = e.GetTouchPoint(inkCanvas).Position;
@@ -7877,20 +7871,6 @@ namespace Ink_Canvas
             })).Start();
         }
 
-        private void ImageEraser_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            BtnErase_Click(BtnErase, e);
-
-            ViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-
-            HideSubPanels();
-        }
-
         private void ImageCountdownTimer_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (lastBorderMouseDownObject != sender) return;
@@ -8758,11 +8738,12 @@ namespace Ink_Canvas
 
         private void CollapseBorderDrawShape(bool isLongPressSelected = false)
         {
+            AnimationHelper.HideWithSlideAndFade(BorderDrawShape);
+            AnimationHelper.HideWithSlideAndFade(BoardBorderDrawShape);
+            
             if (isLongPressSelected == true)
             {
                 HideSubPanels("pen");
-                AnimationHelper.HideWithSlideAndFade(BorderDrawShape);
-                AnimationHelper.HideWithSlideAndFade(BoardBorderDrawShape);
             }
             else
             {
