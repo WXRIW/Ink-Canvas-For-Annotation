@@ -24,8 +24,6 @@ namespace Ink_Canvas
 
     public class Canvas
     {
-        [JsonProperty("AutoSwitchTwoFingerZoom")]
-        public bool AutoSwitchTwoFingerZoom { get; set; } = true;
         [JsonProperty("inkWidth")]
         public double InkWidth { get; set; } = 2.5;
         [JsonProperty("isShowCursor")]
@@ -57,6 +55,8 @@ namespace Ink_Canvas
     {
         [JsonProperty("isEnableTwoFingerZoom")]
         public bool IsEnableTwoFingerZoom { get; set; } = true;
+        [JsonProperty("AutoSwitchTwoFingerZoom")]
+        public bool AutoSwitchTwoFingerZoom { get; set; } = true;
         [JsonProperty("isEnableTwoFingerRotation")]
         public bool IsEnableTwoFingerRotation { get; set; } = false;
         [JsonProperty("isEnableTwoFingerRotationOnSelection")]

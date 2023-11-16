@@ -806,6 +806,16 @@ namespace Ink_Canvas
                 ToggleSwitchEnableTwoFingerZoom.IsOn = false;
                 CheckEnableTwoFingerZoomBtnColorPrompt();
             }
+
+            if (Settings.Gesture.AutoSwitchTwoFingerZoom)
+            {
+                ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = true;
+            }
+            else
+            {
+                ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = false;
+            }
+
             if (Settings.Gesture.IsEnableTwoFingerRotation)
             {
                 ToggleSwitchEnableTwoFingerRotation.IsOn = true;
@@ -865,15 +875,6 @@ namespace Ink_Canvas
                 InkWidthSlider.Value = Settings.Canvas.InkWidth * 2;
 
                 ComboBoxHyperbolaAsymptoteOption.SelectedIndex = (int)Settings.Canvas.HyperbolaAsymptoteOption;
-
-                if (Settings.Canvas.AutoSwitchTwoFingerZoom)
-                {
-                    ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = true;
-                }
-                else
-                {
-                    ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = false;
-                }
 
                 if (Settings.Canvas.UsingWhiteboard)
                 {
@@ -2957,12 +2958,16 @@ namespace Ink_Canvas
             {
                 new Thread(new ThreadStart(() =>
                 {
-                    pptApplication.SlideShowWindows[1].Activate();
+                    try
+                    {
+                        pptApplication.SlideShowWindows[1].Activate();
+                    }
+                    catch { }
                     try
                     {
                         pptApplication.SlideShowWindows[1].View.Previous();
                     }
-                    catch { } // Without this catch{}, app will crash when click the pre-page button in the fir page with WPS in special system env.
+                    catch { } // Without this catch{}, app will crash when click the pre-page button in the fir page in some special env.
                 })).Start();
             }
             catch
@@ -2992,8 +2997,16 @@ namespace Ink_Canvas
             {
                 new Thread(new ThreadStart(() =>
                 {
-                    pptApplication.SlideShowWindows[1].Activate();
-                    pptApplication.SlideShowWindows[1].View.Next();
+                    try
+                    {
+                        pptApplication.SlideShowWindows[1].Activate();
+                    }
+                    catch { }
+                    try
+                    {
+                        pptApplication.SlideShowWindows[1].View.Next();
+                    }
+                    catch { }
                 })).Start();
             }
             catch
@@ -3011,7 +3024,11 @@ namespace Ink_Canvas
             if (lastBorderMouseDownObject != sender) return;
             Main_Grid.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
             if (!foldFloatingBarByUser) CursorIcon_Click(null, null);
-            pptApplication.SlideShowWindows[1].SlideNavigation.Visible = true;
+            try
+            {
+                pptApplication.SlideShowWindows[1].SlideNavigation.Visible = true;
+            }
+            catch { }
             // 控制居中
             if (!foldFloatingBarByUser && BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
             {
@@ -3327,13 +3344,6 @@ namespace Ink_Canvas
         }
         */
 
-        private void ToggleSwitchAutoSwitchTwoFingerZoom_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.Canvas.AutoSwitchTwoFingerZoom = ToggleSwitchAutoSwitchTwoFingerZoom.IsOn;
-
-            SaveSettingsToFile();
-        }
 
         private void ToggleSwitchShowCursor_Toggled(object sender, RoutedEventArgs e)
         {
@@ -3708,6 +3718,14 @@ namespace Ink_Canvas
             SaveSettingsToFile();
         }
 
+        private void ToggleSwitchAutoSwitchTwoFingerZoom_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Gesture.AutoSwitchTwoFingerZoom = ToggleSwitchAutoSwitchTwoFingerZoom.IsOn;
+
+            SaveSettingsToFile();
+        }
+
         private void ToggleSwitchEnableTwoFingerRotation_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3784,7 +3802,6 @@ namespace Ink_Canvas
             Settings.PowerPointSettings.IsEnableFingerGestureSlideShowControl = false;
             Settings.PowerPointSettings.IsSupportWPS = true;
 
-            Settings.Canvas.AutoSwitchTwoFingerZoom = true;
             Settings.Canvas.InkWidth = 2.5;
             Settings.Canvas.IsShowCursor = false;
             Settings.Canvas.InkStyle = 0;
@@ -3795,6 +3812,7 @@ namespace Ink_Canvas
             Settings.Canvas.HyperbolaAsymptoteOption = 0;
 
             Settings.Gesture.IsEnableTwoFingerZoom = false;
+            Settings.Gesture.AutoSwitchTwoFingerZoom = true;
             Settings.Gesture.IsEnableTwoFingerRotation = false;
             Settings.Gesture.IsEnableTwoFingerRotationOnSelection = false;
 
