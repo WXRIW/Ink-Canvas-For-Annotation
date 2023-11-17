@@ -553,8 +553,7 @@ namespace Ink_Canvas
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             LogHelper.WriteLogToFile("Ink Canvas closing", LogHelper.LogType.Event);
-            /*
-            if (!CloseIsFromButton)
+            if (!CloseIsFromButton && Settings.Advanced.IsSecondConfimeWhenShutdownApp)
             {
                 e.Cancel = true;
                 if (MessageBox.Show("是否继续关闭 Ink Canvas 画板，这将丢失当前未保存的工作。", "Ink Canvas 画板", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
@@ -572,7 +571,6 @@ namespace Ink_Canvas
             {
                 LogHelper.WriteLogToFile("Ink Canvas closing cancelled", LogHelper.LogType.Event);
             }
-            */
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -1167,6 +1165,14 @@ namespace Ink_Canvas
                 else
                 {
                     ToggleSwitchIsLogEnabled.IsOn = false;
+                }
+                if (Settings.Advanced.IsSecondConfimeWhenShutdownApp)
+                {
+                    ToggleSwitchIsSecondConfimeWhenShutdownApp.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchIsSecondConfimeWhenShutdownApp.IsOn = false;
                 }
                 if (Settings.Advanced.EraserBindTouchMultiplier)
                 {
@@ -3759,6 +3765,7 @@ namespace Ink_Canvas
             Settings.Advanced.TouchMultiplier = 0.15;
             Settings.Advanced.EraserBindTouchMultiplier = true;
             Settings.Advanced.IsLogEnabled = true;
+            Settings.Advanced.IsSecondConfimeWhenShutdownApp = false;
 
             Settings.Appearance.IsColorfulViewboxFloatingBar = false;
             Settings.Appearance.EnableViewboxFloatingBarScaleTransform = true;
@@ -3897,6 +3904,13 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
             Settings.Advanced.IsLogEnabled = ToggleSwitchIsLogEnabled.IsOn;
+            SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchIsSecondConfimeWhenShutdownApp_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Advanced.IsSecondConfimeWhenShutdownApp = ToggleSwitchIsSecondConfimeWhenShutdownApp.IsOn;
             SaveSettingsToFile();
         }
 
