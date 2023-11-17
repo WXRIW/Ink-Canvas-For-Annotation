@@ -8473,7 +8473,7 @@ namespace Ink_Canvas
                 }
                 ThicknessAnimation marginAnimation = new ThicknessAnimation
                 {
-                    Duration = TimeSpan.FromSeconds(0.2),
+                    Duration = TimeSpan.FromSeconds(0.3),
                     From = ViewboxFloatingBar.Margin,
                     To = new Thickness(pos.X, pos.Y, -2000, -200)
                 };
@@ -8604,7 +8604,8 @@ namespace Ink_Canvas
 
                 BtnHideInkCanvas.Content = "隐藏\n画板";
 
-                AnimationHelper.ShowWithSlideFromLeftAndFade(StackPanelCanvasControls);
+                StackPanelCanvasControls.Visibility = Visibility.Visible;
+                //AnimationHelper.ShowWithSlideFromLeftAndFade(StackPanelCanvasControls);
                 CheckEnableTwoFingerZoomBtnVisibility(true);
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 ColorSwitchCheck();
