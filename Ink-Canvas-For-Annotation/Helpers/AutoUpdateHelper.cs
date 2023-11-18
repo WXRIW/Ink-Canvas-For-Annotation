@@ -5,6 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Windows;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace Ink_Canvas.Helpers
 {
@@ -21,7 +24,11 @@ namespace Ink_Canvas.Helpers
                 {
                     Version local = new Version(localVersion);
                     Version remote = new Version(remoteVersion);
-                    if (remote > local) return remoteVersion;
+                    if (remote > local)
+                    {
+                        LogHelper.WriteLogToFile("AutoUpdate | New version Availble: " + remoteVersion);
+                        return remoteVersion;
+                    }
                     else return null;
                 }
                 else
@@ -82,6 +89,7 @@ namespace Ink_Canvas.Helpers
                 await DownloadFile(downloadUrl, $"{updatesFolderPath}\\Ink.Canvas.Annotation.V{version}.Setup.exe");
                 SaveDownloadStatus(true);
 
+                LogHelper.WriteLogToFile("AutoUpdate | Setup file successfully downloaded.");
                 return true;
             }
             catch (Exception ex)
@@ -164,10 +172,6 @@ namespace Ink_Canvas.Helpers
             }
         }
 
-        private static void Shutdown()
-        {
-            throw new NotImplementedException();
-        }
 
         private static void ExecuteCommandLine(string command)
         {
@@ -206,6 +210,42 @@ namespace Ink_Canvas.Helpers
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"AutoUpdate clearing| Error deleting updates folder: {ex.Message}");
+            }
+        }
+    }
+
+    internal class AutoUpdateWithSilenceTimeComboBox
+    {
+        public static ObservableCollection<string> Hours { get; set; } = new ObservableCollection<string>();
+        public static ObservableCollection<string> Minutes { get; set; } = new ObservableCollection<string>();
+
+        public static void InitializeAutoUpdateWithSilenceTimeComboBoxOptions(ComboBox startTimeComboBox, ComboBox endTimeComboBox)
+        {
+            for (int hour = 0; hour <= 23; ++hour)
+            {
+                Hours.Add(hour.ToString("00"));
+            }
+            for (int minute = 0; minute <= 59; minute += 20)
+            {
+                Minutes.Add(minute.ToString("00"));
+            }
+            startTimeComboBox.ItemsSource = Hours.SelectMany(h => Minutes.Select(m => $"{h}:{m}"));
+            endTimeComboBox.ItemsSource = Hours.SelectMany(h => Minutes.Select(m => $"{h}:{m}"));
+        }
+
+        public static bool CheckIsInSilencePeriod(string startTime, string endTime)
+        {
+            DateTime currentTime = DateTime.Now;
+
+            DateTime StartTime = DateTime.ParseExact(startTime, "HH:mm", null);
+            DateTime EndTime = DateTime.ParseExact(endTime, "HH:mm", null);
+            if (StartTime <= EndTime)
+            { // 单日时间段
+                return currentTime >= StartTime && currentTime <= EndTime;
+            }
+            else
+            { // 跨越两天的时间段
+                return currentTime >= StartTime || currentTime <= EndTime;
             }
         }
     }

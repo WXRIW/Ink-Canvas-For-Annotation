@@ -100,6 +100,8 @@ namespace Ink_Canvas
         Timer timerCheckPPT = new Timer();
         Timer timerKillProcess = new Timer();
         Timer timerCheckAutoFold = new Timer();
+        string AvailableLatestVersion = null;
+        Timer timerCheckAutoUpdateWithSilence = new Timer();
 
         private void InitTimers()
         {
@@ -111,6 +113,9 @@ namespace Ink_Canvas
 
             timerCheckAutoFold.Elapsed += timerCheckAutoFold_Elapsed;
             timerCheckAutoFold.Interval = 1500;
+
+            timerCheckAutoUpdateWithSilence.Elapsed += timerCheckAutoUpdateWithSilence_Elapsed;
+            timerCheckAutoUpdateWithSilence.Interval = 5000;
         }
 
         private void TimerKillProcess_Elapsed(object sender, ElapsedEventArgs e)
@@ -245,6 +250,22 @@ namespace Ink_Canvas
 		            展开;
 	            }
              */
+        }
+
+        private void timerCheckAutoUpdateWithSilence_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                if (AutoUpdateWithSilenceTimeComboBox.CheckIsInSilencePeriod(Settings.Startup.AutoUpdateWithSilenceStartTime, Settings.Startup.AutoUpdateWithSilenceEndTime))
+                {
+                    AutoUpdateHelper.InstallNewVersionApp(AvailableLatestVersion, true);
+                    timerCheckAutoUpdateWithSilence.Stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
+            }
         }
 
         #endregion Timer
@@ -580,22 +601,22 @@ namespace Ink_Canvas
 
         private async void AutoUpdate()
         {
-            string IsAvailableLatestVersion = await AutoUpdateHelper.CheckForUpdates();
-            if (IsAvailableLatestVersion != null)
+            AvailableLatestVersion = await AutoUpdateHelper.CheckForUpdates();
+            if (AvailableLatestVersion != null)
             {
-                bool IsDownloadSuccessful = await AutoUpdateHelper.DownloadSetupFileAndSaveStatus(IsAvailableLatestVersion);
+                bool IsDownloadSuccessful = await AutoUpdateHelper.DownloadSetupFileAndSaveStatus(AvailableLatestVersion);
                 if (IsDownloadSuccessful)
                 {
                     if (!Settings.Startup.IsAutoUpdateWithSilence)
                     {
                         if (MessageBox.Show("软件新版本安装包已下载完成，是否立即更新？", "Ink Canvas Annotation New Version Available", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
-                            AutoUpdateHelper.InstallNewVersionApp(IsAvailableLatestVersion, false);
+                            AutoUpdateHelper.InstallNewVersionApp(AvailableLatestVersion, false);
                         }
                     }
                     else
                     {
-                        AutoUpdateHelper.InstallNewVersionApp(IsAvailableLatestVersion, true);
+                        timerCheckAutoUpdateWithSilence.Start();
                     }
                 }
             }
@@ -847,18 +868,21 @@ namespace Ink_Canvas
                 ToggleSwitchEnableFingerGestureSlideShowControl.IsOn = false;
             }
 
+
             if (Settings.Startup.IsAutoUpdate)
             {
                 ToggleSwitchIsAutoUpdate.IsOn = true;
                 AutoUpdate();
             }
-
             ToggleSwitchIsAutoUpdateWithSilence.Visibility = ToggleSwitchIsAutoUpdate.IsOn ? Visibility.Visible : Visibility.Collapsed;
-
             if (Settings.Startup.IsAutoUpdateWithSilence)
             {
                 ToggleSwitchIsAutoUpdateWithSilence.IsOn = true;
             }
+            AutoUpdateWithSilenceTimeComboBox.InitializeAutoUpdateWithSilenceTimeComboBoxOptions(AutoUpdateWithSilenceStartTimeComboBox, AutoUpdateWithSilenceEndTimeComboBox);
+            AutoUpdateWithSilenceStartTimeComboBox.SelectedItem = Settings.Startup.AutoUpdateWithSilenceStartTime;
+            AutoUpdateWithSilenceEndTimeComboBox.SelectedItem = Settings.Startup.AutoUpdateWithSilenceEndTime;
+
 
             if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\Ink Canvas Annotaion" + ".lnk"))
             {
@@ -3106,6 +3130,20 @@ namespace Ink_Canvas
             SaveSettingsToFile();
         }
 
+        private void AutoUpdateWithSilenceStartTimeComboBox_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Startup.AutoUpdateWithSilenceStartTime = (string)AutoUpdateWithSilenceStartTimeComboBox.SelectedItem;
+            SaveSettingsToFile();
+        }
+
+        private void AutoUpdateWithSilenceEndTimeComboBox_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Startup.AutoUpdateWithSilenceEndTime = (string)AutoUpdateWithSilenceEndTimeComboBox.SelectedItem;
+            SaveSettingsToFile();
+        }
+
         private void ToggleSwitchRunAtStartup_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3828,7 +3866,9 @@ namespace Ink_Canvas
             Settings.Startup.IsAutoHideCanvas = true;
             Settings.Startup.IsAutoEnterModeFinger = false;
             Settings.Startup.IsAutoUpdate = true;
-            Settings.Startup.IsAutoUpdateWithSilence = false;
+            Settings.Startup.IsAutoUpdateWithSilence = true;
+            Settings.Startup.AutoUpdateWithSilenceStartTime = "18:20";
+            Settings.Startup.AutoUpdateWithSilenceEndTime = "07:40";
         }
 
         private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
@@ -4496,8 +4536,13 @@ namespace Ink_Canvas
             {
                 if (inkCanvas.GetSelectedStrokes().Count == inkCanvas.Strokes.Count)
                 {
-                    inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                    /*
+                    //inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                     inkCanvas.IsManipulationEnabled = true;
+                    PenIcon_Click(null, null);
+                    */
+                    inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                    inkCanvas.EditingMode = InkCanvasEditingMode.Select;
                 }
                 else
                 {
@@ -4507,7 +4552,6 @@ namespace Ink_Canvas
             else
             {
                 inkCanvas.EditingMode = InkCanvasEditingMode.Select;
-
             }
         }
 
@@ -4539,6 +4583,8 @@ namespace Ink_Canvas
             if (borderTop < 0) borderTop = 0;
             if (Width - borderLeft < BorderStrokeSelectionControlWidth || double.IsNaN(borderLeft)) borderLeft = Width - BorderStrokeSelectionControlWidth;
             if (Height - borderTop < BorderStrokeSelectionControlHeight || double.IsNaN(borderTop)) borderTop = Height - BorderStrokeSelectionControlHeight;
+
+            if (borderTop > 100) borderTop -= 100;
             BorderStrokeSelectionControl.Margin = new Thickness(borderLeft, borderTop, 0, 0);
         }
 
@@ -7759,6 +7805,9 @@ namespace Ink_Canvas
         {
             if (isDisplayingOrHidingBlackboard) return;
             isDisplayingOrHidingBlackboard = true;
+
+            if (inkCanvas.EditingMode == InkCanvasEditingMode.Select) PenIcon_Click(null, null);
+
             if (currentMode == 0)
             {
                 BottomViewboxPPTSidesControl.Visibility = Visibility.Collapsed;
@@ -8587,6 +8636,8 @@ namespace Ink_Canvas
         {
             if (Pen_Icon.Background == null || StackPanelCanvasControls.Visibility == Visibility.Collapsed)
             {
+                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+
                 Main_Grid.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
                 
                 inkCanvas.IsHitTestVisible = true;

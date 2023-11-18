@@ -4,8 +4,11 @@
     {
         public static bool IsStoreApp
         {
+            
             get
             {
+                return false;
+                /*
                 try
                 {
                     object GetCurrentPackage()
@@ -23,6 +26,7 @@
                 {
                     return false;
                 }
+                */
             }
         }
     }

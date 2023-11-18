@@ -756,8 +756,29 @@
                             <ui:SimpleStackPanel Spacing="12">
                                 <ui:ToggleSwitch Name="ToggleSwitchIsAutoUpdate" Header="自动检查更新" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsAutoUpdate_Toggled"/>
                                 <TextBlock Text="# 开启 自动检查更新 后，将在软件启动时检查版本号，若版本号落后则会尝试从 Github 下载最新版安装包，安装后会自动删除安装包。" TextWrapping="Wrap" Foreground="#666666"/>
+                                
                                 <ui:ToggleSwitch Name="ToggleSwitchIsAutoUpdateWithSilence" Header="静默更新" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsAutoUpdateWithSilence_Toggled"/>
-                                <TextBlock Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}" Text="# 关闭 静默更新 后，已完成安装包的下载后将会弹窗询问是否进行更新，开启 静默更新后 将会在安装包下载完成后立刻退出软件进行更新，若因网络环境导致安装包下载缓慢，可能导致使用软件时进行更新从而导致未保存的工作丢失。" TextWrapping="Wrap" Foreground="#666666"/>
+
+                                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5" Padding="12">
+                                    <ui:SimpleStackPanel Spacing="12">
+                                        <TextBlock Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}" Text="# 关闭静默更新后，已完成安装包的下载后将会弹窗询问是否进行更新，开启静默更新后将会在安装包下载完成后并在设定静默更新时间段内且检测到未处于书写模式时，自动退出软件进行更新。" TextWrapping="Wrap" Foreground="#666666"/>
+                                        <TextBlock Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}" Text="静默更新时间段" FontSize="15" FontWeight="Bold" TextWrapping="Wrap" Foreground="Black"/>
+                                        <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                                            <ui:SimpleStackPanel Orientation="Horizontal">
+                                                <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}" Text="起始时间" FontSize="14" TextWrapping="Wrap" Foreground="Black"/>
+                                                <ComboBox x:Name="AutoUpdateWithSilenceStartTimeComboBox" Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}"
+                                                          Width="90" SelectionChanged="AutoUpdateWithSilenceStartTimeComboBox_SelectionChanged"/>
+                                            </ui:SimpleStackPanel>
+                                            <ui:SimpleStackPanel Orientation="Horizontal">
+                                                <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}" Text="终止时间" FontSize="14" TextWrapping="Wrap" Foreground="Black"/>
+                                                <ComboBox x:Name="AutoUpdateWithSilenceEndTimeComboBox" Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}"
+                                                          Width="90" SelectionChanged="AutoUpdateWithSilenceEndTimeComboBox_SelectionChanged"/>
+                                            </ui:SimpleStackPanel>
+                                        </ui:SimpleStackPanel>
+                                        <TextBlock Visibility="{Binding ElementName=ToggleSwitchIsAutoUpdateWithSilence, Path=Visibility}" Text="# 若终止时间小于起始时间，即将终止时间视为第二天的时间。" TextWrapping="Wrap" Foreground="#666666"/>
+                                    </ui:SimpleStackPanel>
+                                </Border>
+                                
                                 <ui:ToggleSwitch Name="ToggleSwitchRunAtStartup" Header="开机时运行" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchRunAtStartup_Toggled"/>
                                 <!--
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoHideCanvas" Header="自动隐藏画板" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoHideCanvas_Toggled"/>
