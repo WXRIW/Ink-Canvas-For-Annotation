@@ -13,12 +13,14 @@ namespace Ink_Canvas.Helpers
 {
     internal class AutoUpdateHelper
     {
-        public static async Task<string> CheckForUpdates()
+        public static async Task<string> CheckForUpdates(string proxy = null)
         {
             try
             {
                 string localVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                string remoteVersion = await GetRemoteVersionFromDownloadFile("https://raw.githubusercontent.com/ChangSakura/Ink-Canvas-For-Annotation/main/AutomaticUpdateVersionControl.txt");
+                string remoteAddress = proxy;
+                remoteAddress += "https://raw.githubusercontent.com/ChangSakura/Ink-Canvas-For-Annotation/main/AutomaticUpdateVersionControl.txt";
+                string remoteVersion = await GetRemoteVersion(remoteAddress);
 
                 if (remoteVersion != null)
                 {
@@ -33,7 +35,7 @@ namespace Ink_Canvas.Helpers
                 }
                 else
                 {
-                    LogHelper.WriteLogToFile("Failed to retrieve remote version.");
+                    LogHelper.WriteLogToFile("Failed to retrieve remote version.", LogHelper.LogType.Error);
                     return null;
                 }
             }
@@ -44,7 +46,7 @@ namespace Ink_Canvas.Helpers
             }
         }
 
-        private static async Task<string> GetRemoteVersionFromDownloadFile(string fileUrl)
+        public static async Task<string> GetRemoteVersion(string fileUrl)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -57,11 +59,11 @@ namespace Ink_Canvas.Helpers
                 }
                 catch (HttpRequestException ex)
                 {
-                    LogHelper.WriteLogToFile($"AutoUpdate | HTTP request error: {ex.Message}");
+                    LogHelper.WriteLogToFile($"AutoUpdate | HTTP request error: {ex.Message}", LogHelper.LogType.Error);
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.WriteLogToFile($"AutoUpdate | Error: {ex.Message}");
+                    LogHelper.WriteLogToFile($"AutoUpdate | Error: {ex.Message}", LogHelper.LogType.Error);
                 }
 
                 return null;
@@ -94,7 +96,7 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"AutoUpdate | Error downloading and installing update: {ex.Message}");
+                LogHelper.WriteLogToFile($"AutoUpdate | Error downloading and installing update: {ex.Message}", LogHelper.LogType.Error);
 
                 SaveDownloadStatus(false);
                 return false;
@@ -145,7 +147,7 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"AutoUpdate | Error saving download status: {ex.Message}");
+                LogHelper.WriteLogToFile($"AutoUpdate | Error saving download status: {ex.Message}", LogHelper.LogType.Error);
             }
         }
 
@@ -157,18 +159,21 @@ namespace Ink_Canvas.Helpers
 
                 if (!File.Exists(setupFilePath))
                 {
-                    LogHelper.WriteLogToFile($"AutoUpdate | Setup file not found: {setupFilePath}");
+                    LogHelper.WriteLogToFile($"AutoUpdate | Setup file not found: {setupFilePath}", LogHelper.LogType.Error);
                     return;
                 }
 
                 string InstallCommand = $"\"{setupFilePath}\" /SILENT";
                 if (isInSilence) InstallCommand += " /VERYSILENT";
                 ExecuteCommandLine(InstallCommand);
-                Application.Current.Shutdown();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Application.Current.Shutdown();
+                });
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"AutoUpdate | Error installing update: {ex.Message}");
+                LogHelper.WriteLogToFile($"AutoUpdate | Error installing update: {ex.Message}", LogHelper.LogType.Error);
             }
         }
 
@@ -209,7 +214,7 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"AutoUpdate clearing| Error deleting updates folder: {ex.Message}");
+                LogHelper.WriteLogToFile($"AutoUpdate clearing| Error deleting updates folder: {ex.Message}", LogHelper.LogType.Error);
             }
         }
     }
@@ -235,6 +240,7 @@ namespace Ink_Canvas.Helpers
 
         public static bool CheckIsInSilencePeriod(string startTime, string endTime)
         {
+            if (startTime == endTime) return true;
             DateTime currentTime = DateTime.Now;
 
             DateTime StartTime = DateTime.ParseExact(startTime, "HH:mm", null);

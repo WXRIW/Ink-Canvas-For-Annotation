@@ -67,6 +67,10 @@ namespace Ink_Canvas
     {
         [JsonProperty("isAutoUpdate")]
         public bool IsAutoUpdate { get; set; } = true;
+        [JsonProperty("isAutoUpdateWithProxy")]
+        public bool IsAutoUpdateWithProxy { get; set; } = false;
+        [JsonProperty("autoUpdateProxy")]
+        public string AutoUpdateProxy { get; set; } = "https://mirror.ghproxy.com/";
         [JsonProperty("isAutoUpdateWithSilence")]
         public bool IsAutoUpdateWithSilence { get; set; } = false;
         [JsonProperty("isAutoUpdateWithSilenceStartTime")]

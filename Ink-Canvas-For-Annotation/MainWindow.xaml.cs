@@ -12,6 +12,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using static System.Net.WebRequestMethods;
 using Application = System.Windows.Application;
 using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
@@ -115,7 +117,7 @@ namespace Ink_Canvas
             timerCheckAutoFold.Interval = 1500;
 
             timerCheckAutoUpdateWithSilence.Elapsed += timerCheckAutoUpdateWithSilence_Elapsed;
-            timerCheckAutoUpdateWithSilence.Interval = 5000;
+            timerCheckAutoUpdateWithSilence.Interval = 1000*60*10;
         }
 
         private void TimerKillProcess_Elapsed(object sender, ElapsedEventArgs e)
@@ -254,6 +256,17 @@ namespace Ink_Canvas
 
         private void timerCheckAutoUpdateWithSilence_Elapsed(object sender, ElapsedEventArgs e)
         {
+            Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    if ((!Topmost) || (inkCanvas.Strokes.Count > 0)) return;
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
+                }
+            });
             try
             {
                 if (AutoUpdateWithSilenceTimeComboBox.CheckIsInSilencePeriod(Settings.Startup.AutoUpdateWithSilenceStartTime, Settings.Startup.AutoUpdateWithSilenceEndTime))
@@ -601,7 +614,9 @@ namespace Ink_Canvas
 
         private async void AutoUpdate()
         {
-            AvailableLatestVersion = await AutoUpdateHelper.CheckForUpdates();
+            if (Settings.Startup.IsAutoUpdateWithProxy) AvailableLatestVersion = await AutoUpdateHelper.CheckForUpdates(Settings.Startup.AutoUpdateProxy);
+            else AvailableLatestVersion = await AutoUpdateHelper.CheckForUpdates();
+
             if (AvailableLatestVersion != null)
             {
                 bool IsDownloadSuccessful = await AutoUpdateHelper.DownloadSetupFileAndSaveStatus(AvailableLatestVersion);
@@ -609,7 +624,7 @@ namespace Ink_Canvas
                 {
                     if (!Settings.Startup.IsAutoUpdateWithSilence)
                     {
-                        if (MessageBox.Show("软件新版本安装包已下载完成，是否立即更新？", "Ink Canvas Annotation New Version Available", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        if (MessageBox.Show("ICA 新版本安装包已下载完成，是否立即更新？", "Ink Canvas Annotation New Version Available", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
                             AutoUpdateHelper.InstallNewVersionApp(AvailableLatestVersion, false);
                         }
@@ -628,6 +643,8 @@ namespace Ink_Canvas
 
         private void LoadSettings(bool isStartup = true)
         {
+            AppVersionTextBlock.Text += Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
             if (File.Exists(App.RootPath + settingsFileName))
             {
                 try
@@ -874,11 +891,17 @@ namespace Ink_Canvas
                 ToggleSwitchIsAutoUpdate.IsOn = true;
                 AutoUpdate();
             }
-            ToggleSwitchIsAutoUpdateWithSilence.Visibility = ToggleSwitchIsAutoUpdate.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            ToggleSwitchIsAutoUpdateWithProxy.IsOn = Settings.Startup.IsAutoUpdateWithProxy;
+            AutoUpdateWithProxy_Title.Visibility = Settings.Startup.IsAutoUpdateWithProxy ? Visibility.Visible : Visibility.Collapsed;
+            AutoUpdateProxyTextBox.Text = Settings.Startup.AutoUpdateProxy;
+
+            ToggleSwitchIsAutoUpdateWithSilence.Visibility = Settings.Startup.IsAutoUpdate ? Visibility.Visible : Visibility.Collapsed;
             if (Settings.Startup.IsAutoUpdateWithSilence)
             {
                 ToggleSwitchIsAutoUpdateWithSilence.IsOn = true;
             }
+            AutoUpdateTimePeriodBlock.Visibility = Settings.Startup.IsAutoUpdateWithSilence ? Visibility.Visible : Visibility.Collapsed;
+
             AutoUpdateWithSilenceTimeComboBox.InitializeAutoUpdateWithSilenceTimeComboBoxOptions(AutoUpdateWithSilenceStartTimeComboBox, AutoUpdateWithSilenceEndTimeComboBox);
             AutoUpdateWithSilenceStartTimeComboBox.SelectedItem = Settings.Startup.AutoUpdateWithSilenceStartTime;
             AutoUpdateWithSilenceEndTimeComboBox.SelectedItem = Settings.Startup.AutoUpdateWithSilenceEndTime;
@@ -3127,7 +3150,34 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
             Settings.Startup.IsAutoUpdateWithSilence = ToggleSwitchIsAutoUpdateWithSilence.IsOn;
+            AutoUpdateTimePeriodBlock.Visibility = Settings.Startup.IsAutoUpdateWithSilence ? Visibility.Visible : Visibility.Collapsed;
             SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchIsAutoUpdateWithProxy_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Startup.IsAutoUpdateWithProxy = ToggleSwitchIsAutoUpdateWithProxy.IsOn;
+            AutoUpdateWithProxy_Title.Visibility = Settings.Startup.IsAutoUpdateWithProxy ? Visibility.Visible : Visibility.Collapsed;
+            SaveSettingsToFile();
+        }
+
+        private void AutoUpdateProxyTextBox_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Startup.AutoUpdateProxy = AutoUpdateProxyTextBox.Text;
+            SaveSettingsToFile();
+        }
+
+        private void BtnResetAutoUpdateProxyToGHProxy_Click(object sender, RoutedEventArgs e)
+        {
+            AutoUpdateProxyTextBox.Text = "https://mirror.ghproxy.com/";
+        }
+
+        private async void BtnCheckAutoUpdateProxyReturnedData_Click(object sender, RoutedEventArgs e)
+        {
+            string ProxyReturnedData = await AutoUpdateHelper.GetRemoteVersion(Settings.Startup.AutoUpdateProxy + "https://raw.githubusercontent.com/ChangSakura/Ink-Canvas-For-Annotation/main/AutomaticUpdateVersionControl.txt");
+            ShowNotification(ProxyReturnedData);
         }
 
         private void AutoUpdateWithSilenceStartTimeComboBox_SelectionChanged(object sender, RoutedEventArgs e)
@@ -3867,6 +3917,7 @@ namespace Ink_Canvas
             Settings.Startup.IsAutoEnterModeFinger = false;
             Settings.Startup.IsAutoUpdate = true;
             Settings.Startup.IsAutoUpdateWithSilence = true;
+            Settings.Startup.IsAutoUpdateWithProxy = true;
             Settings.Startup.AutoUpdateWithSilenceStartTime = "18:20";
             Settings.Startup.AutoUpdateWithSilenceEndTime = "07:40";
         }
@@ -7619,27 +7670,45 @@ namespace Ink_Canvas
                 }
                 if (mode == "pen" || mode == "color")
                 {
-                    BoardPen.Background = new SolidColorBrush(Color.FromRgb(179, 125, 255));
+                    BoardPen.Background = new SolidColorBrush(Color.FromRgb(103, 156, 244));
                     Pen_Icon.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
+                    
+                    BitmapImage newImageSource = new BitmapImage();
+                    newImageSource.BeginInit();
+                    newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_color_24_regular.png", UriKind.RelativeOrAbsolute);
+                    newImageSource.EndInit();
+                    PenIcon.Source = newImageSource;
+                    BoardPenIcon.Source = newImageSource;
                 }
-                else if (mode == "eraser")
+                else
                 {
-                    Eraser_Icon.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
-                    BoardEraser.Background = new SolidColorBrush(Color.FromRgb(179, 125, 255));
-                    //ChangeColorCheckPrompt(-1);
+                    BitmapImage newImageSource = new BitmapImage();
+                    newImageSource.BeginInit();
+                    newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_inking_tool_24_regular.png", UriKind.RelativeOrAbsolute);
+                    newImageSource.EndInit();
+                    PenIcon.Source = newImageSource;    
+                    BoardPenIcon.Source = newImageSource;
+
+                    if (mode == "eraser")
+                    {
+                        Eraser_Icon.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
+                        BoardEraser.Background = new SolidColorBrush(Color.FromRgb(103, 156, 244));
+                        //ChangeColorCheckPrompt(-1);
+                    }
+                    else if (mode == "eraserByStrokes")
+                    {
+                        EraserByStrokes_Icon.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
+                        BoardEraserByStrokes.Background = new SolidColorBrush(Color.FromRgb(103, 156, 244));
+                        //ChangeColorCheckPrompt(-1);
+                    }
+                    else if (mode == "select")
+                    {
+                        BoardSelect.Background = new SolidColorBrush(Color.FromRgb(103, 156, 244));
+                        SymbolIconSelect.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
+                        //ChangeColorCheckPrompt(-1);
+                    }
                 }
-                else if (mode == "eraserByStrokes")
-                {
-                    EraserByStrokes_Icon.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
-                    BoardEraserByStrokes.Background = new SolidColorBrush(Color.FromRgb(179, 125, 255));
-                    //ChangeColorCheckPrompt(-1);
-                }
-                else if (mode == "select")
-                {
-                    BoardSelect.Background = new SolidColorBrush(Color.FromRgb(179, 125, 255));
-                    SymbolIconSelect.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
-                    //ChangeColorCheckPrompt(-1);
-                }
+                
 
                 if (mode != "color" && autoAlignCenter) // 控制居中
                 {
@@ -8536,7 +8605,7 @@ namespace Ink_Canvas
                 }
                 ThicknessAnimation marginAnimation = new ThicknessAnimation
                 {
-                    Duration = TimeSpan.FromSeconds(0.3),
+                    Duration = TimeSpan.FromSeconds(0.25),
                     From = ViewboxFloatingBar.Margin,
                     To = new Thickness(pos.X, pos.Y, -2000, -200)
                 };
@@ -8760,7 +8829,7 @@ namespace Ink_Canvas
 
         private void BoardEraserIcon_Click(object sender, RoutedEventArgs e)
         {
-            if (BoardEraser.Background.ToString() == "#FFB37DFF")
+            if (BoardEraser.Background.ToString() == "#FF679CF4")
             {
                 AnimationHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon);
             }
@@ -8781,7 +8850,7 @@ namespace Ink_Canvas
 
         private void BoardEraserIconByStrokes_Click(object sender, RoutedEventArgs e)
         {
-            if (BoardEraserByStrokes.Background.ToString() == "#FFB37DFF")
+            if (BoardEraserByStrokes.Background.ToString() == "#FF679CF4")
             {
                 AnimationHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon);
             }
