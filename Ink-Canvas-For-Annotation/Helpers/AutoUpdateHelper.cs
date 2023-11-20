@@ -73,7 +73,7 @@ namespace Ink_Canvas.Helpers
         private static string updatesFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ink Canvas Annotation", "AutoUpdate");
         private static string statusFilePath = null;
 
-        public static async Task<bool> DownloadSetupFileAndSaveStatus(string version)
+        public static async Task<bool> DownloadSetupFileAndSaveStatus(string version, string proxy = "")
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Ink_Canvas.Helpers
                     return true;
                 }
 
-                string downloadUrl = $"https://github.com/ChangSakura/Ink-Canvas-For-Annotation/releases/download/v{version}/Ink.Canvas.Annotation.V{version}.Setup.exe";
+                string downloadUrl = $"{proxy}https://github.com/ChangSakura/Ink-Canvas-For-Annotation/releases/download/v{version}/Ink.Canvas.Annotation.V{version}.Setup.exe";
 
                 SaveDownloadStatus(false);
                 await DownloadFile(downloadUrl, $"{updatesFolderPath}\\Ink.Canvas.Annotation.V{version}.Setup.exe");

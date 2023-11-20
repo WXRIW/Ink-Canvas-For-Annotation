@@ -77,14 +77,20 @@ namespace Ink_Canvas
         public string AutoUpdateWithSilenceStartTime { get; set; } = "00:00";
         [JsonProperty("isAutoUpdateWithSilenceEndTime")]
         public string AutoUpdateWithSilenceEndTime { get; set; } = "00:00";
+
+        [JsonProperty("isEnableNibMode")]
+        public bool IsEnableNibMode { get; set; } = false;
+        /*
         [JsonProperty("isAutoHideCanvas")]
         public bool IsAutoHideCanvas { get; set; } = true;
         [JsonProperty("isAutoEnterModeFinger")]
-        public bool IsAutoEnterModeFinger { get; set; } = false;
+        public bool IsAutoEnterModeFinger { get; set; } = false;*/
     }
 
     public class Appearance
     {
+        [JsonProperty("isEnableDisPlayNibModeToggler")]
+        public bool IsEnableDisPlayNibModeToggler { get; set; } = true;
         [JsonProperty("isColorfulViewboxFloatingBar")]
         public bool IsColorfulViewboxFloatingBar { get; set; } = false;
         [JsonProperty("enableViewboxFloatingBarScaleTransform")]

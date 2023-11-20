@@ -25,7 +25,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using static System.Net.WebRequestMethods;
 using Application = System.Windows.Application;
 using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
@@ -104,6 +103,7 @@ namespace Ink_Canvas
         Timer timerCheckAutoFold = new Timer();
         string AvailableLatestVersion = null;
         Timer timerCheckAutoUpdateWithSilence = new Timer();
+        bool isHidingSubPanelsWhenInking = false; // 避免书写时触发二次关闭二级菜单导致动画不连续
 
         private void InitTimers()
         {
@@ -511,7 +511,11 @@ namespace Ink_Canvas
 
         private void StrokesOnStrokesChanged(object sender, StrokeCollectionChangedEventArgs e)
         {
-            HideSubPanels(); // 书写时自动隐藏二级菜单
+            if (!isHidingSubPanelsWhenInking)
+            {
+                isHidingSubPanelsWhenInking = true;
+                HideSubPanels(); // 书写时自动隐藏二级菜单
+            }
 
             if (_currentCommitType == CommitReason.CodeInput || _currentCommitType == CommitReason.ShapeDrawing) return;
             if (_currentCommitType == CommitReason.Rotate)
@@ -619,7 +623,10 @@ namespace Ink_Canvas
 
             if (AvailableLatestVersion != null)
             {
-                bool IsDownloadSuccessful = await AutoUpdateHelper.DownloadSetupFileAndSaveStatus(AvailableLatestVersion);
+                bool IsDownloadSuccessful = false;
+                if (Settings.Startup.IsAutoUpdateWithProxy) IsDownloadSuccessful = await AutoUpdateHelper.DownloadSetupFileAndSaveStatus(AvailableLatestVersion, Settings.Startup.AutoUpdateProxy);
+                else IsDownloadSuccessful = await AutoUpdateHelper.DownloadSetupFileAndSaveStatus(AvailableLatestVersion);
+
                 if (IsDownloadSuccessful)
                 {
                     if (!Settings.Startup.IsAutoUpdateWithSilence)
@@ -643,7 +650,7 @@ namespace Ink_Canvas
 
         private void LoadSettings(bool isStartup = true)
         {
-            AppVersionTextBlock.Text += Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             if (File.Exists(App.RootPath + settingsFileName))
             {
@@ -658,7 +665,7 @@ namespace Ink_Canvas
             {
                 BtnResetToSuggestion_Click(null, null);
             }
-
+            /*
             if (Settings.Startup.IsAutoEnterModeFinger)
             {
                 ToggleSwitchModeFinger.IsOn = true;
@@ -668,6 +675,17 @@ namespace Ink_Canvas
             {
                 ToggleSwitchModeFinger.IsOn = false;
                 ToggleSwitchAutoEnterModeFinger.IsOn = false;
+            }
+            */
+            if (Settings.Startup.IsEnableNibMode)
+            {
+                ToggleSwitchEnableNibMode.IsOn = true;
+                ToggleSwitchBoardEnableNibMode.IsOn = true;
+            }
+            else
+            {
+                ToggleSwitchEnableNibMode.IsOn = false;
+                ToggleSwitchBoardEnableNibMode.IsOn = false;
             }
 
             CursorIcon_Click(null, null);
@@ -713,7 +731,16 @@ namespace Ink_Canvas
             }
             */
 
-
+            if (!Settings.Appearance.IsEnableDisPlayNibModeToggler)
+            {
+                NibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
+                BoardNibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                NibModeSimpleStackPanel.Visibility = Visibility.Visible;
+                BoardNibModeSimpleStackPanel.Visibility = Visibility.Visible;
+            }
             if (Settings.Appearance.IsColorfulViewboxFloatingBar) // 浮动工具栏背景色
             {
                 LinearGradientBrush gradientBrush = new LinearGradientBrush();
@@ -1734,23 +1761,30 @@ namespace Ink_Canvas
 
         bool isUselightThemeColor = false;
 
-        private void CheckColorTheme()
+        private void CheckColorTheme(bool changeColorThemeByUser = false)
         {
-            if (Topmost == true)
+            if (changeColorThemeByUser)
             {
-                isUselightThemeColor = false;
+                isUselightThemeColor = !isUselightThemeColor;
             }
             else
             {
-                if (Settings.Canvas.UsingWhiteboard)
+                if (Topmost == true)
                 {
-                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
                     isUselightThemeColor = false;
                 }
                 else
                 {
-                    GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1F1F1F"));
-                    isUselightThemeColor = true;
+                    if (Settings.Canvas.UsingWhiteboard)
+                    {
+                        GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
+                        isUselightThemeColor = false;
+                    }
+                    else
+                    {
+                        GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FF1F1F1F"));
+                        isUselightThemeColor = true;
+                    }
                 }
             }
 
@@ -1814,6 +1848,16 @@ namespace Ink_Canvas
                 BoardBorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF1ED760"));
                 BoardBorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFFFC000"));
                 BoardBorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF#c72ec7"));
+
+                BitmapImage newImageSource = new BitmapImage();
+                newImageSource.BeginInit();
+                newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_weather_moon_24_regular.png", UriKind.RelativeOrAbsolute);
+                newImageSource.EndInit();
+                ColorThemeSwitchIcon.Source = newImageSource;
+                BoardColorThemeSwitchIcon.Source = newImageSource;
+
+                ColorThemeSwitchTextBlock.Text = "暗色系";
+                BoardColorThemeSwitchTextBlock.Text = "暗色系";
             }
             else
             {
@@ -1825,6 +1869,16 @@ namespace Ink_Canvas
                 BoardBorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF169141"));
                 BoardBorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFF38B00"));
                 BoardBorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF331EB5"));
+
+                BitmapImage newImageSource = new BitmapImage();
+                newImageSource.BeginInit();
+                newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_weather_sunny_24_regular.png", UriKind.RelativeOrAbsolute);
+                newImageSource.EndInit();
+                ColorThemeSwitchIcon.Source = newImageSource;
+                BoardColorThemeSwitchIcon.Source = newImageSource;
+
+                ColorThemeSwitchTextBlock.Text = "亮色系";
+                BoardColorThemeSwitchTextBlock.Text = "亮色系";
             }
 
             // 改变选中提示
@@ -1981,6 +2035,12 @@ namespace Ink_Canvas
 
         private void MainWindow_TouchDown(object sender, TouchEventArgs e)
         {
+            if (!isHidingSubPanelsWhenInking)
+            {
+                isHidingSubPanelsWhenInking = true;
+                HideSubPanels(); // 书写时自动隐藏二级菜单
+            }
+
             double boundWidth = e.GetTouchPoint(null).Bounds.Width;
             if (boundWidth > 20)
             {
@@ -2100,6 +2160,12 @@ namespace Ink_Canvas
 
         private void Main_Grid_TouchDown(object sender, TouchEventArgs e)
         {
+            if (!isHidingSubPanelsWhenInking)
+            {
+                isHidingSubPanelsWhenInking = true;
+                HideSubPanels(); // 书写时自动隐藏二级菜单
+            }
+
             if (NeedUpdateIniP())
             {
                 iniP = e.GetTouchPoint(inkCanvas).Position;
@@ -3246,7 +3312,7 @@ namespace Ink_Canvas
             Settings.Startup.IsAutoHideCanvas = ToggleSwitchAutoHideCanvas.IsOn;
             SaveSettingsToFile();
         }
-        */
+        
         private void ToggleSwitchAutoEnterModeFinger_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -3254,7 +3320,35 @@ namespace Ink_Canvas
             Settings.Startup.IsAutoEnterModeFinger = ToggleSwitchAutoEnterModeFinger.IsOn;
             SaveSettingsToFile();
         }
+        */
 
+        private void ToggleSwitchEnableNibMode_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            if (sender == ToggleSwitchEnableNibMode)
+            {
+                ToggleSwitchBoardEnableNibMode.IsOn = ToggleSwitchEnableNibMode.IsOn;
+            }
+            else
+            {
+                ToggleSwitchEnableNibMode.IsOn = ToggleSwitchBoardEnableNibMode.IsOn;
+            }
+            Settings.Startup.IsEnableNibMode = ToggleSwitchEnableNibMode.IsOn;
+
+            if (Settings.Startup.IsEnableNibMode)
+            {
+                ToggleSwitchIsSpecialScreen.IsOn = true;
+                TouchMultiplierSlider.Value = 0.4;
+                ComboBoxEraserSize.SelectedIndex = 1;
+            }
+            else
+            {
+                ToggleSwitchIsSpecialScreen.IsOn = true;
+                TouchMultiplierSlider.Value = 0.15;
+                ComboBoxEraserSize.SelectedIndex = 3;
+            }
+            SaveSettingsToFile();
+        }
         #endregion
 
         #region Appearance
@@ -3300,33 +3394,41 @@ namespace Ink_Canvas
         }
         */
 
+        private void ToggleSwitchEnableDisPlayNibModeToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Appearance.IsEnableDisPlayNibModeToggler = ToggleSwitchEnableDisPlayNibModeToggle.IsOn;
+            SaveSettingsToFile();
+            LoadSettings(false);
+        }
+
         private void ToggleSwitchIsColorfulViewboxFloatingBar_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-
             Settings.Appearance.IsColorfulViewboxFloatingBar = ToggleSwitchColorfulViewboxFloatingBar.IsOn;
             SaveSettingsToFile();
+            LoadSettings(false);
         }
+
 
         private void ToggleSwitchEnableViewboxFloatingBarScaleTransform_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-
             Settings.Appearance.EnableViewboxFloatingBarScaleTransform = ToggleSwitchEnableViewboxFloatingBarScaleTransform.IsOn;
             SaveSettingsToFile();
+            LoadSettings(false);
         }
 
         private void ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-
             Settings.Appearance.EnableViewboxBlackBoardScaleTransform = ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn;
             SaveSettingsToFile();
+            LoadSettings(false);
         }
         private void ToggleSwitchShowButtonPPTNavigation_OnToggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-
             Settings.PowerPointSettings.IsShowPPTNavigation = ToggleSwitchShowButtonPPTNavigation.IsOn;
             PptNavigationBtn.Visibility = Settings.PowerPointSettings.IsShowPPTNavigation ? Visibility.Visible : Visibility.Collapsed;
             SaveSettingsToFile();
@@ -3335,7 +3437,6 @@ namespace Ink_Canvas
         private void ToggleSwitchShowBottomPPTNavigationPanel_OnToggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-
             Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel = ToggleSwitchShowBottomPPTNavigationPanel.IsOn;
             BottomViewboxPPTSidesControl.Visibility = Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
             SaveSettingsToFile();
@@ -3344,7 +3445,6 @@ namespace Ink_Canvas
         private void ToggleSwitchShowSidePPTNavigationPanel_OnToggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-
             Settings.PowerPointSettings.IsShowSidePPTNavigationPanel = ToggleSwitchShowSidePPTNavigationPanel.IsOn;
             LeftSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
             SaveSettingsToFile();
@@ -3850,11 +3950,12 @@ namespace Ink_Canvas
             Settings = new Settings();
             Settings.Advanced.IsSpecialScreen = true;
             Settings.Advanced.IsQuadIR = false;
-            Settings.Advanced.TouchMultiplier = 0.15;
+            Settings.Advanced.TouchMultiplier = 0.4;
             Settings.Advanced.EraserBindTouchMultiplier = true;
             Settings.Advanced.IsLogEnabled = true;
             Settings.Advanced.IsSecondConfimeWhenShutdownApp = false;
 
+            Settings.Appearance.IsEnableDisPlayNibModeToggler = true;
             Settings.Appearance.IsColorfulViewboxFloatingBar = false;
             Settings.Appearance.EnableViewboxFloatingBarScaleTransform = true;
             Settings.Appearance.EnableViewboxBlackBoardScaleTransform = false;
@@ -3900,7 +4001,7 @@ namespace Ink_Canvas
             Settings.Canvas.InkWidth = 2.5;
             Settings.Canvas.IsShowCursor = false;
             Settings.Canvas.InkStyle = 0;
-            Settings.Canvas.EraserSize = 3;
+            Settings.Canvas.EraserSize = 1;
             Settings.Canvas.EraserType = 0;
             Settings.Canvas.HideStrokeWhenSelecting = false;
             Settings.Canvas.UsingWhiteboard = false;
@@ -3913,8 +4014,7 @@ namespace Ink_Canvas
 
             Settings.InkToShape.IsInkToShapeEnabled = true;
 
-            Settings.Startup.IsAutoHideCanvas = true;
-            Settings.Startup.IsAutoEnterModeFinger = false;
+            Settings.Startup.IsEnableNibMode = true;
             Settings.Startup.IsAutoUpdate = true;
             Settings.Startup.IsAutoUpdateWithSilence = true;
             Settings.Startup.IsAutoUpdateWithProxy = true;
@@ -7729,6 +7829,8 @@ namespace Ink_Canvas
                     }
                 }
             }
+            await Task.Delay(150);
+            isHidingSubPanelsWhenInking = false;
         }
 
         private void BorderPenColorBlack_MouseUp(object sender, MouseButtonEventArgs e)
@@ -8758,6 +8860,11 @@ namespace Ink_Canvas
                     AnimationHelper.ShowWithSlideFromBottomAndFade(BoardPenPalette);
                 }
             }
+        }
+
+        private void ColorThemeSwitch_MouseUp(object sender, RoutedEventArgs e)
+        {
+            CheckColorTheme(true);
         }
 
         private void EraserIcon_Click(object sender, RoutedEventArgs e)
