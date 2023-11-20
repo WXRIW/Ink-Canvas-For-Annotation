@@ -4024,6 +4024,7 @@ namespace Ink_Canvas
 
         private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
         {
+            if (!Topmost) ImageBlackboard_MouseUp(null, null);
             try
             {
                 isLoaded = false;
