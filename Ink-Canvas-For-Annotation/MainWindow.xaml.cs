@@ -3382,15 +3382,13 @@ namespace Ink_Canvas
 
             if (Settings.Startup.IsEnableNibMode)
             {
-                ToggleSwitchIsSpecialScreen.IsOn = true;
-                TouchMultiplierSlider.Value = 0.4;
-                ComboBoxEraserSize.SelectedIndex = 1;
+                //ComboBoxEraserSize.SelectedIndex = 1;
+                BoundsWidth = Settings.Advanced.NibModeBoundsWidth;
             }
             else
             {
-                ToggleSwitchIsSpecialScreen.IsOn = true;
-                TouchMultiplierSlider.Value = 0.15;
-                ComboBoxEraserSize.SelectedIndex = 3;
+                //ComboBoxEraserSize.SelectedIndex = 3;
+                BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
             }
             SaveSettingsToFile();
         }
@@ -8873,6 +8871,8 @@ namespace Ink_Canvas
 
 
             GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
+            inkCanvas.Select(new StrokeCollection());
+            GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
             if (currentMode != 0)
             {

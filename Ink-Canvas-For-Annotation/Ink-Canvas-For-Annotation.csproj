@@ -462,5 +462,12 @@
   <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_add_circle_24_regular.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_flip_horizontal_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_flip_vertical_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_edit_24_regular.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
