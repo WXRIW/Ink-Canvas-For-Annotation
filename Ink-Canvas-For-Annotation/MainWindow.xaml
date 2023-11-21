@@ -871,8 +871,7 @@
                                 <!--
                                 <ui:ToggleSwitch Header="显示“橡皮”按钮" IsOn="{Binding ElementName=ToggleSwitchShowButtonEraser, Path=IsOn}" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关"/>
                                 -->
-                                <ui:ToggleSwitch Name="ToggleSwitchEnableDisPlayNibModeToggle" Header="在墨迹颜色窗口中显示 手指/笔尖 切换按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableDisPlayNibModeToggle_Toggled"/>
-                                <TextBlock Text="# 以下三个功能需重启软件以应用。" TextWrapping="Wrap" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableDisPlayNibModeToggle" Header="在调色盘窗口中显示 笔尖模式 按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableDisPlayNibModeToggle_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchColorfulViewboxFloatingBar" Header="浮动工具栏背景色" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsColorfulViewboxFloatingBar_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableViewboxFloatingBarScaleTransform" Header="浮动工具栏 UI 85% 缩放" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableViewboxFloatingBarScaleTransform_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableViewboxBlackBoardScaleTransform" Header="画板 UI 80% 缩放" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled"/>
@@ -939,6 +938,22 @@
                                 </ui:SimpleStackPanel>
 
                                 <ui:ToggleSwitch Name="ToggleSwitchEraserBindTouchMultiplier" Header="橡皮擦绑定触摸大小倍数" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="False" Toggled="ToggleSwitchEraserBindTouchMultiplier_Toggled" Visibility="{Binding Path=Visibility, ElementName=TouchMultiplierSlider, Mode=OneWay}"/>
+
+
+                                <TextBlock Text="# BoundsWidth 参数作为接触面积区分界限，用来区分橡皮和书写模式。笔尖模式参数值应较小。" TextWrapping="Wrap" Foreground="#666666"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility,ElementName=TouchMultiplierSlider}">
+                                    <Slider x:Name="NibModeBoundsWidthSlider" Minimum="1" Maximum="50" Width="340" FontFamily="Microsoft YaHei UI" ui:ControlHelper.Header="笔尖模式 BoundsWidth"
+                                            FontSize="15" IsSnapToTickEnabled="True" TickFrequency="1" Value="10" TickPlacement="None" ValueChanged="NibModeBoundsWidthSlider_ValueChanged"/>
+                                    <TextBlock Text="{Binding Value, ElementName=NibModeBoundsWidthSlider, Mode=OneWay}"
+                                            VerticalAlignment="Bottom" Margin="10,0,0,8" FontSize="14" Width="30"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility,ElementName=TouchMultiplierSlider}">
+                                    <Slider x:Name="FingerModeBoundsWidthSlider" Minimum="1" Maximum="50" Width="340" FontFamily="Microsoft YaHei UI" ui:ControlHelper.Header="手指模式 BoundsWidth"
+                                            FontSize="15" IsSnapToTickEnabled="True" TickFrequency="1" Value="30" TickPlacement="None" ValueChanged="FingerModeBoundsWidthSlider_ValueChanged"/>
+                                    <TextBlock Text="{Binding Value, ElementName=FingerModeBoundsWidthSlider, Mode=OneWay}"
+                                               VerticalAlignment="Bottom" Margin="10,0,0,8" FontSize="14" Width="30"/>
+                                </StackPanel>
+
                                 <ui:ToggleSwitch Name="ToggleSwitchIsQuadIR" Header="四边红外模式" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsQuadIR_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchIsLogEnabled" Header="记录日志" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="True" Toggled="ToggleSwitchIsLogEnabled_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchIsSecondConfimeWhenShutdownApp" Header="关闭软件时二次弹窗确认" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="False" Toggled="ToggleSwitchIsSecondConfimeWhenShutdownApp_Toggled"/>

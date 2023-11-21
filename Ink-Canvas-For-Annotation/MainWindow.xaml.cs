@@ -681,14 +681,20 @@ namespace Ink_Canvas
             {
                 ToggleSwitchEnableNibMode.IsOn = true;
                 ToggleSwitchBoardEnableNibMode.IsOn = true;
+                BoundsWidth = Settings.Advanced.NibModeBoundsWidth;
             }
             else
             {
                 ToggleSwitchEnableNibMode.IsOn = false;
                 ToggleSwitchBoardEnableNibMode.IsOn = false;
+                BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
             }
 
-            CursorIcon_Click(null, null);
+            if (isStartup)
+            {
+                CursorIcon_Click(null, null);
+            }
+
             /*
             BtnHideInkCanvas_Click(BtnHideInkCanvas, null);/*
             if (Settings.Startup.IsAutoHideCanvas)
@@ -759,12 +765,28 @@ namespace Ink_Canvas
 
                 ToggleSwitchColorfulViewboxFloatingBar.IsOn = true;
             }
+            else
+            {
+                EnableTwoFingerZoomBorder.Background = (Brush)FindResource("ToolBarBackground");
+                BorderFloatingBarMainControls.Background = (Brush)FindResource("ToolBarBackground");
+                BorderFloatingBarMoveControls.Background = (Brush)FindResource("ToolBarBackground");
+                BorderFloatingBarExitPPTBtn.Background = (Brush)FindResource("ToolBarBackground");
+
+                ToggleSwitchColorfulViewboxFloatingBar.IsOn = false;
+            }
             if (Settings.Appearance.EnableViewboxFloatingBarScaleTransform) // 浮动工具栏 UI 缩放 85%
             {
                 ViewboxFloatingBarScaleTransform.ScaleX = 0.85;
                 ViewboxFloatingBarScaleTransform.ScaleY = 0.85;
 
                 ToggleSwitchEnableViewboxFloatingBarScaleTransform.IsOn = true;
+            }
+            else
+            {
+                ViewboxFloatingBarScaleTransform.ScaleX = 1;
+                ViewboxFloatingBarScaleTransform.ScaleY = 1;
+
+                ToggleSwitchEnableViewboxFloatingBarScaleTransform.IsOn = false;
             }
             if (Settings.Appearance.EnableViewboxBlackBoardScaleTransform) // 画板 UI 缩放 80%
             {
@@ -776,6 +798,17 @@ namespace Ink_Canvas
                 ViewboxBlackboardRightSideScaleTransform.ScaleY = 0.8;
 
                 ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn = true;
+            }
+            else
+            {
+                ViewboxBlackboardLeftSideScaleTransform.ScaleX = 1;
+                ViewboxBlackboardLeftSideScaleTransform.ScaleY = 1;
+                ViewboxBlackboardCenterSideScaleTransform.ScaleX = 1;
+                ViewboxBlackboardCenterSideScaleTransform.ScaleY = 1;
+                ViewboxBlackboardRightSideScaleTransform.ScaleX = 1;
+                ViewboxBlackboardRightSideScaleTransform.ScaleY = 1;
+
+                ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn = false;
             }
 
             PptNavigationBtn.Visibility =
@@ -1232,6 +1265,8 @@ namespace Ink_Canvas
             if (Settings.Advanced != null)
             {
                 TouchMultiplierSlider.Value = Settings.Advanced.TouchMultiplier;
+                FingerModeBoundsWidthSlider.Value = Settings.Advanced.FingerModeBoundsWidth;
+                NibModeBoundsWidthSlider.Value = Settings.Advanced.NibModeBoundsWidth;
                 if (Settings.Advanced.IsLogEnabled)
                 {
                     ToggleSwitchIsLogEnabled.IsOn = true;
@@ -1288,6 +1323,16 @@ namespace Ink_Canvas
             else
             {
                 Settings.InkToShape = new InkToShape();
+            }
+
+
+            if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+            {
+                ViewboxFloatingBarMarginAnimation(60);
+            }
+            else
+            {
+                ViewboxFloatingBarMarginAnimation(100);
             }
         }
 
@@ -3950,7 +3995,9 @@ namespace Ink_Canvas
             Settings = new Settings();
             Settings.Advanced.IsSpecialScreen = true;
             Settings.Advanced.IsQuadIR = false;
-            Settings.Advanced.TouchMultiplier = 0.2;
+            Settings.Advanced.TouchMultiplier = 0.4;
+            Settings.Advanced.NibModeBoundsWidth = 10;
+            Settings.Advanced.FingerModeBoundsWidth = 30;
             Settings.Advanced.EraserBindTouchMultiplier = true;
             Settings.Advanced.IsLogEnabled = true;
             Settings.Advanced.IsSecondConfimeWhenShutdownApp = false;
@@ -4023,9 +4070,8 @@ namespace Ink_Canvas
             Settings.Startup.AutoUpdateWithSilenceEndTime = "07:40";
         }
 
-        private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
+        private async void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
         {
-            if (!Topmost) ImageBlackboard_MouseUp(null, null);
             try
             {
                 isLoaded = false;
@@ -4034,6 +4080,8 @@ namespace Ink_Canvas
                 LoadSettings(false);
                 isLoaded = true;
 
+                ToggleSwitchRunAtStartup.IsOn = false;
+                await Task.Delay(200);
                 ToggleSwitchRunAtStartup.IsOn = true;
             }
             catch { }
@@ -4083,6 +4131,40 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
             Settings.Advanced.EraserBindTouchMultiplier = ToggleSwitchEraserBindTouchMultiplier.IsOn;
+            SaveSettingsToFile();
+        }
+
+        private void NibModeBoundsWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!isLoaded) return;
+            Settings.Advanced.NibModeBoundsWidth = (int)e.NewValue;
+
+            if (Settings.Startup.IsEnableNibMode)
+            {
+                BoundsWidth = Settings.Advanced.NibModeBoundsWidth;
+            }
+            else
+            {
+                BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
+            }
+
+            SaveSettingsToFile();
+        }
+
+        private void FingerModeBoundsWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!isLoaded) return;
+            Settings.Advanced.FingerModeBoundsWidth = (int)e.NewValue;
+
+            if (Settings.Startup.IsEnableNibMode)
+            {
+                BoundsWidth = Settings.Advanced.NibModeBoundsWidth;
+            }
+            else
+            {
+                BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
+            }
+
             SaveSettingsToFile();
         }
 
@@ -8492,7 +8574,7 @@ namespace Ink_Canvas
                 }
                 else
                 {
-                    AppendNotification("墨迹成功保存至 " + savePathWithName);
+                    //AppendNotification("墨迹成功保存至 " + savePathWithName);
                 }
             }
             catch

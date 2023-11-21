@@ -205,6 +205,12 @@ namespace Ink_Canvas
         [JsonProperty("touchMultiplier")]
         public double TouchMultiplier { get; set; } = 0.25;
 
+        [JsonProperty("nibModeBoundsWidth")]
+        public int NibModeBoundsWidth { get; set; } = 10;
+
+        [JsonProperty("fingerModeBoundsWidth")]
+        public int FingerModeBoundsWidth { get; set; } = 30;
+
         [JsonProperty("eraserBindTouchMultiplier")]
         public bool EraserBindTouchMultiplier { get; set; } = false;
 
