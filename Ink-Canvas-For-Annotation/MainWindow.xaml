@@ -130,7 +130,7 @@
                   TouchUp="GridInkCanvasSelectionCover_TouchUp"
                   Background="#01FFFFFF" Opacity="0.01" Visibility="Visible"/>
             <Border Name="BorderStrokeSelectionControl"
-                    HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,900,0,0"
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,900,0,0"
                     CornerRadius="5" Height="80"
                     Background="{DynamicResource ToolBarBackground}" Visibility="{Binding ElementName=GridInkCanvasSelectionCover, Path=Visibility}"
                     BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
@@ -138,16 +138,16 @@
                     <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Height="60">
                         <Border Name="BorderStrokeSelectionClone" Margin="0,2,-9,2" Background="Transparent" CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}"
                                 Width="40" MouseDown="Border_MouseDown" MouseUp="BorderStrokeSelectionClone_MouseUp">
-                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="5">
-                                <ui:SymbolIcon Symbol="Copy" Foreground="{DynamicResource ToolBarForeground}"/>
-                                <TextBlock Text="克隆" FontSize="10" Foreground="{DynamicResource ToolBarForeground}"/>
+                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_copy_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp" Margin="0,2,0,3"/>
+                                <TextBlock Text="克隆" FontSize="10" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                         </Border>
                         <Border Name="BorderStrokeSelectionCloneToNewBoard" Margin="0,2,-9,2" Background="Transparent" CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}"
                                 Width="40" MouseDown="Border_MouseDown" MouseUp="BorderStrokeSelectionCloneToNewBoard_MouseUp" Visibility="{Binding Visibility, ElementName=GridBackgroundCover}">
-                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="5">
-                                <ui:SymbolIcon Symbol="Copy" Foreground="{DynamicResource ToolBarForeground}"/>
-                                <TextBlock Text="克隆至新页" FontSize="8" Foreground="{DynamicResource ToolBarForeground}"/>
+                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_copy_add_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp" Margin="0,2,0,3"/>
+                                <TextBlock Text="克隆至新页" FontSize="8" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                         </Border>
                         <Border Width="1" Height="45" BorderBrush="{DynamicResource ToolBarForeground}" Background="{DynamicResource ToolBarForeground}"/>
@@ -208,9 +208,9 @@
                         </Border>
                         <Border Width="1" Height="45" BorderBrush="{DynamicResource ToolBarForeground}" Background="{DynamicResource ToolBarForeground}"/>
                         <Border Margin="-8,0,0,0" CornerRadius="{Binding ElementName=BorderStrokeSelectionControl, Path=CornerRadius}" Width="40" MouseDown="Border_MouseDown" MouseUp="BorderStrokeSelectionDelete_MouseUp">
-                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="5">
-                                <ui:SymbolIcon Symbol="Delete" Foreground="{DynamicResource ToolBarForeground}"/>
-                                <TextBlock Text="删除" FontSize="10" Foreground="{DynamicResource ToolBarForeground}"/>
+                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_delete_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp" Margin="0,2,0,3"/>
+                                <TextBlock Text="删除" FontSize="10" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                         </Border>
                     </ui:SimpleStackPanel>
@@ -266,8 +266,8 @@
                         </Border>
                         <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,1,1">
                             <Grid Margin="6">
-                                <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_circle_right_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
-                                <TextBlock Text="下一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                                <Image x:Name="BoardLeftPannelNextPage" Source="/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                                <TextBlock x:Name="BoardLeftPannelNextPageTextBlock" Text="加页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
                         <Border Margin="5,0,0,0" Width="55" Height="55" MouseDown="Border_MouseDown" MouseUp="ImageBlackboard_MouseUp" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1">
@@ -314,7 +314,7 @@
                         </Border>
                         <Border x:Name="BoardPen" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="PenIcon_Click" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
-                                <Image x:Name="BoardPenIcon" VerticalAlignment="Top" Source="/Resources/Icons-Fluent/ic_fluent_inking_tool_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                                <Image x:Name="BoardPenIcon" VerticalAlignment="Top" Source="/Resources/Icons-Fluent/ic_fluent_signature_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
                                 <TextBlock Text="墨迹" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
@@ -564,13 +564,13 @@
                                         </ui:SimpleStackPanel>
                                         <Label Content="保存 | 打开 | 播放 — 当前页墨迹" FontSize="16" HorizontalAlignment="Left"/>
                                         <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="35" Spacing="15">
-                                            <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
+                                            <Image Source="/Resources/Icons-Fluent/ic_fluent_save_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
                                             <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
                                             <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
                                         </ui:SimpleStackPanel>
                                         <Label Content="截图  设置 | 倒计时  随机抽选" FontSize="17" HorizontalAlignment="Left"/>
                                         <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="35" Spacing="14">
-                                            <Image Source="/Resources/Icons-png/camera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
+                                            <Image Source="/Resources/Icons-Fluent/ic_fluent_camera_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
                                             <Image Source="/Resources/Icons-Fluent/ic_fluent_settings_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
 
                                             <Border Margin="-10,0,0,0" Width="1" Height="30" BorderBrush="Black" Background="Black"/>
@@ -608,7 +608,7 @@
                     <ui:SimpleStackPanel Orientation="Horizontal">
                         <Border Margin="0,0,5,0" Width="55" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardAdd_Click" CornerRadius="3" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1">
                             <Grid Margin="6">
-                                <Image Source="/Resources/Icons-png/add.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
                                 <TextBlock Text="加页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
@@ -626,8 +626,8 @@
                         </Border>
                         <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,1,1">
                             <Grid Margin="6">
-                                <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_circle_right_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
-                                <TextBlock Text="下一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                                <Image x:Name="BoardRightPannelNextPage" Source="/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
+                                <TextBlock x:Name="BoardRightPannelNextPageTextBlock" Text="加页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
                     </ui:SimpleStackPanel>
@@ -922,7 +922,7 @@
                                             Width="340" FontFamily="Microsoft YaHei UI" 
                                             ui:ControlHelper.Header="触摸大小倍数"
                                             IsSnapToTickEnabled="True"
-                                            TickFrequency="0.05" TickPlacement="None"
+                                            TickFrequency="0.01" TickPlacement="None"
                                             ValueChanged="TouchMultiplierSlider_ValueChanged"
                                             Visibility="Visible"/>
                                     <TextBlock Text="{Binding Value, ElementName=TouchMultiplierSlider, Mode=OneWay}"
@@ -1406,8 +1406,8 @@
 
                         </ui:SimpleStackPanel>
                         <ui:SimpleStackPanel Name="Pen_Icon" MouseDown="Border_MouseDown" MouseUp="PenIcon_Click"
-                                             Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center" Width="26">
-                            <Image x:Name="PenIcon" Source="/Resources/Icons-Fluent/ic_fluent_inking_tool_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="26"/>
+                                             Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center" Width="28">
+                            <Image x:Name="PenIcon" Source="/Resources/Icons-Fluent/ic_fluent_signature_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="28"/>
 
                         </ui:SimpleStackPanel>
                         <ui:SimpleStackPanel Name="SymbolIconDelete" MouseDown="Border_MouseDown" MouseUp="SymbolIconDelete_MouseUp"
@@ -1636,13 +1636,13 @@
                                             </ui:SimpleStackPanel>
                                             <Label Content="保存 | 打开 | 播放 - 墨迹" FontSize="12" HorizontalAlignment="Left"/>
                                             <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
-                                                <Image Source="/Resources/Icons-png/file_save.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
+                                                <Image Source="/Resources/Icons-Fluent/ic_fluent_save_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
                                                 <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
                                                 <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
                                             </ui:SimpleStackPanel>
                                             <Label Content="截图 | 设置 | 收纳" FontSize="12" HorizontalAlignment="Left"/>
                                             <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="14">
-                                                <Image Source="/Resources/Icons-png/camera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp"/>
+                                                <Image Source="/Resources/Icons-Fluent/ic_fluent_camera_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp" Margin="0,2,0,3"/>
                                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_settings_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
                                                 <Image Margin="-1,0,0,0" x:Name="hiddenButtonInBorderTools" Source="/Resources/Icons-Fluent/ic_fluent_dual_screen_span_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="FoldFloatingBar_MouseUp"/>
                                             </ui:SimpleStackPanel>

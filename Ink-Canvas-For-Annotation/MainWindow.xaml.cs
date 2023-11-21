@@ -3950,7 +3950,7 @@ namespace Ink_Canvas
             Settings = new Settings();
             Settings.Advanced.IsSpecialScreen = true;
             Settings.Advanced.IsQuadIR = false;
-            Settings.Advanced.TouchMultiplier = 0.4;
+            Settings.Advanced.TouchMultiplier = 0.2;
             Settings.Advanced.EraserBindTouchMultiplier = true;
             Settings.Advanced.IsLogEnabled = true;
             Settings.Advanced.IsSecondConfimeWhenShutdownApp = false;
@@ -4018,6 +4018,7 @@ namespace Ink_Canvas
             Settings.Startup.IsAutoUpdate = true;
             Settings.Startup.IsAutoUpdateWithSilence = true;
             Settings.Startup.IsAutoUpdateWithProxy = true;
+            Settings.Startup.AutoUpdateProxy = "https://mirror.ghproxy.com/";
             Settings.Startup.AutoUpdateWithSilenceStartTime = "18:20";
             Settings.Startup.AutoUpdateWithSilenceEndTime = "07:40";
         }
@@ -6744,6 +6745,29 @@ namespace Ink_Canvas
         {
             TextBlockWhiteBoardIndexInfo.Text = string.Format("{0} / {1}", CurrentWhiteboardIndex, WhiteboardTotalCount);
 
+            if (CurrentWhiteboardIndex == WhiteboardTotalCount)
+            {
+                BitmapImage newImageSource = new BitmapImage();
+                newImageSource.BeginInit();
+                newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png", UriKind.RelativeOrAbsolute);
+                newImageSource.EndInit();
+                BoardLeftPannelNextPage.Source = newImageSource;
+                BoardRightPannelNextPage.Source = newImageSource;
+                BoardRightPannelNextPageTextBlock.Text = "加页";
+                BoardLeftPannelNextPageTextBlock.Text = "加页";
+            }
+            else
+            {
+                BitmapImage newImageSource = new BitmapImage();
+                newImageSource.BeginInit();
+                newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_arrow_circle_right_24_regular.png", UriKind.RelativeOrAbsolute);
+                newImageSource.EndInit();
+                BoardLeftPannelNextPage.Source = newImageSource;
+                BoardRightPannelNextPage.Source = newImageSource;
+                BoardRightPannelNextPageTextBlock.Text = "下一页";
+                BoardLeftPannelNextPageTextBlock.Text = "下一页";
+            }
+
             if (CurrentWhiteboardIndex == 1)
             {
                 BtnWhiteBoardSwitchPrevious.IsEnabled = false;
@@ -7785,7 +7809,7 @@ namespace Ink_Canvas
                 {
                     BitmapImage newImageSource = new BitmapImage();
                     newImageSource.BeginInit();
-                    newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_inking_tool_24_regular.png", UriKind.RelativeOrAbsolute);
+                    newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_signature_24_regular.png", UriKind.RelativeOrAbsolute);
                     newImageSource.EndInit();
                     PenIcon.Source = newImageSource;    
                     BoardPenIcon.Source = newImageSource;
@@ -8708,7 +8732,7 @@ namespace Ink_Canvas
                 }
                 ThicknessAnimation marginAnimation = new ThicknessAnimation
                 {
-                    Duration = TimeSpan.FromSeconds(0.25),
+                    Duration = TimeSpan.FromSeconds(0.5),
                     From = ViewboxFloatingBar.Margin,
                     To = new Thickness(pos.X, pos.Y, -2000, -200)
                 };

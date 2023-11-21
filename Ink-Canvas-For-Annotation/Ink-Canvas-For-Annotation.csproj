@@ -368,11 +368,9 @@
     <None Include="Resources\TimerDownNotice.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons-png\camera.png" />
     <Resource Include="Resources\Icons-png\check-box-background.png" />
     <Resource Include="Resources\Icons-png\eraser-line.png" />
     <Resource Include="Resources\Icons-png\file_open.png" />
-    <Resource Include="Resources\Icons-png\file_save.png" />
     <Resource Include="Resources\Icons-png\eraser-outline.png" />
     <Resource Include="Resources\Icons-png\playCircle.png" />
     <Resource Include="Resources\Icons-png\redo.png" />
@@ -382,9 +380,6 @@
     <Resource Include="Resources\Icons-png\undo.png" />
     <Resource Include="Resources\Icons-png\minimize.png" />
     <Resource Include="Resources\Icons-png\penUpright.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons-png\add.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons-png\twoFingelMove-Blue.png" />
@@ -450,6 +445,22 @@
     <Resource Include="Resources\Icons-Fluent\ic_fluent_arrow_circle_right_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_weather_moon_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_weather_sunny_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_signature_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_save_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_camera_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_copy_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_copy_add_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_add_circle_24_regular.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
