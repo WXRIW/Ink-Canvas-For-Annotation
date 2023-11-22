@@ -2755,9 +2755,11 @@ namespace Ink_Canvas
                         int count = 0;
                         foreach (FileInfo file in files)
                         {
+                            if (file.Name == "Position") break;
                             int i = -1;
                             try
                             {
+                                LogHelper.WriteLogToFile("DEBUG | file.Name: " + file.Name);
                                 i = int.Parse(System.IO.Path.GetFileNameWithoutExtension(file.Name));
                                 //var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
                                 //MemoryStream ms = new MemoryStream(File.ReadAllBytes(file.FullName));
@@ -2784,6 +2786,7 @@ namespace Ink_Canvas
                             int count = 0;
                             foreach (FileInfo file in files)
                             {
+                                if (file.Name == "Position") break;
                                 int i = -1;
                                 try
                                 {

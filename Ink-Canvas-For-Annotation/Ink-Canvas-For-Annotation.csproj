@@ -370,7 +370,6 @@
   <ItemGroup>
     <Resource Include="Resources\Icons-png\check-box-background.png" />
     <Resource Include="Resources\Icons-png\eraser-line.png" />
-    <Resource Include="Resources\Icons-png\file_open.png" />
     <Resource Include="Resources\Icons-png\eraser-outline.png" />
     <Resource Include="Resources\Icons-png\playCircle.png" />
     <Resource Include="Resources\Icons-png\redo.png" />
@@ -468,6 +467,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_edit_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_folder_open_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_people_money_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_person_money_24_regular.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

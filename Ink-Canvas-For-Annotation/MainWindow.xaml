@@ -549,7 +549,7 @@
                                         <Label Content="保存 | 打开 | 播放 — 当前页墨迹" FontSize="16" HorizontalAlignment="Left"/>
                                         <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="35" Spacing="15">
                                             <Image Source="/Resources/Icons-Fluent/ic_fluent_save_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
-                                            <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
+                                            <Image Source="/Resources/Icons-Fluent/ic_fluent_folder_open_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
                                             <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
                                         </ui:SimpleStackPanel>
                                         <Label Content="截图  设置 | 倒计时  随机抽选" FontSize="17" HorizontalAlignment="Left"/>
@@ -559,16 +559,9 @@
 
                                             <Border Margin="-10,0,0,0" Width="1" Height="30" BorderBrush="Black" Background="Black"/>
 
-
-                                            <Image Margin="-2,0,15,0" Source="/Resources/Icons-Fluent/ic_fluent_timer_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
-
-                                            <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
-                                            <Grid MouseUp="SymbolIconRandOne_MouseUp" MouseDown="Border_MouseDown">
-                                                <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}"/>
-                                                <Border CornerRadius="50" BorderBrush="{DynamicResource ToolBarForeground}" BorderThickness="1" HorizontalAlignment="Center" Margin="-2,0,0,0" VerticalAlignment="Bottom" Height="9" Width="9">
-                                                    <TextBlock Text="1" FontSize="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-0.8,0,0" Foreground="{DynamicResource ToolBarForeground}" />
-                                                </Border>
-                                            </Grid>
+                                            <Image Margin="-2,0,5,0" Source="/Resources/Icons-Fluent/ic_fluent_timer_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
+                                            <Image Source="/Resources/Icons-Fluent/ic_fluent_people_money_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
+                                            <Image Source="/Resources/Icons-Fluent/ic_fluent_person_money_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28" MouseDown="Border_MouseDown" MouseUp="SymbolIconRandOne_MouseUp"/>
                                         </ui:SimpleStackPanel>
                                     </ui:SimpleStackPanel>
                                 </Border>
@@ -1623,20 +1616,15 @@
                                         <Image HorizontalAlignment="Right" Margin="0,2,2,-27" Source="/Resources/Icons-png/close-circle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25" MouseDown="Border_MouseDown" MouseUp="CloseBordertools_MouseUp"/>
                                         <ui:SimpleStackPanel Margin="10">
                                             <Label Content="倒计时   抽选   单次抽选" FontSize="9.5" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left"/>
-                                            <ui:SimpleStackPanel Margin="2.5,0,0,2" Height="25" Spacing="15" Orientation="Horizontal">
+                                            <ui:SimpleStackPanel Margin="2.5,0,0,2" Height="25" Spacing="13" Orientation="Horizontal">
                                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_timer_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="ImageCountdownTimer_MouseUp"/>
-                                                <ui:SymbolIcon Margin="-2,0,0,0" Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
-                                                <Grid Margin="0,-2,0,0" MouseUp="SymbolIconRandOne_MouseUp" MouseDown="Border_MouseDown">
-                                                    <ui:SymbolIcon Symbol="Shuffle" Foreground="{DynamicResource ToolBarForeground}"/>
-                                                    <Border CornerRadius="50" BorderBrush="{DynamicResource ToolBarForeground}" BorderThickness="1" HorizontalAlignment="Center" Margin="-2,0,0,0" VerticalAlignment="Bottom" Height="9" Width="9">
-                                                        <TextBlock Text="1" FontSize="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-0.8,0,0" Foreground="{DynamicResource ToolBarForeground}" />
-                                                    </Border>
-                                                </Grid>
+                                                <Image Source="/Resources/Icons-Fluent/ic_fluent_people_money_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconRand_MouseUp"/>
+                                                <Image Margin="1,0,0,0" Source="/Resources/Icons-Fluent/ic_fluent_person_money_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconRandOne_MouseUp"/>
                                             </ui:SimpleStackPanel>
                                             <Label Content="保存 | 打开 | 播放 - 墨迹" FontSize="12" HorizontalAlignment="Left"/>
                                             <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="15">
                                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_save_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
-                                                <Image Source="/Resources/Icons-png/file_open.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
+                                                <Image Source="/Resources/Icons-Fluent/ic_fluent_folder_open_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
                                                 <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
                                             </ui:SimpleStackPanel>
                                             <Label Content="截图 | 设置 | 收纳" FontSize="12" HorizontalAlignment="Left"/>
