@@ -92,6 +92,8 @@ namespace Ink_Canvas
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             Microsoft.Win32.SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
+
+            if (File.Exists("SpecialVersion.ini")) SpecialVersionResetToSuggestion_Click();
         }
 
         #endregion
@@ -1436,7 +1438,7 @@ namespace Ink_Canvas
             }
 
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
-            //Label.Content = "isSingleFingerDragMode=" + isSingleFingerDragMode.ToString();
+
             if (isSingleFingerDragMode)
             {
                 BtnFingerDragMode_Click(BtnFingerDragMode, null);
@@ -3988,19 +3990,19 @@ namespace Ink_Canvas
 
         public static void SetSettingsToRecommendation()
         {
-            bool IsAutoKillPptService = Settings.Automation.IsAutoKillPptService;
-            bool IsAutoKillEasiNote = Settings.Automation.IsAutoKillEasiNote;
+            //bool IsAutoKillPptService = Settings.Automation.IsAutoKillPptService;
+            //bool IsAutoKillEasiNote = Settings.Automation.IsAutoKillEasiNote;
             Settings = new Settings();
             Settings.Advanced.IsSpecialScreen = true;
             Settings.Advanced.IsQuadIR = false;
             Settings.Advanced.TouchMultiplier = 0.4;
-            Settings.Advanced.NibModeBoundsWidth = 10;
+            Settings.Advanced.NibModeBoundsWidth = 5;
             Settings.Advanced.FingerModeBoundsWidth = 30;
             Settings.Advanced.EraserBindTouchMultiplier = true;
             Settings.Advanced.IsLogEnabled = true;
             Settings.Advanced.IsSecondConfimeWhenShutdownApp = false;
 
-            Settings.Appearance.IsEnableDisPlayNibModeToggler = true;
+            Settings.Appearance.IsEnableDisPlayNibModeToggler = false;
             Settings.Appearance.IsColorfulViewboxFloatingBar = false;
             Settings.Appearance.EnableViewboxFloatingBarScaleTransform = true;
             Settings.Appearance.EnableViewboxBlackBoardScaleTransform = false;
@@ -4020,8 +4022,8 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInWxBoardMain = false;
             Settings.Automation.IsAutoFoldInZySmartBoard = false;
             Settings.Automation.IsAutoFoldInOldZyBoard = false;
-            Settings.Automation.IsAutoKillPptService = IsAutoKillPptService;
-            Settings.Automation.IsAutoKillEasiNote = IsAutoKillEasiNote;
+            Settings.Automation.IsAutoKillPptService = false;// IsAutoKillPptService;
+            Settings.Automation.IsAutoKillEasiNote = false;// IsAutoKillEasiNote;
             Settings.Automation.IsSaveScreenshotsInDateFolders = false;
             Settings.Automation.IsAutoSaveStrokesAtScreenshot = false;
             Settings.Automation.IsAutoSaveStrokesAtClear = true;
@@ -4059,7 +4061,7 @@ namespace Ink_Canvas
 
             Settings.InkToShape.IsInkToShapeEnabled = true;
 
-            Settings.Startup.IsEnableNibMode = true;
+            Settings.Startup.IsEnableNibMode = false;
             Settings.Startup.IsAutoUpdate = true;
             Settings.Startup.IsAutoUpdateWithSilence = true;
             Settings.Startup.IsAutoUpdateWithProxy = true;
@@ -4084,6 +4086,20 @@ namespace Ink_Canvas
             }
             catch { }
             ShowNotification("设置已重置为默认推荐设置~");
+        }
+
+        private async void SpecialVersionResetToSuggestion_Click()
+        {
+            await Task.Delay(1000);
+            try
+            {
+                isLoaded = false;
+                SetSettingsToRecommendation();
+                SaveSettingsToFile();
+                LoadSettings(false);
+                isLoaded = true;
+            }
+            catch { }
         }
         #endregion
 
@@ -6917,7 +6933,7 @@ namespace Ink_Canvas
                                     break;
                                 }
                                 //Label.Visibility = Visibility.Visible;
-                                Label.Content = circles.Count.ToString() + "\n" + newResult.InkDrawingNode.GetShapeName();
+                                //Label.Content = circles.Count.ToString() + "\n" + newResult.InkDrawingNode.GetShapeName();
                             }
                             if (result.InkDrawingNode.GetShapeName() == "Circle")
                             {
@@ -7252,8 +7268,6 @@ namespace Ink_Canvas
                                 point.Y = e.Stroke.StylusPoints[i].Y;
                                 stylusPoints.Add(point);
                             }
-                            //Label.Visibility = Visibility.Visible;
-                            //Label.Content = s;
                             e.Stroke.StylusPoints = stylusPoints;
                         }
                         catch

@@ -855,7 +855,7 @@
                                 <!--
                                 <ui:ToggleSwitch Header="显示“橡皮”按钮" IsOn="{Binding ElementName=ToggleSwitchShowButtonEraser, Path=IsOn}" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关"/>
                                 -->
-                                <ui:ToggleSwitch Name="ToggleSwitchEnableDisPlayNibModeToggle" Header="在调色盘窗口中显示 笔尖模式 按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableDisPlayNibModeToggle_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableDisPlayNibModeToggle" Header="在调色盘窗口中显示 笔尖模式 按钮" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableDisPlayNibModeToggle_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchColorfulViewboxFloatingBar" Header="浮动工具栏背景色" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsColorfulViewboxFloatingBar_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableViewboxFloatingBarScaleTransform" Header="浮动工具栏 UI 85% 缩放" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableViewboxFloatingBarScaleTransform_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableViewboxBlackBoardScaleTransform" Header="画板 UI 80% 缩放" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled"/>
