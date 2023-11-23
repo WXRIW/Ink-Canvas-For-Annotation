@@ -84,7 +84,14 @@ namespace Ink_Canvas
                 GridForRecoverOldUI.Visibility = Visibility.Collapsed;
             }*/
 
-            if (File.Exists("debug.ini")) Label.Visibility = Visibility.Visible;
+            try
+            {
+                if (File.Exists("debug.ini")) Label.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
+            }
 
             InitTimers();
             timeMachine.OnRedoStateChanged += TimeMachine_OnRedoStateChanged;
@@ -92,8 +99,14 @@ namespace Ink_Canvas
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             Microsoft.Win32.SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
-
-            if (File.Exists("SpecialVersion.ini")) SpecialVersionResetToSuggestion_Click();
+            try
+            {
+                if (File.Exists("SpecialVersion.ini")) SpecialVersionResetToSuggestion_Click();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
+            }
         }
 
         #endregion
@@ -653,19 +666,25 @@ namespace Ink_Canvas
         private void LoadSettings(bool isStartup = true)
         {
             AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-            if (File.Exists(App.RootPath + settingsFileName))
+            try
             {
-                try
+                if (File.Exists(App.RootPath + settingsFileName))
                 {
-                    string text = File.ReadAllText(App.RootPath + settingsFileName);
-                    Settings = JsonConvert.DeserializeObject<Settings>(text);
+                    try
+                    {
+                        string text = File.ReadAllText(App.RootPath + settingsFileName);
+                        Settings = JsonConvert.DeserializeObject<Settings>(text);
+                    }
+                    catch { }
                 }
-                catch { }
+                else
+                {
+                    BtnResetToSuggestion_Click(null, null);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                BtnResetToSuggestion_Click(null, null);
+                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
             /*
             if (Settings.Startup.IsAutoEnterModeFinger)
@@ -968,10 +987,16 @@ namespace Ink_Canvas
             AutoUpdateWithSilenceStartTimeComboBox.SelectedItem = Settings.Startup.AutoUpdateWithSilenceStartTime;
             AutoUpdateWithSilenceEndTimeComboBox.SelectedItem = Settings.Startup.AutoUpdateWithSilenceEndTime;
 
-
-            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\Ink Canvas Annotaion" + ".lnk"))
+            try
             {
-                ToggleSwitchRunAtStartup.IsOn = true;
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\Ink Canvas Annotaion" + ".lnk"))
+                {
+                    ToggleSwitchRunAtStartup.IsOn = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
 
             if (Settings.Canvas != null)
@@ -2571,44 +2596,62 @@ namespace Ink_Canvas
                             defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
                         }
                         string folderPath = defaultFolderPath + presentation.Name + "_" + presentation.Slides.Count;
-                        if (File.Exists(folderPath + "/Position"))
+                        try
                         {
-                            if (int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page))
+                            if (File.Exists(folderPath + "/Position"))
                             {
-                                if (page <= 0) return;
-                                new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
+                                if (int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page))
                                 {
-                                    if (pptApplication.SlideShowWindows.Count >= 1)
+                                    if (page <= 0) return;
+                                    new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
                                     {
-                                        // 如果已经播放了的话, 跳转
-                                        presentation.SlideShowWindow.View.GotoSlide(page);
-                                    }
-                                    else
+                                        if (pptApplication.SlideShowWindows.Count >= 1)
+                                        {
+                                            // 如果已经播放了的话, 跳转
+                                            presentation.SlideShowWindow.View.GotoSlide(page);
+                                        }
+                                        else
+                                        {
+                                            presentation.Windows[1].View.GotoSlide(page);
+                                        }
+                                    }).ShowDialog();
+                                }
+                            }
+                            else if (defaultFolderPath == $@"D:\Ink Canvas\Auto Saved - Presentations\") // 使用原版 InkCanvas 保存地点
+                            {
+                                defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                                folderPath = defaultFolderPath + presentation.Name + "_" + presentation.Slides.Count;
+                                try
+                                {
+                                    if (File.Exists(folderPath + "/Position"))
                                     {
-                                        presentation.Windows[1].View.GotoSlide(page);
+                                        if (int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page))
+                                        {
+                                            if (page <= 0) return;
+                                            new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
+                                            {
+                                                if (pptApplication.SlideShowWindows.Count >= 1)
+                                                {
+                                                    // 如果已经播放了的话, 跳转
+                                                    presentation.SlideShowWindow.View.GotoSlide(page);
+                                                }
+                                                else
+                                                {
+                                                    presentation.Windows[1].View.GotoSlide(page);
+                                                }
+                                            }).ShowDialog();
+                                        }
                                     }
-                                }).ShowDialog();
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
+                                }
                             }
                         }
-                        else if(defaultFolderPath == $@"D:\Ink Canvas\Auto Saved - Presentations\") // 使用原版 InkCanvas 保存地点
+                        catch (Exception ex)
                         {
-                            defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
-                            if (int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page))
-                            {
-                                if (page <= 0) return;
-                                new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
-                                {
-                                    if (pptApplication.SlideShowWindows.Count >= 1)
-                                    {
-                                        // 如果已经播放了的话, 跳转
-                                        presentation.SlideShowWindow.View.GotoSlide(page);
-                                    }
-                                    else
-                                    {
-                                        presentation.Windows[1].View.GotoSlide(page);
-                                    }
-                                }).ShowDialog();
-                            }
+                            LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
                         }
                     }, DispatcherPriority.Normal);
 
@@ -2957,7 +3000,11 @@ namespace Ink_Canvas
                 {
                     Directory.CreateDirectory(folderPath);
                 }
-                File.WriteAllText(folderPath + "/Position", previousSlideID.ToString());
+                try
+                {
+                    File.WriteAllText(folderPath + "/Position", previousSlideID.ToString());
+                }
+                catch { }
                 for (int i = 1; i <= Pres.Slides.Count; i++)
                 {
                     if (memoryStreams[i] != null)
@@ -3998,9 +4045,9 @@ namespace Ink_Canvas
             Settings = new Settings();
             Settings.Advanced.IsSpecialScreen = true;
             Settings.Advanced.IsQuadIR = false;
-            Settings.Advanced.TouchMultiplier = 0.4;
+            Settings.Advanced.TouchMultiplier = 0.3;
             Settings.Advanced.NibModeBoundsWidth = 5;
-            Settings.Advanced.FingerModeBoundsWidth = 30;
+            Settings.Advanced.FingerModeBoundsWidth = 20;
             Settings.Advanced.EraserBindTouchMultiplier = true;
             Settings.Advanced.IsLogEnabled = true;
             Settings.Advanced.IsSecondConfimeWhenShutdownApp = false;
@@ -4083,8 +4130,6 @@ namespace Ink_Canvas
                 LoadSettings(false);
                 isLoaded = true;
 
-                ToggleSwitchRunAtStartup.IsOn = false;
-                await Task.Delay(200);
                 ToggleSwitchRunAtStartup.IsOn = true;
             }
             catch { }
