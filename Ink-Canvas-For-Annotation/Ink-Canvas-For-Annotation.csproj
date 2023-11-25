@@ -281,9 +281,6 @@
   </ItemGroup>
   <!-- When Office is not installed -->
   <ItemGroup>
-    <PackageReference Include="Autoupdater.NET.Official">
-      <Version>1.8.1</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Office.Interop.PowerPoint">
       <Version>15.0.4420.1018</Version>
     </PackageReference>
@@ -401,9 +398,6 @@
     <Resource Include="Resources\DeveloperAvatars\WXRIW.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons-png\balance.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icons-png\down.png" />
     <Resource Include="Resources\Icons-png\up.png" />
   </ItemGroup>
@@ -419,7 +413,6 @@
     <Resource Include="Resources\Icons-Fluent\ic_fluent_eraser_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_eraser_medium_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_eye_hide_24_regular.png" />
-    <Resource Include="Resources\Icons-Fluent\ic_fluent_inking_tool_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_lasso_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_settings_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_whiteboard_24_regular.png" />
@@ -474,6 +467,14 @@
   <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_people_money_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_person_money_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_arrow_move_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_arrow_rotate_clockwise_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_scale_fit_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_scales_24_regular.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

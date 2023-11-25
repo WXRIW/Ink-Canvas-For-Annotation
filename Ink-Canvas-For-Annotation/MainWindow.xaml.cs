@@ -53,7 +53,8 @@ namespace Ink_Canvas
             LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
             BorderSettings.Margin = new Thickness(0,150,0,150);
-
+            TwoFingerGestureBorder.Visibility = Visibility.Collapsed;
+            BoardTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
             BorderDrawShape.Visibility = Visibility.Collapsed;
             BoardBorderDrawShape.Visibility = Visibility.Collapsed;
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
@@ -779,7 +780,7 @@ namespace Ink_Canvas
                 gradientBrush.GradientStops.Add(blueStop);
                 gradientBrush.GradientStops.Add(greenStop);
 
-                EnableTwoFingerZoomBorder.Background = gradientBrush;
+                EnableTwoFingerGestureBorder.Background = gradientBrush;
                 BorderFloatingBarMainControls.Background = gradientBrush;
                 BorderFloatingBarMoveControls.Background = gradientBrush;
                 BorderFloatingBarExitPPTBtn.Background = gradientBrush;
@@ -788,7 +789,7 @@ namespace Ink_Canvas
             }
             else
             {
-                EnableTwoFingerZoomBorder.Background = (Brush)FindResource("ToolBarBackground");
+                EnableTwoFingerGestureBorder.Background = (Brush)FindResource("ToolBarBackground");
                 BorderFloatingBarMainControls.Background = (Brush)FindResource("ToolBarBackground");
                 BorderFloatingBarMoveControls.Background = (Brush)FindResource("ToolBarBackground");
                 BorderFloatingBarExitPPTBtn.Background = (Brush)FindResource("ToolBarBackground");
@@ -916,21 +917,42 @@ namespace Ink_Canvas
             if (Settings.Gesture.IsEnableTwoFingerZoom)
             {
                 ToggleSwitchEnableTwoFingerZoom.IsOn = true;
-                CheckEnableTwoFingerZoomBtnColorPrompt();
+                BoardToggleSwitchEnableTwoFingerZoom.IsOn = true;
             }
             else
             {
                 ToggleSwitchEnableTwoFingerZoom.IsOn = false;
-                CheckEnableTwoFingerZoomBtnColorPrompt();
+                BoardToggleSwitchEnableTwoFingerZoom.IsOn = false;
             }
-
-            if (Settings.Gesture.AutoSwitchTwoFingerZoom)
+            if (Settings.Gesture.IsEnableTwoFingerTranslate)
             {
-                ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = true;
+                ToggleSwitchEnableTwoFingerTranslate.IsOn = true;
+                BoardToggleSwitchEnableTwoFingerTranslate.IsOn = true;
             }
             else
             {
-                ToggleSwitchAutoSwitchTwoFingerZoom.IsOn = false;
+                ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
+                BoardToggleSwitchEnableTwoFingerTranslate.IsOn = false;
+            }
+            if (Settings.Gesture.IsEnableTwoFingerRotation)
+            {
+                ToggleSwitchEnableTwoFingerRotation.IsOn = true;
+                BoardToggleSwitchEnableTwoFingerRotation.IsOn = true;
+            }
+            else
+            {
+                ToggleSwitchEnableTwoFingerRotation.IsOn = false;
+                BoardToggleSwitchEnableTwoFingerRotation.IsOn = false;
+            }
+            CheckEnableTwoFingerGestureBtnColorPrompt();
+
+            if (Settings.Gesture.AutoSwitchTwoFingerGesture)
+            {
+                ToggleSwitchAutoSwitchTwoFingerGesture.IsOn = true;
+            }
+            else
+            {
+                ToggleSwitchAutoSwitchTwoFingerGesture.IsOn = false;
             }
 
             if (Settings.Gesture.IsEnableTwoFingerRotation)
@@ -1747,13 +1769,13 @@ namespace Ink_Canvas
             if (Main_Grid.Background == Brushes.Transparent)
             {
                 StackPanelCanvasControls.Visibility = Visibility.Collapsed;
-                CheckEnableTwoFingerZoomBtnVisibility(false);
+                CheckEnableTwoFingerGestureBtnVisibility(false);
                 HideSubPanels("cursor");
             }
             else
             {
                 AnimationHelper.ShowWithSlideFromLeftAndFade(StackPanelCanvasControls);
-                CheckEnableTwoFingerZoomBtnVisibility(true);
+                CheckEnableTwoFingerGestureBtnVisibility(true);
             }
         }
 
@@ -2331,9 +2353,9 @@ namespace Ink_Canvas
                 lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
             }
             //设备两个及两个以上，将画笔功能关闭
-            if (dec.Count > 1 || isSingleFingerDragMode || !Settings.Gesture.IsEnableTwoFingerZoom)
+            if (dec.Count > 1 || isSingleFingerDragMode || !Settings.Gesture.IsEnableTwoFingerGesture)
             {
-                if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerZoom) return;
+                if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture) return;
                 if (inkCanvas.EditingMode != InkCanvasEditingMode.None && inkCanvas.EditingMode != InkCanvasEditingMode.Select)
                 {
                     lastInkCanvasEditingMode = inkCanvas.EditingMode;
@@ -2389,7 +2411,7 @@ namespace Ink_Canvas
 
         private void Main_Grid_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
         {
-            if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerZoom) return;
+            if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture) return;
             if ((dec.Count >= 2 && (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode || StackPanelPPTControls.Visibility != Visibility.Visible || StackPanelPPTButtons.Visibility == Visibility.Collapsed)) || isSingleFingerDragMode)
             {
                 ManipulationDelta md = e.DeltaManipulation;
@@ -2405,12 +2427,12 @@ namespace Ink_Canvas
                 center = m.Transform(center);  // 转换为矩阵缩放和旋转的中心点
 
                 // Update matrix to reflect translation/rotation
-                m.Translate(trans.X, trans.Y);  // 移动
+                if (Settings.Gesture.IsEnableTwoFingerTranslate)
+                    m.Translate(trans.X, trans.Y);  // 移动
                 if (Settings.Gesture.IsEnableTwoFingerRotation)
-                {
                     m.RotateAt(rotate, center.X, center.Y);  // 旋转
-                }
-                m.ScaleAt(scale.X, scale.Y, center.X, center.Y);  // 缩放
+                if (Settings.Gesture.IsEnableTwoFingerZoom)
+                    m.ScaleAt(scale.X, scale.Y, center.X, center.Y);  // 缩放
 
                 StrokeCollection strokes = inkCanvas.GetSelectedStrokes();
                 if (strokes.Count != 0)
@@ -2430,12 +2452,15 @@ namespace Ink_Canvas
                             }
                         }
 
-                        try
+                        if (Settings.Gesture.IsEnableTwoFingerZoom)
                         {
-                            stroke.DrawingAttributes.Width *= md.Scale.X;
-                            stroke.DrawingAttributes.Height *= md.Scale.Y;
+                            try
+                            {
+                                stroke.DrawingAttributes.Width *= md.Scale.X;
+                                stroke.DrawingAttributes.Height *= md.Scale.Y;
+                            }
+                            catch { }
                         }
-                        catch { }
                     }
                 }
                 else
@@ -2444,13 +2469,16 @@ namespace Ink_Canvas
                     {
                         stroke.Transform(m, false);
 
-                        try
+                        if (Settings.Gesture.IsEnableTwoFingerZoom)
                         {
-                            stroke.DrawingAttributes.Width *= md.Scale.X;
-                            stroke.DrawingAttributes.Height *= md.Scale.Y;
+                            try
+                            {
+                                stroke.DrawingAttributes.Width *= md.Scale.X;
+                                stroke.DrawingAttributes.Height *= md.Scale.Y;
+                            }
+                            catch { }
                         }
-                        catch { }
-                    }
+                        }
                     foreach (Circle circle in circles)
                     {
                         circle.R = GetDistance(circle.Stroke.StylusPoints[0].ToPoint(), circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].ToPoint()) / 2;
@@ -3542,6 +3570,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsShowSidePPTNavigationPanel = ToggleSwitchShowSidePPTNavigationPanel.IsOn;
             LeftSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+            RightSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
             SaveSettingsToFile();
         }
         /*
@@ -3997,21 +4026,43 @@ namespace Ink_Canvas
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableTwoFingerZoom_Toggled(object sender, RoutedEventArgs e)
+        private void ToggleSwitchAutoSwitchTwoFingerGesture_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-
-            Settings.Gesture.IsEnableTwoFingerZoom = ToggleSwitchEnableTwoFingerZoom.IsOn;
-            CheckEnableTwoFingerZoomBtnColorPrompt();
+            Settings.Gesture.AutoSwitchTwoFingerGesture = ToggleSwitchAutoSwitchTwoFingerGesture.IsOn;
 
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchAutoSwitchTwoFingerZoom_Toggled(object sender, RoutedEventArgs e)
+        private void ToggleSwitchEnableTwoFingerZoom_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
-            Settings.Gesture.AutoSwitchTwoFingerZoom = ToggleSwitchAutoSwitchTwoFingerZoom.IsOn;
+            if (sender == ToggleSwitchEnableTwoFingerZoom)
+            {
+                BoardToggleSwitchEnableTwoFingerZoom.IsOn = ToggleSwitchEnableTwoFingerZoom.IsOn;
+            }
+            else
+            {
+                ToggleSwitchEnableTwoFingerZoom.IsOn = BoardToggleSwitchEnableTwoFingerZoom.IsOn;
+            }
+            Settings.Gesture.IsEnableTwoFingerZoom = ToggleSwitchEnableTwoFingerZoom.IsOn;
+            CheckEnableTwoFingerGestureBtnColorPrompt();
+            SaveSettingsToFile();
+        }
 
+        private void ToggleSwitchEnableTwoFingerTranslate_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            if (sender == ToggleSwitchEnableTwoFingerTranslate)
+            {
+                BoardToggleSwitchEnableTwoFingerTranslate.IsOn = ToggleSwitchEnableTwoFingerTranslate.IsOn;
+            }
+            else
+            {
+                ToggleSwitchEnableTwoFingerTranslate.IsOn = BoardToggleSwitchEnableTwoFingerTranslate.IsOn;
+            }
+            Settings.Gesture.IsEnableTwoFingerTranslate = ToggleSwitchEnableTwoFingerTranslate.IsOn;
+            CheckEnableTwoFingerGestureBtnColorPrompt();
             SaveSettingsToFile();
         }
 
@@ -4019,9 +4070,17 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
 
+            if (sender == ToggleSwitchEnableTwoFingerRotation)
+            {
+                BoardToggleSwitchEnableTwoFingerRotation.IsOn = ToggleSwitchEnableTwoFingerRotation.IsOn;
+            }
+            else
+            {
+                ToggleSwitchEnableTwoFingerRotation.IsOn = BoardToggleSwitchEnableTwoFingerRotation.IsOn;
+            }
             Settings.Gesture.IsEnableTwoFingerRotation = ToggleSwitchEnableTwoFingerRotation.IsOn;
             Settings.Gesture.IsEnableTwoFingerRotationOnSelection = ToggleSwitchEnableTwoFingerRotationOnSelection.IsOn;
-
+            CheckEnableTwoFingerGestureBtnColorPrompt();
             SaveSettingsToFile();
         }
 
@@ -4104,8 +4163,9 @@ namespace Ink_Canvas
             Settings.Canvas.UsingWhiteboard = false;
             Settings.Canvas.HyperbolaAsymptoteOption = 0;
 
+            Settings.Gesture.AutoSwitchTwoFingerGesture = true;
+            Settings.Gesture.IsEnableTwoFingerTranslate = true;
             Settings.Gesture.IsEnableTwoFingerZoom = false;
-            Settings.Gesture.AutoSwitchTwoFingerZoom = true;
             Settings.Gesture.IsEnableTwoFingerRotation = false;
             Settings.Gesture.IsEnableTwoFingerRotationOnSelection = false;
 
@@ -4120,7 +4180,7 @@ namespace Ink_Canvas
             Settings.Startup.AutoUpdateWithSilenceEndTime = "07:40";
         }
 
-        private async void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
+        private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -7916,6 +7976,8 @@ namespace Ink_Canvas
             AnimationHelper.HideWithSlideAndFade(BoardPenPalette);
             AnimationHelper.HideWithSlideAndFade(BoardDeleteIcon);
             AnimationHelper.HideWithSlideAndFade(BorderSettings, 0.5);
+            AnimationHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
+            AnimationHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
             if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
             {
                 AnimationHelper.HideWithSlideAndFade(BorderDrawShape);
@@ -8153,9 +8215,11 @@ namespace Ink_Canvas
                 RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
 
                 //进入黑板
-                if (!Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
+                if (!Settings.Gesture.IsEnableTwoFingerGesture) // 自动开启双指移动
                 {
-                    EnableTwoFingerZoomBtn_MouseUp(null, null);
+                    ToggleSwitchEnableTwoFingerTranslate.IsOn = true;
+                    //ToggleSwitchEnableTwoFingerZoom.IsOn = false;
+                    //ToggleSwitchEnableTwoFingerRotation.IsOn = false;
                 }
 
                 Topmost = false;
@@ -8218,9 +8282,11 @@ namespace Ink_Canvas
                 }
 
 
-                if (Settings.Gesture.IsEnableTwoFingerZoom) // 自动关闭多指移动
+                if (Settings.Gesture.IsEnableTwoFingerGesture) // 自动关闭双指移动
                 {
-                    EnableTwoFingerZoomBtn_MouseUp(null, null);
+                    ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
+                    //ToggleSwitchEnableTwoFingerZoom.IsOn = false;
+                    //ToggleSwitchEnableTwoFingerRotation.IsOn = false;
                 }
 
 
@@ -8953,7 +9019,7 @@ namespace Ink_Canvas
 
             StackPanelPPTButtons.Visibility = Visibility.Visible;
             BtnHideInkCanvas.Content = "显示\n画板";
-            CheckEnableTwoFingerZoomBtnVisibility(false);
+            CheckEnableTwoFingerGestureBtnVisibility(false);
 
 
             StackPanelCanvasControls.Visibility = Visibility.Collapsed;
@@ -9011,7 +9077,7 @@ namespace Ink_Canvas
 
                 StackPanelCanvasControls.Visibility = Visibility.Visible;
                 //AnimationHelper.ShowWithSlideFromLeftAndFade(StackPanelCanvasControls);
-                CheckEnableTwoFingerZoomBtnVisibility(true);
+                CheckEnableTwoFingerGestureBtnVisibility(true);
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 ColorSwitchCheck();
                 HideSubPanels("pen");
@@ -9196,28 +9262,34 @@ namespace Ink_Canvas
 
         #region TwoFingZoomBtn
 
-        private void EnableTwoFingerZoomBtn_MouseUp(object sender, RoutedEventArgs e)
+        private void TwoFingerGestureBorder_MouseUp(object sender, RoutedEventArgs e)
         {
-            ToggleSwitchEnableTwoFingerZoom.IsOn = !ToggleSwitchEnableTwoFingerZoom.IsOn;
-            Settings.Gesture.IsEnableTwoFingerZoom = ToggleSwitchEnableTwoFingerZoom.IsOn;
-            
-            SaveSettingsToFile();
+            if (TwoFingerGestureBorder.Visibility == Visibility.Visible)
+            {
+                AnimationHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
+                AnimationHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
+            }
+            else
+            {
+                AnimationHelper.ShowWithSlideFromBottomAndFade(TwoFingerGestureBorder);
+                AnimationHelper.ShowWithSlideFromBottomAndFade(BoardTwoFingerGestureBorder);
+            }
         }
 
-        private void CheckEnableTwoFingerZoomBtnColorPrompt()
+        private void CheckEnableTwoFingerGestureBtnColorPrompt()
         {
-            EnableTwoFingerZoomBtn.Source = Settings.Gesture.IsEnableTwoFingerZoom ? new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove-Blue.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove.png", UriKind.Relative));
-            BoardEnableTwoFingerZoomBtn.Source = Settings.Gesture.IsEnableTwoFingerZoom ? new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove-Blue.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove.png", UriKind.Relative));
+            EnableTwoFingerGestureBtn.Source = Settings.Gesture.IsEnableTwoFingerGesture ? new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove-Blue.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove.png", UriKind.Relative));
+            BoardEnableTwoFingerGestureBtn.Source = Settings.Gesture.IsEnableTwoFingerGesture ? new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove-Blue.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove.png", UriKind.Relative));
         }
 
-        private void CheckEnableTwoFingerZoomBtnVisibility(bool isVisible)
+        private void CheckEnableTwoFingerGestureBtnVisibility(bool isVisible)
         {
             if (isVisible == true)
             {
-                if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) EnableTwoFingerZoomBorder.Visibility = Visibility.Collapsed;
-                else EnableTwoFingerZoomBorder.Visibility = Visibility.Visible;
+                if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
+                else EnableTwoFingerGestureBorder.Visibility = Visibility.Visible;
             }
-            else EnableTwoFingerZoomBorder.Visibility = Visibility.Collapsed;
+            else EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
         }
 
         #endregion TwoFingZoomBtn

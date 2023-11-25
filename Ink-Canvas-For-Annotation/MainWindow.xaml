@@ -235,26 +235,28 @@
                 </Viewbox.LayoutTransform>
                 <Grid x:Name="BlackboardLeftSide" Visibility="Visible" Opacity="0.75" Margin="3,0,0,0" Height="55" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                     <ui:SimpleStackPanel Orientation="Horizontal">
-                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchPrevious_Click" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1,1,0,1">
+                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchPrevious_Click" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_circle_left_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality"  VerticalAlignment="Top" Width="26" Height="26"/>
 
                                 <TextBlock Text="上一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
-                        <Border Width="55" Height="55" Background="LightGray" Opacity="0.85"  BorderBrush="LightGray" BorderThickness="0,1,0,1">
-                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Margin="0,4,0,0" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
-                                <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
-                            </ui:SimpleStackPanel>
+                        <Border Width="55" Height="55" Background="LightGray" Opacity="0.85">
+                            <Grid Margin="6">
+                                <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Margin="0,4,0,2" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                                    <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
+                                </ui:SimpleStackPanel>
+                            </Grid>
                         </Border>
-                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,1,1">
+                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image x:Name="BoardLeftPannelNextPage" Source="/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
                                 <TextBlock x:Name="BoardLeftPannelNextPageTextBlock" Text="加页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
-                        <Border Margin="5,0,0,0" Width="55" Height="55" MouseDown="Border_MouseDown" MouseUp="ImageBlackboard_MouseUp" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1">
+                        <Border Margin="5,0,0,0" Width="55" Height="55" MouseDown="Border_MouseDown" MouseUp="ImageBlackboard_MouseUp" CornerRadius="5" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image Source="/Resources/Icons-png/minimize.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
                                 <TextBlock Text="退出" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
@@ -277,17 +279,38 @@
                 </Viewbox.LayoutTransform>
                 <Grid x:Name="BlackboardCenterSide" Visibility="Visible" Opacity="0.8" Margin="0" Height="55" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <ui:SimpleStackPanel Orientation="Horizontal">
-                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="EnableTwoFingerZoomBtn_MouseUp" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85">
+                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="TwoFingerGestureBorder_MouseUp" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
-                                <Image x:Name="BoardEnableTwoFingerZoomBtn" VerticalAlignment="Top" Source="/Resources/Icons-png/twoFingelMove.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25"/>
-                                <TextBlock Text="两指缩放" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                                <Image x:Name="BoardEnableTwoFingerGestureBtn" VerticalAlignment="Top" Source="/Resources/Icons-png/twoFingelMove.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25"/>
+                                <TextBlock Text="手势" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
+                        <Grid Margin="0,0,0,5" Width="0">
+                            <Border Name="BoardTwoFingerGestureBorder" Margin="-115,-125,-55,54" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1">
+                                <ui:SimpleStackPanel Margin="13">
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_move_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                        <Label Content="双指移动" FontSize="15" VerticalAlignment="Center"/>
+                                        <ui:ToggleSwitch Width="42" Name="BoardToggleSwitchEnableTwoFingerTranslate" FontFamily="Microsoft YaHei UI" IsOn="False" Toggled="ToggleSwitchEnableTwoFingerTranslate_Toggled"/>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Image Source="/Resources/Icons-Fluent/ic_fluent_scale_fit_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                        <Label Content="双指缩放" FontSize="15" VerticalAlignment="Center"/>
+                                        <ui:ToggleSwitch Width="42" Name="BoardToggleSwitchEnableTwoFingerZoom" FontFamily="Microsoft YaHei UI" IsOn="False" Toggled="ToggleSwitchEnableTwoFingerZoom_Toggled"/>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_rotate_clockwise_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                        <Label Content="双指旋转" FontSize="15" VerticalAlignment="Center"/>
+                                        <ui:ToggleSwitch Width="42" Name="BoardToggleSwitchEnableTwoFingerRotation" FontFamily="Microsoft YaHei UI" Toggled="ToggleSwitchEnableTwoFingerRotation_Toggled"/>
+                                    </ui:SimpleStackPanel>
+                                </ui:SimpleStackPanel>
+                            </Border>
+                        </Grid>
                         <Border Margin="0,0,5,0" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BoardChangeBackgroundColorBtn_MouseUp" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_dark_theme_24_regular.png" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality" Height="26" Width="26"/>
 
-                                <TextBlock Text="背景色" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
+                                <TextBlock Text="画布" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
                         <Border x:Name="BoardSelect" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="SymbolIconSelect_MouseUp" CornerRadius="5,0,0,5" Background="LightGray" Opacity="0.85">
@@ -304,7 +327,7 @@
                         </Border>
                         <Border>
                             <Grid Margin="0,5,0,5" Width="0" RenderTransformOrigin="0.5,0.5">
-                                <Border x:Name="BoardPenPalette" Visibility="Visible" Background="LightGray" Opacity="0.85" CornerRadius="5" BorderBrush="Black" BorderThickness="1.5" Margin="-145,-190,-95,55">
+                                <Border x:Name="BoardPenPalette" Visibility="Visible" Background="LightGray" Opacity="0.85" CornerRadius="5" BorderBrush="Black" BorderThickness="1" Margin="-145,-190,-95,55">
                                     <Viewbox>
                                         <StackPanel Margin="20 10">
                                             <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -408,7 +431,7 @@
                             </Grid>
                         </Border>
                         <Border Width="0" MouseDown="Border_MouseDown" MouseUp="BoardSymbolIconDelete_MouseUp">
-                            <Border x:Name="BoardDeleteIcon" Margin="-60,-55,-60,55" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="2,2,2,0" CornerRadius="5,5,0,0">
+                            <Border x:Name="BoardDeleteIcon" Margin="-61,-55,-61,55" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1,1,1,0" CornerRadius="5,5,0,0">
                                 <Grid>
                                     <ui:SimpleStackPanel Margin="6" Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Image Source="/Resources/Icons-Fluent/ic_fluent_delete_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
@@ -430,7 +453,7 @@
                             </Grid>
                         </Border>
                         <Border Width="0">
-                            <Border x:Name="BoardBorderDrawShape" Visibility="Visible" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1.5" CornerRadius="8" Margin="-147,-286,-89,59">
+                            <Border x:Name="BoardBorderDrawShape" Visibility="Visible" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1" CornerRadius="8" Margin="-147,-286,-89,59">
                                 <Viewbox>
                                     <ui:SimpleStackPanel Spacing="-8" Orientation="Vertical">
                                         <TextBlock FontSize="16" Foreground="{DynamicResource ToolBarForeground}" HorizontalAlignment="Left" Margin="10,8">
@@ -507,14 +530,14 @@
                         <Border x:Name="BoardUndo" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="SymbolIconUndo_MouseUp" IsEnabled="{Binding ElementName=BtnUndo, Path=IsEnabled}" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image VerticalAlignment="Top" Source="/Resources/Icons-png/undo.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="28"
-                       Opacity="{Binding ElementName=BtnUndo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
+                                       Opacity="{Binding ElementName=BtnUndo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
                                 <TextBlock Text="撤销" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
                         <Border x:Name="BoardRedo" Width="60" Height="55" CornerRadius="0,5,5,0" MouseDown="Border_MouseDown" MouseUp="SymbolIconRedo_MouseUp" IsEnabled="{Binding ElementName=BtnRedo, Path=IsEnabled}" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image VerticalAlignment="Top" Source="/Resources/Icons-png/redo.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="28"
-                       Opacity="{Binding ElementName=BtnRedo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
+                                       Opacity="{Binding ElementName=BtnRedo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"/>
                                 <TextBlock Text="重做" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
@@ -526,26 +549,25 @@
                         </Border>
                         <Border>
                             <Grid Margin="0,0,0,5" Width="0">
-                                <Border Name="BoardBorderTools" Margin="-162,-190,-102,54" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1.5">
+                                <Border Name="BoardBorderTools" Margin="-162,-190,-102,54" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1">
                                     <ui:SimpleStackPanel Margin="13">
-                                        <ui:SimpleStackPanel Orientation="Horizontal">
-                                            <Border Margin="4,3" BorderBrush="Black" BorderThickness="1.5" Width="110" CornerRadius="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchEasiCamera_MouseUp">
-                                                <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2.5,0,0,0" Height="35" Spacing="5">
+                                        <Border Margin="4,3" BorderBrush="Black" BorderThickness="1.5" Width="220" CornerRadius="5">
+                                            <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2.5,0,0,0" Height="35" Spacing="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchEasiCamera_MouseUp">
                                                     <Image Source="/Resources/Icons-png/EasiCamera.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25"/>
                                                     <TextBlock Text="视频展台" FontSize="15" VerticalAlignment="Center"/>
                                                 </ui:SimpleStackPanel>
-                                            </Border>
-                                            <Border Margin="4,3" BorderBrush="Black" BorderThickness="1.5" Width="110" CornerRadius="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchDesmos_MouseUp">
-                                                <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2.5,0,0,0" Height="35" Spacing="5">
-                                                    <Image Source="/Resources/Icons-png/Desmos.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25">
+                                                <Line Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center" X1="0" Y1="0" X2="0" Y2="25" Stroke="Black" StrokeThickness="1"/>
+                                                <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2.5,0,0,0" Height="35" Spacing="5" MouseDown="Border_MouseDown" MouseUp="BoardLaunchDesmos_MouseUp">
+                                                    <Image Margin="-1,0,0,0" Source="/Resources/Icons-png/Desmos.png" RenderOptions.BitmapScalingMode="HighQuality" Height="25" Width="25">
                                                         <Image.Clip>
                                                             <EllipseGeometry Center="12.5,12.5" RadiusX="12.5" RadiusY="12.5" />
                                                         </Image.Clip>
                                                     </Image>
                                                     <TextBlock Text="Desmos" FontSize="15" VerticalAlignment="Center"/>
                                                 </ui:SimpleStackPanel>
-                                            </Border>
-                                        </ui:SimpleStackPanel>
+                                            </ui:SimpleStackPanel>
+                                        </Border>
                                         <Label Content="保存 | 打开 | 播放 — 当前页墨迹" FontSize="16" HorizontalAlignment="Left"/>
                                         <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="35" Spacing="15">
                                             <Image Source="/Resources/Icons-Fluent/ic_fluent_save_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="30" MouseDown="Border_MouseDown" MouseUp="SymbolIconSaveStrokes_MouseUp"/>
@@ -567,7 +589,7 @@
                                 </Border>
                             </Grid>
                         </Border>
-                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="ImageBlackboard_MouseUp" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1">
+                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="ImageBlackboard_MouseUp" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image Source="/Resources/Icons-png/minimize.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
                                 <TextBlock Text="退出" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
@@ -583,25 +605,27 @@
                 </Viewbox.LayoutTransform>
                 <Grid x:Name="BlackboardRightSide" Visibility="Visible" Opacity="0.75" Margin="0,0,3,0" Height="55" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                     <ui:SimpleStackPanel Orientation="Horizontal">
-                        <Border Margin="0,0,5,0" Width="55" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardAdd_Click" CornerRadius="3" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1">
+                        <Border Margin="0,0,5,0" Width="55" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardAdd_Click" CornerRadius="3" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
                                 <TextBlock Text="加页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
-                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchPrevious_Click" CornerRadius="3,0,0,3" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="1,1,0,1">
+                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchPrevious_Click" CornerRadius="3,0,0,3" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_circle_left_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
                                 <TextBlock Text="上一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
-                        <Border Width="55" Height="55" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,0,1">
-                            <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Margin="0,4,0,0" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
-                                <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
-                            </ui:SimpleStackPanel>
+                        <Border Width="55" Height="55" Background="LightGray" Opacity="0.85">
+                            <Grid Margin="6">
+                                <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Margin="0,4,0,2" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                                    <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
+                                </ui:SimpleStackPanel>
+                            </Grid>
                         </Border>
-                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85" BorderBrush="LightGray" BorderThickness="0,1,1,1">
+                        <Border Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="BtnWhiteBoardSwitchNext_Click" CornerRadius="0,5,5,0" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
                                 <Image x:Name="BoardRightPannelNextPage" Source="/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Width="26" Height="26"/>
                                 <TextBlock x:Name="BoardRightPannelNextPageTextBlock" Text="加页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
@@ -829,10 +853,9 @@
                         </GroupBox>
                         <GroupBox Header="手势">
                             <ui:SimpleStackPanel Spacing="12">
-                                <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerZoom" Header="软件启动时自动开启双指缩放功能" FontFamily="Microsoft YaHei UI" IsOn="False" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerZoom_Toggled"/>
-                                <TextBlock Text="# 开启 自动开关两指缩放功能 后退出画板模式时自动关闭两指缩放功能，进入画板模式时自动开启两指缩放功能" TextWrapping="Wrap" Foreground="#666666"/>
-                                <ui:ToggleSwitch Name="ToggleSwitchAutoSwitchTwoFingerZoom" Header="自动开关两指缩放功能" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSwitchTwoFingerZoom_Toggled"/>
-                                <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerRotation" Header="允许双指旋转" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerRotation_Toggled"/>
+                                <TextBlock Text="# 开启 自动开关两指缩放功能 后退出画板模式时自动关闭双指移动手势，进入画板模式时自动开启双指移动手势" TextWrapping="Wrap" Foreground="#666666"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoSwitchTwoFingerGesture" Header="自动开关两指缩放功能" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSwitchTwoFingerGesture_Toggled"/>
+
                                 <TextBlock Text="# 允许选中墨迹后对墨迹进行双指或多指缩放操作（此设置不受“允许双指旋转”设置的影响）" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerRotationOnSelection" Header="允许双指旋转选中的墨迹" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerRotation_Toggled"/>
                             </ui:SimpleStackPanel>
@@ -920,13 +943,13 @@
                                 <TextBlock Text="# BoundsWidth 参数作为接触面积区分界限，用来区分橡皮和书写模式。笔尖模式参数值应较小。" TextWrapping="Wrap" Foreground="#666666"/>
                                 <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility,ElementName=TouchMultiplierSlider}">
                                     <Slider x:Name="NibModeBoundsWidthSlider" Minimum="1" Maximum="50" Width="340" FontFamily="Microsoft YaHei UI" ui:ControlHelper.Header="笔尖模式 BoundsWidth"
-                                            FontSize="15" IsSnapToTickEnabled="True" TickFrequency="1" Value="10" TickPlacement="None" ValueChanged="NibModeBoundsWidthSlider_ValueChanged"/>
+                                            FontSize="15" IsSnapToTickEnabled="True" TickFrequency="1" Value="5" TickPlacement="None" ValueChanged="NibModeBoundsWidthSlider_ValueChanged"/>
                                     <TextBlock Text="{Binding Value, ElementName=NibModeBoundsWidthSlider, Mode=OneWay}"
                                             VerticalAlignment="Bottom" Margin="10,0,0,8" FontSize="14" Width="30"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility,ElementName=TouchMultiplierSlider}">
                                     <Slider x:Name="FingerModeBoundsWidthSlider" Minimum="1" Maximum="50" Width="340" FontFamily="Microsoft YaHei UI" ui:ControlHelper.Header="手指模式 BoundsWidth"
-                                            FontSize="15" IsSnapToTickEnabled="True" TickFrequency="1" Value="30" TickPlacement="None" ValueChanged="FingerModeBoundsWidthSlider_ValueChanged"/>
+                                            FontSize="15" IsSnapToTickEnabled="True" TickFrequency="1" Value="20" TickPlacement="None" ValueChanged="FingerModeBoundsWidthSlider_ValueChanged"/>
                                     <TextBlock Text="{Binding Value, ElementName=FingerModeBoundsWidthSlider, Mode=OneWay}"
                                                VerticalAlignment="Bottom" Margin="10,0,0,8" FontSize="14" Width="30"/>
                                 </StackPanel>
@@ -974,13 +997,13 @@
                             <ui:SimpleStackPanel Spacing="12">
                                 <ui:SimpleStackPanel Orientation="Horizontal">
                                     <TextBlock FontSize="18" FontWeight="Bold" Text="当前版本："/>
-                                    <TextBlock x:Name="AppVersionTextBlock" FontSize="18" FontWeight="Bold" Text="0.0.0.0"/>
+                                    <TextBlock x:Name="AppVersionTextBlock" FontSize="18" FontWeight="Bold" Text="4.X.X.X"/>
                                 </ui:SimpleStackPanel>
                                 <TextBlock Text="* 使用和分发本软件前，请您应当且务必知晓相关开源协议，且您应当知晓本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成。" TextWrapping="Wrap" Foreground="#666666"/>
                                 <Border BorderBrush="Purple" BorderThickness="2" CornerRadius="5" Margin="10,0" Padding="0,5">
                                     <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                                         <TextBlock Text="开源协议: " FontSize="15" FontWeight="Bold"/>
-                                        <Image Source="/Resources/Icons-png/balance.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0" Width="20" Height="20"/>
+                                        <Image Source="/Resources/Icons-Fluent/ic_fluent_scales_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="3,0" Width="20" Height="20"/>
                                         <TextBlock Text="GNU General Public License v3.0" FontSize="15"/>
                                     </WrapPanel>
                                 </Border>
@@ -1099,8 +1122,8 @@
 
         <!-- 通知弹窗 -->
         <Grid Name="GridNotifications" Margin="0,110" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-            <Border CornerRadius="10" Height="50" Background="LightGray" Opacity="0.95" BorderBrush="Black" BorderThickness="1.5">
-                <TextBlock Name="TextBlockNotice" Text="测试文本" Margin="20,0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+            <Border CornerRadius="10" MaxHeight="200" Padding="20 15" Background="White" Opacity="0.95" BorderBrush="Black" BorderThickness="2">
+                <TextBlock Name="TextBlockNotice" Text="测试文本" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
             </Border>
         </Grid>
 
@@ -1380,9 +1403,30 @@
                 <ScaleTransform x:Name="ViewboxFloatingBarScaleTransform" ScaleX="1" ScaleY="1"/>
             </Viewbox.LayoutTransform>
             <ui:SimpleStackPanel Orientation="Horizontal">
-                <Border Margin="0,0,2,0" x:Name="EnableTwoFingerZoomBorder" Visibility="Visible" Width="36" Height="36" MouseUp="EnableTwoFingerZoomBtn_MouseUp" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}">
-                    <Image x:Name="EnableTwoFingerZoomBtn" Source="/Resources/Icons-png/twoFingelMove.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="30"/>
+                <Border Margin="0,0,2,0" x:Name="EnableTwoFingerGestureBorder" Visibility="Visible" Width="36" Height="36" MouseUp="TwoFingerGestureBorder_MouseUp" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderBrush="{DynamicResource ToolBarBorderBrush}" BorderThickness="1" >
+                    <Image x:Name="EnableTwoFingerGestureBtn" Source="/Resources/Icons-png/twoFingelMove.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="30"/>
                 </Border>
+                <Grid Width="0">
+                    <Border Name="TwoFingerGestureBorder" Margin="-105,-132,-67,44" CornerRadius="5" Background="white" Opacity="0.9" BorderBrush="Black" BorderThickness="1">
+                        <ui:SimpleStackPanel Margin="13">
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_move_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                <Label Content="双指移动" FontSize="15" VerticalAlignment="Center"/>
+                                <ui:ToggleSwitch Width="42" Name="ToggleSwitchEnableTwoFingerTranslate" FontFamily="Microsoft YaHei UI" IsOn="False" Toggled="ToggleSwitchEnableTwoFingerTranslate_Toggled"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_scale_fit_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                <Label Content="双指缩放" FontSize="15" VerticalAlignment="Center"/>
+                                <ui:ToggleSwitch Width="42" Name="ToggleSwitchEnableTwoFingerZoom" FontFamily="Microsoft YaHei UI" IsOn="False" Toggled="ToggleSwitchEnableTwoFingerZoom_Toggled"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_rotate_clockwise_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                <Label Content="双指旋转" FontSize="15" VerticalAlignment="Center"/>
+                                <ui:ToggleSwitch Width="42" Name="ToggleSwitchEnableTwoFingerRotation" FontFamily="Microsoft YaHei UI" Toggled="ToggleSwitchEnableTwoFingerRotation_Toggled"/>
+                            </ui:SimpleStackPanel>
+                        </ui:SimpleStackPanel>
+                    </Border>
+                </Grid>
 
                 <Border x:Name="BorderFloatingBarMoveControls" Width="36" Height="36" CornerRadius="5" Background="{DynamicResource ToolBarBackground}" BorderThickness="1" BorderBrush="{DynamicResource ToolBarBorderBrush}" MouseDown="SymbolIconEmoji_MouseDown" MouseUp="SymbolIconEmoji_MouseUp">
                     <ui:SimpleStackPanel Margin="0,5,0,5" Orientation="Horizontal"
