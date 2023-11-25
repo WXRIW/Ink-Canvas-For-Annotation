@@ -370,9 +370,7 @@
     <Resource Include="Resources\Icons-png\eraser-outline.png" />
     <Resource Include="Resources\Icons-png\playCircle.png" />
     <Resource Include="Resources\Icons-png\redo.png" />
-    <Resource Include="Resources\Icons-png\restart.png" />
     <Resource Include="Resources\Icons-png\setting.png" />
-    <Resource Include="Resources\Icons-png\shutdown.png" />
     <Resource Include="Resources\Icons-png\undo.png" />
     <Resource Include="Resources\Icons-png\minimize.png" />
     <Resource Include="Resources\Icons-png\penUpright.png" />
@@ -424,9 +422,6 @@
     <Resource Include="Resources\Icons-Fluent\ic_fluent_timer_24_regular.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons-png\Shapes.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_delete_24_regular.png" />
   </ItemGroup>
   <ItemGroup>
@@ -469,12 +464,24 @@
     <Resource Include="Resources\Icons-Fluent\ic_fluent_person_money_24_regular.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons-Fluent\ic_fluent_arrow_move_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_arrow_rotate_clockwise_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_scale_fit_24_regular.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_scales_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_arrow_clockwise_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_calendar_sync_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_dismiss_circle_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_drag_24_regular.png" />
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_shapes_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_power_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_clock_24_regular.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

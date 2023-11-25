@@ -289,7 +289,7 @@
                             <Border Name="BoardTwoFingerGestureBorder" Margin="-115,-125,-55,54" CornerRadius="5" Background="LightGray" Opacity="0.85" BorderBrush="Black" BorderThickness="1">
                                 <ui:SimpleStackPanel Margin="13">
                                     <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_move_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                        <Image Source="/Resources/Icons-Fluent/ic_fluent_drag_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
                                         <Label Content="双指移动" FontSize="15" VerticalAlignment="Center"/>
                                         <ui:ToggleSwitch Width="42" Name="BoardToggleSwitchEnableTwoFingerTranslate" FontFamily="Microsoft YaHei UI" IsOn="False" Toggled="ToggleSwitchEnableTwoFingerTranslate_Toggled"/>
                                     </ui:SimpleStackPanel>
@@ -448,7 +448,7 @@
                         </Border>
                         <Border x:Name="BoardGeometry" Width="60" Height="55" MouseDown="Border_MouseDown" MouseUp="ImageDrawShape_MouseUp" Background="LightGray" Opacity="0.85">
                             <Grid Margin="6">
-                                <Image VerticalAlignment="Top" Source="/Resources/Icons-png/shapes.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
+                                <Image VerticalAlignment="Top" Source="/Resources/Icons-Fluent/ic_fluent_shapes_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="28" Width="28"/>
                                 <TextBlock Text="图形" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
@@ -727,31 +727,35 @@
                               ManipulationBoundaryFeedback="SCManipulationBoundaryFeedback">
                     <StackPanel Margin="20,20,20,20">
 
-                        <Border Margin="13,-15,13,-10" Height="40" CornerRadius="5" BorderBrush="Black" BorderThickness="2">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Margin="0,0,0,0" Text="设置将自动保存，部分设置需要重启软件后生效"/>
-                        </Border>
-
-                        <GroupBox>
-                            <ui:SimpleStackPanel Spacing="12">
-                                <ui:SimpleStackPanel Spacing="20" Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Width="168" Height="45" Background="Azure" BorderBrush="DarkCyan" BorderThickness="1.5" FontFamily="Microsoft YaHei UI" Click="BtnRestart_Click">
-                                        <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
-                                            <Image Source="/Resources/Icons-png/restart.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="25"/>
-                                            <Label FontSize="16" VerticalAlignment="Center" FontFamily="Microsoft YaHei UI" FontWeight="Bold">重启软件</Label>
-                                        </ui:SimpleStackPanel>
-                                    </Button>
-                                    <Button Width="168" Height="45" Background="LightPink" BorderBrush="IndianRed" BorderThickness="1.5" FontFamily="Microsoft YaHei UI" Click="BtnExit_Click">
-                                        <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
-                                            <Image Source="/Resources/Icons-png/shutdown.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="25"/>
-                                            <Label FontSize="16" VerticalAlignment="Center" FontFamily="Microsoft YaHei UI" FontWeight="Bold">关闭软件</Label>
-                                        </ui:SimpleStackPanel>
-                                    </Button>
-                                </ui:SimpleStackPanel>
-                                <ui:SimpleStackPanel HorizontalAlignment="Center">
-                                    <Button Content="重置设置为希沃六代机推荐设置" Background="FloralWhite" BorderBrush="RosyBrown" BorderThickness="1.5" Width="358" Height="40" FontFamily="Microsoft YaHei UI" FontWeight="Bold" Click="BtnResetToSuggestion_Click" Margin="0,0,0,0"/>
+                        <Border Margin="0,-10,0,10" Height="160" CornerRadius="5" BorderBrush="Black" BorderThickness="2">
+                            <ui:SimpleStackPanel VerticalAlignment="Center">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Margin="0,0,0,10" Text="设置将自动保存，部分设置需要重启软件后生效"/>
+                                <ui:SimpleStackPanel Spacing="12">
+                                    <ui:SimpleStackPanel Spacing="20" Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Button Width="168" Height="45" Background="Azure" BorderBrush="DarkCyan" BorderThickness="1.5" FontFamily="Microsoft YaHei UI" Click="BtnRestart_Click">
+                                            <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
+                                                <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_clockwise_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="26"/>
+                                                <Label FontSize="16" VerticalAlignment="Center" FontFamily="Microsoft YaHei UI" FontWeight="Bold">重启软件</Label>
+                                            </ui:SimpleStackPanel>
+                                        </Button>
+                                        <Button Width="168" Height="45" Background="LightPink" BorderBrush="IndianRed" BorderThickness="1.5" FontFamily="Microsoft YaHei UI" Click="BtnExit_Click">
+                                            <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
+                                                <Image Source="/Resources/Icons-Fluent/ic_fluent_power_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="26"/>
+                                                <Label FontSize="16" VerticalAlignment="Center" FontFamily="Microsoft YaHei UI" FontWeight="Bold">关闭软件</Label>
+                                            </ui:SimpleStackPanel>
+                                        </Button>
+                                    </ui:SimpleStackPanel>
+                                    <ui:SimpleStackPanel HorizontalAlignment="Center">
+                                        <Button Background="FloralWhite" BorderBrush="RosyBrown" BorderThickness="1.5" Width="358" Height="40" FontFamily="Microsoft YaHei UI" FontWeight="Bold" Click="BtnResetToSuggestion_Click" Margin="0,0,0,0">
+                                            <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
+                                                <Image Source="/Resources/Icons-Fluent/ic_fluent_calendar_sync_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="26"/>
+                                                <Label FontSize="16" VerticalAlignment="Center" FontFamily="Microsoft YaHei UI" FontWeight="Bold">重置设置为希沃六代机推荐设置</Label>
+                                            </ui:SimpleStackPanel>
+                                        </Button>
+                                    </ui:SimpleStackPanel>
                                 </ui:SimpleStackPanel>
                             </ui:SimpleStackPanel>
-                        </GroupBox>
+                        </Border>
                         <GroupBox Header="启动">
                             <ui:SimpleStackPanel Spacing="12">
                                 <ui:ToggleSwitch Name="ToggleSwitchIsAutoUpdate" Header="自动检查更新" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchIsAutoUpdate_Toggled"/>
@@ -860,7 +864,7 @@
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerRotationOnSelection" Header="允许双指旋转选中的墨迹" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerRotation_Toggled"/>
                             </ui:SimpleStackPanel>
                         </GroupBox>
-                        <GroupBox Name="GroupBoxInkRecognition" Header="墨迹识别 (Beta)">
+                        <GroupBox Name="GroupBoxInkRecognition" Header="墨迹识别">
                             <ui:SimpleStackPanel Spacing="12">
                                 <TextBlock Text="# 可实现智能识别圆、三角形、矩形，并自动转换为规范图形。" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableInkToShape" Header="启用墨迹识别" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableInkToShape_Toggled" IsOn="True"/>
@@ -876,7 +880,7 @@
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableViewboxFloatingBarScaleTransform" Header="浮动工具栏 UI 85% 缩放" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableViewboxFloatingBarScaleTransform_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableViewboxBlackBoardScaleTransform" Header="画板 UI 80% 缩放" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchShowButtonPPTNavigation" Header="显示 PPT 浏览切页按钮（页码按钮）" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowButtonPPTNavigation_OnToggled"/>
-                                <ui:ToggleSwitch Name="ToggleSwitchShowBottomPPTNavigationPanel" Header="显示 PPT 下方翻页控制按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowBottomPPTNavigationPanel_OnToggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchShowBottomPPTNavigationPanel" Header="显示 PPT 下方翻页控制按钮" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowBottomPPTNavigationPanel_OnToggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchShowSidePPTNavigationPanel" Header="显示 PPT 侧边翻页控制按钮" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowSidePPTNavigationPanel_OnToggled"/>
                                 <!--
                                 <TextBlock Text="颜色主题" FontFamily="Microsoft YaHei UI" FontSize="14"/>
@@ -897,13 +901,13 @@
                                 <ui:ToggleSwitch Name="ToggleSwitchShowCanvasAtNewSlideShow" Header="进入 PPT 放映时自动进入批注模式" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowCanvasAtNewSlideShow_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchEnableTwoFingerGestureInPresentationMode" Header="允许幻灯片模式下的双指手势" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchEnableTwoFingerGestureInPresentationMode_Toggled"/>
                                 <TextBlock Text="# 允许开启画板时使用手指手势进行幻灯片翻页（启用后，在幻灯片放映模式下，当画板无墨迹时，使用手指（笔尖或手掌无法识别）左右滑动即可控制幻灯片翻页。）" TextWrapping="Wrap" Foreground="#666666"/>
-                                <ui:ToggleSwitch Name="ToggleSwitchEnableFingerGestureSlideShowControl" Header="允许使用手指手势进行幻灯片翻页" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="True" Toggled="ToggleSwitchEnableFingerGestureSlideShowControl_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchEnableFingerGestureSlideShowControl" Header="允许使用手指手势进行幻灯片翻页" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" IsOn="False" Toggled="ToggleSwitchEnableFingerGestureSlideShowControl_Toggled"/>
                                 <TextBlock Text="#开启 自动幻灯片截屏 后将会在幻灯片有墨迹时翻页自动截屏" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoSaveScreenShotInPowerPoint" Header="自动幻灯片截屏" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled"/>
                                 <TextBlock Text="#开启 自动保存幻灯片墨迹 后将在结束幻灯片放映时自动将保存已有墨迹，并在下次打开时自动加载（文件名和幻灯片页数都要相同）" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoSaveStrokesInPowerPoint" Header="自动保存幻灯片墨迹" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchNotifyPreviousPage" Header="记忆并提示上次播放位置" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNotifyPreviousPage_Toggled"/>
-                                <ui:ToggleSwitch Name="ToggleSwitchNotifyHiddenPage" Header="提示隐藏幻灯片" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNotifyHiddenPage_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchNotifyHiddenPage" Header="提示隐藏幻灯片" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNotifyHiddenPage_Toggled"/>
                                 <!--
                                 <ui:ToggleSwitch Name="ToggleSwitchNoStrokeClearInPowerPoint" Header="退出画板模式时不清除笔迹" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchNoStrokeClearInPowerPoint_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchShowStrokeOnSelectInPowerPoint" Header="退出画板模式时不隐藏笔迹" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchShowStrokeOnSelectInPowerPoint_Toggled"/>
@@ -969,6 +973,7 @@
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInWxBoardMain" Header="进入“文香白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInWxBoardMain_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInZySmartBoard" Header="进入“中原新白板（相似鸿合）”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInZySmartBoard_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInOldZyBoard" Header="进入“中原旧白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInOldZyBoard_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInPPTSlideShow" Header="进入“PPT 放映”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInPPTSlideShow_Toggled"/>
                                 <TextBlock Text="# 请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏。" TextWrapping="Wrap" Foreground="#666666"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillPptService" Header="自动查杀“PPT 小工具”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillPptService_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoKillEasiNote" Header="自动查杀“希沃白板 5”" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoKillEasiNote_Toggled"/>
@@ -1410,7 +1415,7 @@
                     <Border Name="TwoFingerGestureBorder" Margin="-105,-132,-67,44" CornerRadius="5" Background="white" Opacity="0.9" BorderBrush="Black" BorderThickness="1">
                         <ui:SimpleStackPanel Margin="13">
                             <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <Image Source="/Resources/Icons-Fluent/ic_fluent_arrow_move_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_drag_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20"/>
                                 <Label Content="双指移动" FontSize="15" VerticalAlignment="Center"/>
                                 <ui:ToggleSwitch Width="42" Name="ToggleSwitchEnableTwoFingerTranslate" FontFamily="Microsoft YaHei UI" IsOn="False" Toggled="ToggleSwitchEnableTwoFingerTranslate_Toggled"/>
                             </ui:SimpleStackPanel>
@@ -1562,7 +1567,7 @@
                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_lasso_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="28"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel MouseDown="Border_MouseDown" MouseUp="ImageDrawShape_MouseUp" Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Image Source="/Resources/Icons-png/shapes.png" RenderOptions.BitmapScalingMode="HighQuality" Height="23" Width="28"/>
+                                <Image Source="/Resources/Icons-Fluent/ic_fluent_shapes_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="23" Width="28"/>
                             </ui:SimpleStackPanel>
 
                             <Grid Width="0">

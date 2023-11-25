@@ -43,6 +43,10 @@ namespace Ink_Canvas
 
         public MainWindow()
         {
+            /*
+                判断是否处于画板模式内：Topmost
+                判断是否处于 PPT 放映内：BtnPPTSlideShowEnd
+            */
             InitializeComponent();
 
             BlackboardLeftSide.Visibility = Visibility.Collapsed;
@@ -58,7 +62,7 @@ namespace Ink_Canvas
             BorderDrawShape.Visibility = Visibility.Collapsed;
             BoardBorderDrawShape.Visibility = Visibility.Collapsed;
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
-
+            /*
             if (App.StartArgs.Contains("-b")) //-b border
             {
                 AllowsTransparency = false;
@@ -67,7 +71,7 @@ namespace Ink_Canvas
                 Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
                 Topmost = false;
             }
-
+            */
             
             /*if (!App.StartArgs.Contains("-o")) //-old ui
             {
@@ -108,6 +112,8 @@ namespace Ink_Canvas
             {
                 LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
+
+            CheckColorTheme(true);
         }
 
         #endregion
@@ -190,7 +196,15 @@ namespace Ink_Canvas
             {
                 if (WinTabWindowsChecker.IsWindowExisted("幻灯片放映", false)) // 处于幻灯片放映状态
                 {
-                    if (foldFloatingBarByUser == false)
+                    if (Settings.Automation.IsAutoFoldInPPTSlideShow)
+                    {
+                        if (isFloatingBarFolded) return;
+                        if (unfoldFloatingBarByUser == false)
+                        {
+                            FoldFloatingBar_MouseUp(null, null);
+                        }
+                    }
+                    else if (foldFloatingBarByUser == false)
                     {
                         if (isFloatingBarFolded) UnFoldFloatingBar_MouseUp(null, null);
                         unfoldFloatingBarByUser = false;
@@ -1062,14 +1076,7 @@ namespace Ink_Canvas
 
             if (Settings.Automation != null)
             {
-                if (StartOrStoptimerCheckAutoFold())
-                {
-                    timerCheckAutoFold.Start();
-                }
-                else
-                {
-                    timerCheckAutoFold.Stop();
-                }
+                StartOrStoptimerCheckAutoFold();
 
                 if (Settings.Automation.IsAutoFoldInEasiNote)
                 {
@@ -1141,6 +1148,15 @@ namespace Ink_Canvas
                 else
                 {
                     ToggleSwitchAutoFoldInOldZyBoard.IsOn = false;
+                }
+                
+                if (Settings.Automation.IsAutoFoldInPPTSlideShow)
+                {
+                    ToggleSwitchAutoFoldInPPTSlideShow.IsOn = true;
+                }
+                else
+                {
+                    ToggleSwitchAutoFoldInPPTSlideShow.IsOn = false;
                 }
 
                 if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoKillPptService)
@@ -1855,13 +1871,9 @@ namespace Ink_Canvas
 
         bool isUselightThemeColor = false;
 
-        private void CheckColorTheme(bool changeColorThemeByUser = false)
+        private void CheckColorTheme(bool changeColorTheme = false)
         {
-            if (changeColorThemeByUser)
-            {
-                isUselightThemeColor = !isUselightThemeColor;
-            }
-            else
+            if (changeColorTheme)
             {
                 if (Topmost == true)
                 {
@@ -3267,14 +3279,14 @@ namespace Ink_Canvas
         {
             if (lastBorderMouseDownObject != sender) return;
             Main_Grid.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
-            if (!foldFloatingBarByUser) CursorIcon_Click(null, null);
+            CursorIcon_Click(null, null);
             try
             {
                 pptApplication.SlideShowWindows[1].SlideNavigation.Visible = true;
             }
             catch { }
             // 控制居中
-            if (!foldFloatingBarByUser && BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+            if (!isFloatingBarFolded)
             {
                 await Task.Delay(100);
                 ViewboxFloatingBarMarginAnimation(60);
@@ -3561,7 +3573,10 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel = ToggleSwitchShowBottomPPTNavigationPanel.IsOn;
-            BottomViewboxPPTSidesControl.Visibility = Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+            if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+            {
+                BottomViewboxPPTSidesControl.Visibility = Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+            }
             SaveSettingsToFile();
         }
 
@@ -3569,8 +3584,11 @@ namespace Ink_Canvas
         {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsShowSidePPTNavigationPanel = ToggleSwitchShowSidePPTNavigationPanel.IsOn;
-            LeftSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
-            RightSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+            if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+            {
+                LeftSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+                RightSidePanelForPPTNavigation.Visibility = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel ? Visibility.Visible : Visibility.Collapsed;
+            }
             SaveSettingsToFile();
         }
         /*
@@ -3734,17 +3752,16 @@ namespace Ink_Canvas
 
         #region Automation
 
-        private bool StartOrStoptimerCheckAutoFold()
+        private void StartOrStoptimerCheckAutoFold()
         {
-            return (
-                Settings.Automation.IsAutoFoldInEasiNote
-                || Settings.Automation.IsAutoFoldInEasiCamera
-                || Settings.Automation.IsAutoFoldInEasiNote3C
-                || Settings.Automation.IsAutoFoldInHiteTouchPro
-                || Settings.Automation.IsAutoFoldInHiteCamera
-                || Settings.Automation.IsAutoFoldInWxBoardMain
-                || Settings.Automation.IsAutoFoldInZySmartBoard
-                || Settings.Automation.IsAutoFoldInOldZyBoard);
+            if (Settings.Automation.IsEnableAutoFold)
+            {
+                timerCheckAutoFold.Start();
+            }
+            else
+            {
+                timerCheckAutoFold.Stop();
+            }
         }
 
         private void ToggleSwitchAutoFoldInEasiNote_Toggled(object sender, RoutedEventArgs e)
@@ -3752,15 +3769,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiNote = ToggleSwitchAutoFoldInEasiNote.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoFoldInEasiCamera_Toggled(object sender, RoutedEventArgs e)
@@ -3768,15 +3777,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiCamera = ToggleSwitchAutoFoldInEasiCamera.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoFoldInEasiNote3C_Toggled(object sender, RoutedEventArgs e)
@@ -3784,15 +3785,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiNote3C = ToggleSwitchAutoFoldInEasiNote3C.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoFoldInHiteTouchPro_Toggled(object sender, RoutedEventArgs e)
@@ -3800,15 +3793,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInHiteTouchPro = ToggleSwitchAutoFoldInHiteTouchPro.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoFoldInHiteCamera_Toggled(object sender, RoutedEventArgs e)
@@ -3816,15 +3801,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInHiteCamera = ToggleSwitchAutoFoldInHiteCamera.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoFoldInWxBoardMain_Toggled(object sender, RoutedEventArgs e)
@@ -3832,15 +3809,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInWxBoardMain = ToggleSwitchAutoFoldInWxBoardMain.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoFoldInZySmartBoard_Toggled(object sender, RoutedEventArgs e)
@@ -3848,15 +3817,7 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInZySmartBoard = ToggleSwitchAutoFoldInZySmartBoard.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoFoldInOldZyBoard_Toggled(object sender, RoutedEventArgs e)
@@ -3864,15 +3825,15 @@ namespace Ink_Canvas
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInOldZyBoard = ToggleSwitchAutoFoldInOldZyBoard.IsOn;
             SaveSettingsToFile();
-
-            if (StartOrStoptimerCheckAutoFold())
-            {
-                timerCheckAutoFold.Start();
-            }
-            else
-            {
-                timerCheckAutoFold.Stop();
-            }
+            StartOrStoptimerCheckAutoFold();
+        }
+        
+        private void ToggleSwitchAutoFoldInPPTSlideShow_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInPPTSlideShow = ToggleSwitchAutoFoldInPPTSlideShow.IsOn;
+            SaveSettingsToFile();
+            StartOrStoptimerCheckAutoFold();
         }
 
         private void ToggleSwitchAutoKillPptService_Toggled(object sender, RoutedEventArgs e)
@@ -4131,6 +4092,7 @@ namespace Ink_Canvas
             Settings.Automation.IsAutoFoldInWxBoardMain = false;
             Settings.Automation.IsAutoFoldInZySmartBoard = false;
             Settings.Automation.IsAutoFoldInOldZyBoard = false;
+            Settings.Automation.IsAutoFoldInPPTSlideShow = false;
             Settings.Automation.IsAutoKillPptService = false;// IsAutoKillPptService;
             Settings.Automation.IsAutoKillEasiNote = false;// IsAutoKillEasiNote;
             Settings.Automation.IsSaveScreenshotsInDateFolders = false;
@@ -8354,6 +8316,8 @@ namespace Ink_Canvas
                     isDisplayingOrHidingBlackboard = false;
                 });
             })).Start();
+
+            CheckColorTheme(true);
         }
 
         private void ImageCountdownTimer_MouseUp(object sender, MouseButtonEventArgs e)
@@ -9024,17 +8988,19 @@ namespace Ink_Canvas
 
             StackPanelCanvasControls.Visibility = Visibility.Collapsed;
 
-
-            HideSubPanels("cursor");
-            await Task.Delay(50);
-
-            if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+            if (!isFloatingBarFolded)
             {
-                ViewboxFloatingBarMarginAnimation(60);
-            }
-            else
-            {
-                ViewboxFloatingBarMarginAnimation(100);
+                HideSubPanels("cursor");
+                await Task.Delay(50);
+
+                if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+                {
+                    ViewboxFloatingBarMarginAnimation(60);
+                }
+                else
+                {
+                    ViewboxFloatingBarMarginAnimation(100);
+                }
             }
         }
 
@@ -9099,7 +9065,8 @@ namespace Ink_Canvas
 
         private void ColorThemeSwitch_MouseUp(object sender, RoutedEventArgs e)
         {
-            CheckColorTheme(true);
+            isUselightThemeColor = !isUselightThemeColor;
+            CheckColorTheme();
         }
 
         private void EraserIcon_Click(object sender, RoutedEventArgs e)
@@ -9166,7 +9133,7 @@ namespace Ink_Canvas
             {
                 if (inkColor == 0) inkColor = 5;
             }
-            CheckColorTheme();
+            CheckColorTheme(true);
         }
 
         private void BoardEraserIcon_Click(object sender, RoutedEventArgs e)

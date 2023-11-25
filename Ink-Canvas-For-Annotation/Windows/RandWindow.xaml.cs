@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Ink_Canvas.Helpers;
+using Microsoft.VisualBasic;
 using ModernWpf.Controls;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace Ink_Canvas
         public RandWindow()
         {
             InitializeComponent();
+            AnimationHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
         }
 
         public RandWindow(bool IsAutoClose)

@@ -151,6 +151,18 @@ namespace Ink_Canvas
 
     public class Automation
     {
+        [JsonIgnore]
+        public bool IsEnableAutoFold => 
+            IsAutoFoldInEasiNote
+            || IsAutoFoldInEasiCamera
+            || IsAutoFoldInEasiNote3C
+            || IsAutoFoldInHiteTouchPro
+            || IsAutoFoldInHiteCamera
+            || IsAutoFoldInWxBoardMain
+            || IsAutoFoldInZySmartBoard
+            || IsAutoFoldInZySmartBoard
+            || IsAutoFoldInPPTSlideShow;
+
         [JsonProperty("isAutoFoldInEasiNote")]
         public bool IsAutoFoldInEasiNote { get; set; } = false;
 
@@ -174,6 +186,9 @@ namespace Ink_Canvas
 
         [JsonProperty("isAutoFoldInOldZyBoard")]
         public bool IsAutoFoldInOldZyBoard { get; set; } = false;
+
+        [JsonProperty("isAutoFoldInPPTSlideShow")]
+        public bool IsAutoFoldInPPTSlideShow { get; set; } = false;
 
         [JsonProperty("isAutoKillPptService")]
         public bool IsAutoKillPptService { get; set; } = false;
