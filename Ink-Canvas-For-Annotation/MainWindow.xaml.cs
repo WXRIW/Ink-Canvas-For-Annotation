@@ -114,6 +114,12 @@ namespace Ink_Canvas
             }
 
             CheckColorTheme(true);
+            if (Settings.Gesture.IsEnableTwoFingerGesture) // 自动关闭双指移动
+            {
+                ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
+                ToggleSwitchEnableTwoFingerZoom.IsOn = false;
+                ToggleSwitchEnableTwoFingerRotation.IsOn = false;
+            }
         }
 
         #endregion
@@ -9103,6 +9109,7 @@ namespace Ink_Canvas
         {
             SymbolIconDelete_MouseUp(sender, null);
             CursorIcon_Click(null, null);
+            HideSubPanels("cursor");
         }
 
         private void SelectIcon_MouseUp(object sender, RoutedEvent e)
