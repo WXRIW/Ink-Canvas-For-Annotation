@@ -1031,7 +1031,7 @@ namespace Ink_Canvas
 
             try
             {
-                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\Ink Canvas Annotaion" + ".lnk"))
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\Ink Canvas Annotation.lnk"))
                 {
                     ToggleSwitchRunAtStartup.IsOn = true;
                 }
