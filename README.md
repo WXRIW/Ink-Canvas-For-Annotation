@@ -9,18 +9,16 @@
 [![Latest release](https://img.shields.io/github/release/ChangSakura/Ink-Canvas-For-Annotation.svg?style=shield)](https://github.com/ChangSakura/Ink-Canvas-For-Annotation/releases/latest)
 [![GitHub issues](https://img.shields.io/github/issues/ChangSakura/Ink-Canvas-For-Annotation?logo=github)](https://github.com/ChangSakura/Ink-Canvas-For-Annotation/issues)
 
-[![software screenshot - 1](./Images/Ink-Canvas-For-Annotation%20Screenshot.png)](# "software screenshot - 1")
+![Screenshot-1](./Images/Ink-Canvas-For-Annotation%20Screenshot.png)
 
-[![software screenshot - 2](./Images/Ink-Canvas-For-Annotation%20Blackboard%20Screenshot.png)](# "software screenshot - 2")
+![Screenshot-2](./Images/Ink-Canvas-For-Annotation%20Blackboard%20Screenshot.png)
 
 </div>
 
 使用和分发本软件前，请您应当且务必知晓相关开源协议，本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成，增添了包括但不限于隐藏到侧边栏等功能，更改了相关操作逻辑。对于墨迹功能的相关 issue 提出，应优先查阅 https://github.com/WXRIW/Ink-Canvas/issues 。
 
-本软件中的部分 Icon 引用自 https://www.iconfont.cn/ ，仅供使用者交流学习使用，不得将本软件用于任何商业用途。
-
 [直接下载](https://github.com/ChangSakura/Ink-Canvas-For-Annotation/releases/latest "Latest Releases")
-——该安装包使用 Inno Setup Compiler 打包，V4.0.0 之后版本安装时不会替换 Settings.json 文件，默认推荐设置启用特殊屏幕模式且触摸大小倍数为 0.15 及其他更多设置以适配希沃六代机的使用。
+——该安装包使用 Inno Setup Compiler 打包，V4.0.0 之后版本安装时不会替换 Settings.json 文件，默认推荐设置适配希沃六代机的使用。
 
 ---
 以下内容引用自 https://github.com/WXRIW/Ink-Canvas/blob/master/README.md
