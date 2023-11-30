@@ -114,12 +114,6 @@ namespace Ink_Canvas
             }
 
             CheckColorTheme(true);
-            if (Settings.Gesture.IsEnableTwoFingerGesture) // 自动关闭双指移动
-            {
-                ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
-                ToggleSwitchEnableTwoFingerZoom.IsOn = false;
-                ToggleSwitchEnableTwoFingerRotation.IsOn = false;
-            }
         }
 
         #endregion
@@ -964,8 +958,6 @@ namespace Ink_Canvas
                 ToggleSwitchEnableTwoFingerRotation.IsOn = false;
                 BoardToggleSwitchEnableTwoFingerRotation.IsOn = false;
             }
-            CheckEnableTwoFingerGestureBtnColorPrompt();
-
             if (Settings.Gesture.AutoSwitchTwoFingerGesture)
             {
                 ToggleSwitchAutoSwitchTwoFingerGesture.IsOn = true;
@@ -974,7 +966,6 @@ namespace Ink_Canvas
             {
                 ToggleSwitchAutoSwitchTwoFingerGesture.IsOn = false;
             }
-
             if (Settings.Gesture.IsEnableTwoFingerRotation)
             {
                 ToggleSwitchEnableTwoFingerRotation.IsOn = true;
@@ -991,6 +982,22 @@ namespace Ink_Canvas
             {
                 ToggleSwitchEnableTwoFingerRotationOnSelection.IsOn = false;
             }
+            if (Settings.Gesture.AutoSwitchTwoFingerGesture)
+            {
+                if (Topmost)
+                {
+                    ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
+                    BoardToggleSwitchEnableTwoFingerTranslate.IsOn = false;
+                    Settings.Gesture.IsEnableTwoFingerTranslate = false;
+                }
+                else
+                {
+                    ToggleSwitchEnableTwoFingerTranslate.IsOn = true;
+                    BoardToggleSwitchEnableTwoFingerTranslate.IsOn = true;
+                    Settings.Gesture.IsEnableTwoFingerTranslate = true;
+                }
+            }
+            CheckEnableTwoFingerGestureBtnColorPrompt();
             if (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode)
             {
                 ToggleSwitchEnableTwoFingerGestureInPresentationMode.IsOn = true;
@@ -2434,23 +2441,27 @@ namespace Ink_Canvas
             {
                 ManipulationDelta md = e.DeltaManipulation;
                 Vector trans = md.Translation;  // 获得位移矢量
-                double rotate = md.Rotation;  // 获得旋转角度
-                Vector scale = md.Scale;  // 获得缩放倍数
 
                 Matrix m = new Matrix();
 
-                // Find center of element and then transform to get current location of center
-                FrameworkElement fe = e.Source as FrameworkElement;
-                Point center = new Point(fe.ActualWidth / 2, fe.ActualHeight / 2);
-                center = m.Transform(center);  // 转换为矩阵缩放和旋转的中心点
-
-                // Update matrix to reflect translation/rotation
                 if (Settings.Gesture.IsEnableTwoFingerTranslate)
                     m.Translate(trans.X, trans.Y);  // 移动
-                if (Settings.Gesture.IsEnableTwoFingerRotation)
-                    m.RotateAt(rotate, center.X, center.Y);  // 旋转
-                if (Settings.Gesture.IsEnableTwoFingerZoom)
-                    m.ScaleAt(scale.X, scale.Y, center.X, center.Y);  // 缩放
+
+                if (Settings.Gesture.IsEnableTwoFingerGestureTranslateOrRotation)
+                {
+                    double rotate = md.Rotation;  // 获得旋转角度
+                    Vector scale = md.Scale;  // 获得缩放倍数
+
+                    // Find center of element and then transform to get current location of center
+                    FrameworkElement fe = e.Source as FrameworkElement;
+                    Point center = new Point(fe.ActualWidth / 2, fe.ActualHeight / 2);
+                    center = m.Transform(center);  // 转换为矩阵缩放和旋转的中心点
+
+                    if (Settings.Gesture.IsEnableTwoFingerRotation)
+                        m.RotateAt(rotate, center.X, center.Y);  // 旋转
+                    if (Settings.Gesture.IsEnableTwoFingerZoom)
+                        m.ScaleAt(scale.X, scale.Y, center.X, center.Y);  // 缩放
+                }
 
                 StrokeCollection strokes = inkCanvas.GetSelectedStrokes();
                 if (strokes.Count != 0)
@@ -2483,6 +2494,36 @@ namespace Ink_Canvas
                 }
                 else
                 {
+                    if (Settings.Gesture.IsEnableTwoFingerZoom)
+                    {
+                        foreach (Stroke stroke in inkCanvas.Strokes)
+                        {
+                            stroke.Transform(m, false);
+                            try
+                            {
+                                stroke.DrawingAttributes.Width *= md.Scale.X;
+                                stroke.DrawingAttributes.Height *= md.Scale.Y;
+                            }
+                            catch { }
+                        };
+                    }
+                    else
+                    {
+                        foreach (Stroke stroke in inkCanvas.Strokes)
+                        {
+                            stroke.Transform(m, false);
+                        };
+                    }
+
+                    foreach (Circle circle in circles)
+                    {
+                        circle.R = GetDistance(circle.Stroke.StylusPoints[0].ToPoint(), circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].ToPoint()) / 2;
+                        circle.Centroid = new Point(
+                            (circle.Stroke.StylusPoints[0].X + circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].X) / 2,
+                            (circle.Stroke.StylusPoints[0].Y + circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].Y) / 2
+                        );
+                    };
+                    /*
                     foreach (Stroke stroke in inkCanvas.Strokes)
                     {
                         stroke.Transform(m, false);
@@ -2496,13 +2537,13 @@ namespace Ink_Canvas
                             }
                             catch { }
                         }
-                        }
+                    }
                     foreach (Circle circle in circles)
                     {
                         circle.R = GetDistance(circle.Stroke.StylusPoints[0].ToPoint(), circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].ToPoint()) / 2;
                         circle.Centroid = new Point((circle.Stroke.StylusPoints[0].X + circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].X) / 2,
                                                     (circle.Stroke.StylusPoints[0].Y + circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].Y) / 2);
-                    }
+                    }*/
                 }
             }
         }
@@ -7969,23 +8010,25 @@ namespace Ink_Canvas
                 {
                     BoardPen.Background = new SolidColorBrush(Color.FromRgb(103, 156, 244));
                     Pen_Icon.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
-                    
+                    /*
                     BitmapImage newImageSource = new BitmapImage();
                     newImageSource.BeginInit();
                     newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_color_24_regular.png", UriKind.RelativeOrAbsolute);
                     newImageSource.EndInit();
                     PenIcon.Source = newImageSource;
                     BoardPenIcon.Source = newImageSource;
+                    */
                 }
                 else
                 {
+                    /*
                     BitmapImage newImageSource = new BitmapImage();
                     newImageSource.BeginInit();
                     newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_signature_24_regular.png", UriKind.RelativeOrAbsolute);
                     newImageSource.EndInit();
                     PenIcon.Source = newImageSource;    
                     BoardPenIcon.Source = newImageSource;
-
+                    */
                     if (mode == "eraser")
                     {
                         Eraser_Icon.Background = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/check-box-background.png"))) { Opacity = 0.75 };
@@ -8183,7 +8226,7 @@ namespace Ink_Canvas
                 RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
 
                 //进入黑板
-                if (!Settings.Gesture.IsEnableTwoFingerGesture) // 自动开启双指移动
+                if (Settings.Gesture.AutoSwitchTwoFingerGesture) // 自动开启双指移动
                 {
                     ToggleSwitchEnableTwoFingerTranslate.IsOn = true;
                     //ToggleSwitchEnableTwoFingerZoom.IsOn = false;
@@ -8250,7 +8293,7 @@ namespace Ink_Canvas
                 }
 
 
-                if (Settings.Gesture.IsEnableTwoFingerGesture) // 自动关闭双指移动
+                if (Settings.Gesture.AutoSwitchTwoFingerGesture) // 自动关闭双指移动
                 {
                     ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
                     //ToggleSwitchEnableTwoFingerZoom.IsOn = false;
@@ -9080,8 +9123,8 @@ namespace Ink_Canvas
             forceEraser = true;
             forcePointEraser = true;
 
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
             inkCanvas.EraserShape = new EllipseStylusShape(50, 50);
+            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
             drawingShapeMode = 0;
 
             inkCanvas_EditingModeChanged(inkCanvas, null);
@@ -9095,8 +9138,8 @@ namespace Ink_Canvas
             forceEraser = true;
             forcePointEraser = false;
 
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
             inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
+            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
             drawingShapeMode = 0;
 
             inkCanvas_EditingModeChanged(inkCanvas, null);
@@ -9250,7 +9293,7 @@ namespace Ink_Canvas
             }
         }
 
-        private void CheckEnableTwoFingerGestureBtnColorPrompt()
+        private async void CheckEnableTwoFingerGestureBtnColorPrompt()
         {
             EnableTwoFingerGestureBtn.Source = Settings.Gesture.IsEnableTwoFingerGesture ? new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove-Blue.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove.png", UriKind.Relative));
             BoardEnableTwoFingerGestureBtn.Source = Settings.Gesture.IsEnableTwoFingerGesture ? new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove-Blue.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/Icons-png/twoFingelMove.png", UriKind.Relative));

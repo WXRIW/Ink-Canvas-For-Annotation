@@ -55,6 +55,8 @@ namespace Ink_Canvas
     {
         [JsonIgnore]
         public bool IsEnableTwoFingerGesture => IsEnableTwoFingerZoom || IsEnableTwoFingerTranslate || IsEnableTwoFingerRotation;
+        [JsonIgnore]
+        public bool IsEnableTwoFingerGestureTranslateOrRotation => IsEnableTwoFingerTranslate || IsEnableTwoFingerRotation;
         [JsonProperty("isEnableTwoFingerZoom")]
         public bool IsEnableTwoFingerZoom { get; set; } = true;
         [JsonProperty("isEnableTwoFingerTranslate")]
