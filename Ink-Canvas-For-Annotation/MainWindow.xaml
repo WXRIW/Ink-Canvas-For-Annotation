@@ -242,8 +242,8 @@
                                 <TextBlock Text="上一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
-                        <Border Width="55" Height="55" Background="LightGray" Opacity="0.85">
-                            <Grid Margin="6">
+                        <Border Width="58" Height="55" Background="LightGray" Opacity="0.85">
+                            <Grid Margin="0,6">
                                 <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <TextBlock Margin="0,4,0,2" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
                                     <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
@@ -617,8 +617,8 @@
                                 <TextBlock Text="上一页" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="12"/>
                             </Grid>
                         </Border>
-                        <Border Width="55" Height="55" Background="LightGray" Opacity="0.85">
-                            <Grid Margin="6">
+                        <Border Width="58" Height="55" Background="LightGray" Opacity="0.85">
+                            <Grid Margin="0,6">
                                 <ui:SimpleStackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <TextBlock Margin="0,4,0,2" Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
                                     <TextBlock Margin="0,3,0,0" Text="页码" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>

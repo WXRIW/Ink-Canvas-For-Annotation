@@ -1465,9 +1465,9 @@ namespace Ink_Canvas
                     forcePointEraser = false;
                     break;
             }
+            inkCanvas.EraserShape = forcePointEraser ? new EllipseStylusShape(50, 50) : new EllipseStylusShape(5, 5);
             inkCanvas.EditingMode =
                 forcePointEraser ? InkCanvasEditingMode.EraseByPoint : InkCanvasEditingMode.EraseByStroke;
-            inkCanvas.EraserShape = forcePointEraser ? new EllipseStylusShape(50, 50) : new EllipseStylusShape(5, 5);
             drawingShapeMode = 0;
             /*
             GeometryDrawingEraser.Brush = forcePointEraser
@@ -2523,27 +2523,6 @@ namespace Ink_Canvas
                             (circle.Stroke.StylusPoints[0].Y + circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].Y) / 2
                         );
                     };
-                    /*
-                    foreach (Stroke stroke in inkCanvas.Strokes)
-                    {
-                        stroke.Transform(m, false);
-
-                        if (Settings.Gesture.IsEnableTwoFingerZoom)
-                        {
-                            try
-                            {
-                                stroke.DrawingAttributes.Width *= md.Scale.X;
-                                stroke.DrawingAttributes.Height *= md.Scale.Y;
-                            }
-                            catch { }
-                        }
-                    }
-                    foreach (Circle circle in circles)
-                    {
-                        circle.R = GetDistance(circle.Stroke.StylusPoints[0].ToPoint(), circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].ToPoint()) / 2;
-                        circle.Centroid = new Point((circle.Stroke.StylusPoints[0].X + circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].X) / 2,
-                                                    (circle.Stroke.StylusPoints[0].Y + circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].Y) / 2);
-                    }*/
                 }
             }
         }
@@ -9122,8 +9101,24 @@ namespace Ink_Canvas
         {
             forceEraser = true;
             forcePointEraser = true;
-
-            inkCanvas.EraserShape = new EllipseStylusShape(50, 50);
+            double k = 1;
+            switch (Settings.Canvas.EraserSize)
+            {
+                case 0:
+                    k = 0.5;
+                    break;
+                case 1:
+                    k = 0.8;
+                    break;
+                case 3:
+                    k = 1.25;
+                    break;
+                case 4:
+                    k = 1.8;
+                    break;
+            }
+            inkCanvas.EraserShape = new EllipseStylusShape(k * 80, k * 80);
+            //inkCanvas.EraserShape = new EllipseStylusShape(70, 70);
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
             drawingShapeMode = 0;
 
@@ -9196,8 +9191,8 @@ namespace Ink_Canvas
             {
                 forceEraser = true;
                 forcePointEraser = true;
-                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
                 inkCanvas.EraserShape = new EllipseStylusShape(50, 50);
+                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
                 drawingShapeMode = 0;
 
                 inkCanvas_EditingModeChanged(inkCanvas, null);

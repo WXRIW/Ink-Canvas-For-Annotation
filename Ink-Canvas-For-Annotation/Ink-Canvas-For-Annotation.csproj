@@ -406,7 +406,6 @@
     <Resource Include="Resources\Icons-png\Desmos.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons-Fluent\ic_fluent_color_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_cursor_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_eraser_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_eraser_medium_24_regular.png" />
