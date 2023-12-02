@@ -787,24 +787,24 @@
                                     <ui:SimpleStackPanel Spacing="12">
                                         <TextBlock Text="# 关闭静默更新后，已完成安装包的下载后将会弹窗询问是否进行更新，开启静默更新后将会在安装包下载完成后每隔十分钟进行如下检测：①处于静默更新时间段内 ②未处于书写模式 ③未处于画板内。若以上检测通过即会关闭软件进行自动更新。" TextWrapping="Wrap" Foreground="#666666"/>
                                         <ui:SimpleStackPanel x:Name="AutoUpdateTimePeriodBlock" Spacing="12">
-                                        <ui:SimpleStackPanel Spacing="12">
-                                            <TextBlock Text="静默更新时间段" FontSize="15" FontWeight="Bold" TextWrapping="Wrap" Foreground="Black"/>
-                                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
-                                                <ui:SimpleStackPanel Orientation="Horizontal">
-                                                    <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Text="起始时间" FontSize="14" TextWrapping="Wrap" Foreground="Black"/>
-                                                    <ComboBox x:Name="AutoUpdateWithSilenceStartTimeComboBox" Width="90" SelectionChanged="AutoUpdateWithSilenceStartTimeComboBox_SelectionChanged"/>
+                                            <ui:SimpleStackPanel Spacing="12">
+                                                <TextBlock Text="静默更新时间段" FontSize="15" FontWeight="Bold" TextWrapping="Wrap" Foreground="Black"/>
+                                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                                                    <ui:SimpleStackPanel Orientation="Horizontal">
+                                                        <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Text="起始时间" FontSize="14" TextWrapping="Wrap" Foreground="Black"/>
+                                                        <ComboBox x:Name="AutoUpdateWithSilenceStartTimeComboBox" Width="90" SelectionChanged="AutoUpdateWithSilenceStartTimeComboBox_SelectionChanged"/>
+                                                    </ui:SimpleStackPanel>
+                                                    <ui:SimpleStackPanel Orientation="Horizontal">
+                                                        <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Text="终止时间" FontSize="14" TextWrapping="Wrap" Foreground="Black"/>
+                                                        <ComboBox x:Name="AutoUpdateWithSilenceEndTimeComboBox" Width="90" SelectionChanged="AutoUpdateWithSilenceEndTimeComboBox_SelectionChanged"/>
+                                                    </ui:SimpleStackPanel>
                                                 </ui:SimpleStackPanel>
-                                                <ui:SimpleStackPanel Orientation="Horizontal">
-                                                    <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Text="终止时间" FontSize="14" TextWrapping="Wrap" Foreground="Black"/>
-                                                    <ComboBox x:Name="AutoUpdateWithSilenceEndTimeComboBox" Width="90" SelectionChanged="AutoUpdateWithSilenceEndTimeComboBox_SelectionChanged"/>
-                                                </ui:SimpleStackPanel>
+                                                <TextBlock Width="340" HorizontalAlignment="Left" Text="# 若终止时间小于起始时间，即将终止时间视为第二天的时间。# 若起始时间与终止时间相同，即视为全天候时间。" TextWrapping="Wrap" Foreground="#666666"/>
                                             </ui:SimpleStackPanel>
-                                            <TextBlock Width="340" HorizontalAlignment="Left" Text="# 若终止时间小于起始时间，即将终止时间视为第二天的时间。# 若起始时间与终止时间相同，即视为全天候时间。" TextWrapping="Wrap" Foreground="#666666"/>
                                         </ui:SimpleStackPanel>
                                     </ui:SimpleStackPanel>
-                                    </ui:SimpleStackPanel>
                                 </Border>
-                                
+
                                 <ui:ToggleSwitch Name="ToggleSwitchRunAtStartup" Header="开机时运行" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchRunAtStartup_Toggled"/>
                                 <!--
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoHideCanvas" Header="自动隐藏画板" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoHideCanvas_Toggled"/>
@@ -968,10 +968,11 @@
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInEasiNote" Header="进入“希沃白板”时自动收纳至侧边栏" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInEasiNote_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInEasiCamera" Header="进入“希沃视频展台”时自动收纳至侧边栏" IsOn="True" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInEasiCamera_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInEasiNote3C" Header="进入“希沃轻白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInEasiNote3C_Toggled"/>
+                                <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInSeewoPincoTeacher" Header="进入“希沃品课”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInSeewoPincoTeacher_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInHiteTouchPro" Header="进入“鸿合白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInHiteTouchPro_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInHiteCamera" Header="进入“鸿合视频展台”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInHiteCamera_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInWxBoardMain" Header="进入“文香白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInWxBoardMain_Toggled"/>
-                                <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInZySmartBoard" Header="进入“中原新白板（相似鸿合）”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInZySmartBoard_Toggled"/>
+                                <!--<ui:ToggleSwitch Name="ToggleSwitchAutoFoldInZySmartBoard" Header="进入“中原新白板（相似鸿合）”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInZySmartBoard_Toggled"/>-->
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInOldZyBoard" Header="进入“中原旧白板”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInOldZyBoard_Toggled"/>
                                 <ui:ToggleSwitch Name="ToggleSwitchAutoFoldInPPTSlideShow" Header="进入“PPT 放映”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" OnContent="开" OffContent="关" Toggled="ToggleSwitchAutoFoldInPPTSlideShow_Toggled"/>
                                 <TextBlock Text="# 请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏。" TextWrapping="Wrap" Foreground="#666666"/>

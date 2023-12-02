@@ -158,11 +158,11 @@ namespace Ink_Canvas
             IsAutoFoldInEasiNote
             || IsAutoFoldInEasiCamera
             || IsAutoFoldInEasiNote3C
+            || IsAutoFoldInSeewoPincoTeacher
             || IsAutoFoldInHiteTouchPro
             || IsAutoFoldInHiteCamera
             || IsAutoFoldInWxBoardMain
-            || IsAutoFoldInZySmartBoard
-            || IsAutoFoldInZySmartBoard
+            || IsAutoFoldInOldZyBoard
             || IsAutoFoldInPPTSlideShow;
 
         [JsonProperty("isAutoFoldInEasiNote")]
@@ -174,6 +174,9 @@ namespace Ink_Canvas
         [JsonProperty("isAutoFoldInEasiNote3C")]
         public bool IsAutoFoldInEasiNote3C { get; set; } = false;
 
+        [JsonProperty("isAutoFoldInSeewoPincoTeacher")]
+        public bool IsAutoFoldInSeewoPincoTeacher { get; set; } = false;
+
         [JsonProperty("isAutoFoldInHiteTouchPro")]
         public bool IsAutoFoldInHiteTouchPro { get; set; } = false;
 
@@ -182,10 +185,10 @@ namespace Ink_Canvas
 
         [JsonProperty("isAutoFoldInWxBoardMain")]
         public bool IsAutoFoldInWxBoardMain { get; set; } = false;
-
+        /*
         [JsonProperty("isAutoFoldInZySmartBoard")]
         public bool IsAutoFoldInZySmartBoard { get; set; } = false;
-
+        */
         [JsonProperty("isAutoFoldInOldZyBoard")]
         public bool IsAutoFoldInOldZyBoard { get; set; } = false;
 
