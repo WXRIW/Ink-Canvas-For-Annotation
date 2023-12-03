@@ -34,6 +34,7 @@ using Timer = System.Timers.Timer;
 
 namespace Ink_Canvas {
     public partial class MainWindow : Window {
+
         #region Window Initialization
 
         public MainWindow() {
@@ -107,13 +108,10 @@ namespace Ink_Canvas {
         private void InitTimers() {
             timerCheckPPT.Elapsed += TimerCheckPPT_Elapsed;
             timerCheckPPT.Interval = 1000;
-
             timerKillProcess.Elapsed += TimerKillProcess_Elapsed;
             timerKillProcess.Interval = 5000;
-
             timerCheckAutoFold.Elapsed += timerCheckAutoFold_Elapsed;
             timerCheckAutoFold.Interval = 1500;
-
             timerCheckAutoUpdateWithSilence.Elapsed += timerCheckAutoUpdateWithSilence_Elapsed;
             timerCheckAutoUpdateWithSilence.Interval = 1000 * 60 * 10;
         }
@@ -129,8 +127,7 @@ namespace Ink_Canvas {
                     }
                     processes = Process.GetProcessesByName("SeewoIwbAssistant");
                     if (processes.Length > 0) {
-                        arg += " /IM SeewoIwbAssistant.exe" +
-                            " /IM Sia.Guard.exe";
+                        arg += " /IM SeewoIwbAssistant.exe" + " /IM Sia.Guard.exe";
                     }
                 }
                 if (Settings.Automation.IsAutoKillEasiNote) {
@@ -154,11 +151,9 @@ namespace Ink_Canvas {
         }
 
 
-        bool foldFloatingBarByUser = false, unfoldFloatingBarByUser = false;
-        /*
-            foldFloatingBarByUser = true: 用户进行收纳操作. // 保持收纳操作不受自动收纳的控制
-            unfoldFloatingBarByUser = true: 用户进行展开操作. // 允许用户在希沃软件内进行展开操作
-        */
+        bool foldFloatingBarByUser = false, // 保持收纳操作不受自动收纳的控制
+            unfoldFloatingBarByUser = false; // 允许用户在希沃软件内进行展开操作
+
         private void timerCheckAutoFold_Elapsed(object sender, ElapsedEventArgs e) {
             if (isFloatingBarChangingHideMode) return;
             try {
@@ -508,27 +503,6 @@ namespace Ink_Canvas {
             } catch (Exception ex) {
                 LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
-            /*
-            if (Settings.Startup.IsAutoEnterModeFinger)
-            {
-                ToggleSwitchModeFinger.IsOn = true;
-                ToggleSwitchAutoEnterModeFinger.IsOn = true;
-            }
-            else
-            {
-                ToggleSwitchModeFinger.IsOn = false;
-                ToggleSwitchAutoEnterModeFinger.IsOn = false;
-            }
-            */
-            if (Settings.Startup.IsEnableNibMode) {
-                ToggleSwitchEnableNibMode.IsOn = true;
-                ToggleSwitchBoardEnableNibMode.IsOn = true;
-                BoundsWidth = Settings.Advanced.NibModeBoundsWidth;
-            } else {
-                ToggleSwitchEnableNibMode.IsOn = false;
-                ToggleSwitchBoardEnableNibMode.IsOn = false;
-                BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
-            }
 
             if (isStartup) {
                 CursorIcon_Click(null, null);
@@ -576,6 +550,15 @@ namespace Ink_Canvas {
             }
             */
 
+            if (Settings.Startup.IsEnableNibMode) {
+                ToggleSwitchEnableNibMode.IsOn = true;
+                ToggleSwitchBoardEnableNibMode.IsOn = true;
+                BoundsWidth = Settings.Advanced.NibModeBoundsWidth;
+            } else {
+                ToggleSwitchEnableNibMode.IsOn = false;
+                ToggleSwitchBoardEnableNibMode.IsOn = false;
+                BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
+            }
             if (!Settings.Appearance.IsEnableDisPlayNibModeToggler) {
                 NibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
                 BoardNibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
@@ -583,6 +566,7 @@ namespace Ink_Canvas {
                 NibModeSimpleStackPanel.Visibility = Visibility.Visible;
                 BoardNibModeSimpleStackPanel.Visibility = Visibility.Visible;
             }
+
             if (Settings.Appearance.IsColorfulViewboxFloatingBar) // 浮动工具栏背景色
             {
                 LinearGradientBrush gradientBrush = new LinearGradientBrush();
@@ -647,40 +631,7 @@ namespace Ink_Canvas {
             ToggleSwitchShowButtonPPTNavigation.IsOn = Settings.PowerPointSettings.IsShowPPTNavigation;
             ToggleSwitchShowBottomPPTNavigationPanel.IsOn = Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel;
             ToggleSwitchShowSidePPTNavigationPanel.IsOn = Settings.PowerPointSettings.IsShowSidePPTNavigationPanel;
-            /*
-            ComboBoxTheme.SelectedIndex = Settings.Appearance.Theme;
-            if (Settings.Appearance.IsShowHideControlButton)
-            {
-                BtnHideControl.Visibility = Visibility.Visible;
-                ToggleSwitchShowButtonHideControl.IsOn = true;
-            }
-            else
-            {
-                BtnHideControl.Visibility = Visibility.Collapsed;
-                ToggleSwitchShowButtonHideControl.IsOn = false;
-            }
-            if (Settings.Appearance.IsShowLRSwitchButton)
-            {
-                BtnSwitchSide.Visibility = Visibility.Visible;
-                ToggleSwitchShowButtonLRSwitch.IsOn = true;
-            }
-            else
-            {
-                BtnSwitchSide.Visibility = Visibility.Collapsed;
-                ToggleSwitchShowButtonLRSwitch.IsOn = false;
-            }
 
-            if (Settings.Appearance.IsShowModeFingerToggleSwitch)
-            {
-                StackPanelModeFinger.Visibility = Visibility.Visible;
-                ToggleSwitchShowButtonModeFinger.IsOn = true;
-            }
-            else
-            {
-                StackPanelModeFinger.Visibility = Visibility.Collapsed;
-                ToggleSwitchShowButtonModeFinger.IsOn = false;
-            }
-            */
             if (Settings.Appearance.IsTransparentButtonBackground) {
                 BtnExit.Background = new SolidColorBrush(StringToColor("#7F909090"));
             } else {
@@ -1060,6 +1011,7 @@ namespace Ink_Canvas {
                 Settings.InkToShape = new InkToShape();
             }
 
+            if (Settings.RandSettings == null) Settings.RandSettings = new RandSettings();
 
             if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
                 ViewboxFloatingBarMarginAnimation(60);
@@ -2636,7 +2588,7 @@ namespace Ink_Canvas {
                 } catch { }
             })).Start();
 
-            HideSubPanels("cursor", false);
+            HideSubPanels("cursor");
             new Thread(new ThreadStart(() => {
                 Thread.Sleep(50);
                 ViewboxFloatingBarMarginAnimation(100);
@@ -2771,46 +2723,6 @@ namespace Ink_Canvas {
 
         #region Appearance
 
-        /*
-        private void SideControlOpacitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
-
-        private void ToggleSwitchShowButtonExit_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-
-            Settings.Appearance.IsShowExitButton = ToggleSwitchShowButtonExit.IsOn;
-            SaveSettingsToFile();
-
-            if (ToggleSwitchShowButtonExit.IsOn)
-            {
-                BtnExit.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                BtnExit.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void ToggleSwitchShowButtonEraser_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-
-            Settings.Appearance.IsShowEraserButton = ToggleSwitchShowButtonEraser.IsOn;
-            SaveSettingsToFile();
-
-            if (ToggleSwitchShowButtonEraser.IsOn)
-            {
-                BtnErase.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                BtnErase.Visibility = Visibility.Collapsed;
-            }
-        }
-        */
 
         private void ToggleSwitchEnableDisPlayNibModeToggle_Toggled(object sender, RoutedEventArgs e) {
             if (!isLoaded) return;
@@ -3507,19 +3419,6 @@ namespace Ink_Canvas {
         #region Left Side Panel
 
         #region Other Controls
-
-        private void BtnPenWidthDecrease_Click(object sender, RoutedEventArgs e) {
-            try {
-                InkWidthSlider.Value -= 1;
-            } catch { }
-        }
-
-        private void BtnPenWidthIncrease_Click(object sender, RoutedEventArgs e) {
-            try {
-                InkWidthSlider.Value += 1;
-            } catch { }
-        }
-
 
         private void BtnFingerDragMode_Click(object sender, RoutedEventArgs e) {
             if (isSingleFingerDragMode) {
@@ -6476,7 +6375,7 @@ namespace Ink_Canvas {
             BorderSettings.Visibility = Visibility.Collapsed;
         }
 
-        private async void HideSubPanels(String mode = null, bool autoAlignCenter = true) {
+        private async void HideSubPanels(String mode = null, bool autoAlignCenter = false) {
             AnimationHelper.HideWithSlideAndFade(BorderTools);
             AnimationHelper.HideWithSlideAndFade(BoardBorderTools);
             AnimationHelper.HideWithSlideAndFade(PenPalette);
@@ -6537,7 +6436,7 @@ namespace Ink_Canvas {
                 }
 
 
-                if (mode != "color" && autoAlignCenter) // 控制居中
+                if (autoAlignCenter) // 控制居中
                 {
                     if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
                         await Task.Delay(50);
@@ -6652,7 +6551,7 @@ namespace Ink_Canvas {
         }
 
         private void SymbolIconSelect_MouseUp(object sender, MouseButtonEventArgs e) {
-            BtnSelect_Click(BtnSelect, null);
+            BtnSelect_Click(null, null);
 
             //ImageEraser.Visibility = Visibility.Visible;
             ViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
@@ -6671,8 +6570,6 @@ namespace Ink_Canvas {
             SaveScreenShotToDesktop();
         }
 
-        //Point pointDesktop = new Point(-1, -1); //用于记录上次进入PPT或白板时的坐标
-        //Point pointPPT = new Point(-1, -1); //用于记录上次在PPT中打开白板时的坐标
         bool Not_Enter_Blackboard_fir_Mouse_Click = true;
         bool isDisplayingOrHidingBlackboard = false;
         private async void ImageBlackboard_MouseUp(object sender, MouseButtonEventArgs e) {
@@ -6925,50 +6822,25 @@ namespace Ink_Canvas {
         bool isDragDropInEffect = false;
         Point pos = new Point();
         Point downPos = new Point();
-
-        void Element_MouseMove(object sender, MouseEventArgs e) {
-            if (isDragDropInEffect) {
-                FrameworkElement currEle = sender as FrameworkElement;
-                double xPos = e.GetPosition(null).X - pos.X + currEle.Margin.Left;
-                double yPos = e.GetPosition(null).Y - pos.Y + currEle.Margin.Top;
-                currEle.Margin = new Thickness(xPos, yPos, 0, 0);
-                pos = e.GetPosition(null);
-            }
-        }
-
-        void Element_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-
-            FrameworkElement fEle = sender as FrameworkElement;
-            isDragDropInEffect = true;
-            pos = e.GetPosition(null);
-            fEle.CaptureMouse();
-            fEle.Cursor = Cursors.Hand;
-        }
-
-        void Element_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            if (isDragDropInEffect) {
-                FrameworkElement ele = sender as FrameworkElement;
-                isDragDropInEffect = false;
-                ele.ReleaseMouseCapture();
-            }
-        }
-
+        Point pointDesktop = new Point(-1, -1); //用于记录上次在桌面时的坐标
+        Point pointPPT = new Point(-1, -1); //用于记录上次在PPT中的坐标
 
         void SymbolIconEmoji_MouseMove(object sender, MouseEventArgs e) {
             if (isDragDropInEffect) {
                 double xPos = e.GetPosition(null).X - pos.X + ViewboxFloatingBar.Margin.Left;
                 double yPos = e.GetPosition(null).Y - pos.Y + ViewboxFloatingBar.Margin.Top;
                 ViewboxFloatingBar.Margin = new Thickness(xPos, yPos, -2000, -200);
+
                 pos = e.GetPosition(null);
+                if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
+                    pointPPT = new Point(xPos, yPos);
+                } else {
+                    pointDesktop = new Point(xPos, yPos);
+                }
             }
         }
 
         void SymbolIconEmoji_MouseDown(object sender, MouseButtonEventArgs e) {
-            /*
-            isDragDropInEffect = true;
-            pos = e.GetPosition(null);
-            downPos = e.GetPosition(null);
-            GridForFloatingBarDraging.Visibility = Visibility.Visible;*/
             if (isViewboxFloatingBarMarginAnimationRunning) {
                 ViewboxFloatingBar.BeginAnimation(FrameworkElement.MarginProperty, null);
                 isViewboxFloatingBarMarginAnimationRunning = false;
@@ -7282,13 +7154,19 @@ namespace Ink_Canvas {
                     ViewboxFloatingBar.Visibility = Visibility.Visible;
                 }
                 isViewboxFloatingBarMarginAnimationRunning = true;
-                if (Settings.Appearance.EnableViewboxFloatingBarScaleTransform) {
-                    pos.X = (SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth * 0.85) / 2;
-                    pos.Y = SystemParameters.PrimaryScreenHeight - heightFromBottom * 0.9;
+
+                pos.X = (SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth * ViewboxFloatingBarScaleTransform.ScaleX) / 2;
+                pos.Y = SystemParameters.PrimaryScreenHeight - heightFromBottom * ((ViewboxFloatingBarScaleTransform.ScaleY == 1) ? 1 : 0.9);
+                if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
+                    if (pointPPT.X != -1 || pointPPT.Y != -1) {
+                        pos = pointPPT;
+                    }
                 } else {
-                    pos.X = (SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth) / 2;
-                    pos.Y = SystemParameters.PrimaryScreenHeight - heightFromBottom;
+                    if (pointDesktop.X != -1 || pointDesktop.Y != -1) {
+                        pos = pointDesktop;
+                    }
                 }
+                
                 ThicknessAnimation marginAnimation = new ThicknessAnimation {
                     Duration = TimeSpan.FromSeconds(0.5),
                     From = ViewboxFloatingBar.Margin,
@@ -7360,7 +7238,7 @@ namespace Ink_Canvas {
             StackPanelCanvasControls.Visibility = Visibility.Collapsed;
 
             if (!isFloatingBarFolded) {
-                HideSubPanels("cursor");
+                HideSubPanels("cursor", true);
                 await Task.Delay(50);
 
                 if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
@@ -7405,7 +7283,7 @@ namespace Ink_Canvas {
                 CheckEnableTwoFingerGestureBtnVisibility(true);
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 ColorSwitchCheck();
-                HideSubPanels("pen");
+                HideSubPanels("pen", true);
             } else {
                 if (PenPalette.Visibility == Visibility.Visible) {
                     AnimationHelper.HideWithSlideAndFade(PenPalette);
@@ -7468,7 +7346,7 @@ namespace Ink_Canvas {
         private void CursorWithDelIcon_Click(object sender, RoutedEventArgs e) {
             SymbolIconDelete_MouseUp(sender, null);
             CursorIcon_Click(null, null);
-            HideSubPanels("cursor");
+            HideSubPanels("cursor", true);
         }
 
         private void SelectIcon_MouseUp(object sender, RoutedEvent e) {

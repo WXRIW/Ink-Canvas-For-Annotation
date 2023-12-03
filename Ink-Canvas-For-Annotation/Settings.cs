@@ -20,6 +20,8 @@ namespace Ink_Canvas
         public InkToShape InkToShape { get; set; } = new InkToShape();
         [JsonProperty("startup")]
         public Startup Startup { get; set; } = new Startup();
+        [JsonProperty("randSettings")]
+        public RandSettings RandSettings { get; set; } = new RandSettings();
     }
 
     public class Canvas
@@ -249,5 +251,12 @@ namespace Ink_Canvas
     {
         [JsonProperty("isInkToShapeEnabled")]
         public bool IsInkToShapeEnabled { get; set; } = true;
+    }
+
+    public class RandSettings {
+        [JsonProperty("peopleCount")]
+        public int PeopleCount { get; set; } = 60;
+        [JsonProperty("isNotRepeatName")]
+        public bool IsNotRepeatName { get; set; } = false;
     }
 }
