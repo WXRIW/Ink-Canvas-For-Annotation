@@ -2240,9 +2240,6 @@ namespace Ink_Canvas {
                     }
                 }
 
-                //pointDesktop = new Point(ViewboxFloatingBar.Margin.Left, ViewboxFloatingBar.Margin.Top);
-                //pointPPT = new Point(-1, -1);
-
                 StackPanelPPTControls.Visibility = Visibility.Visible;
 
                 if (Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel) {
@@ -2438,12 +2435,6 @@ namespace Ink_Canvas {
                     BtnHideInkCanvas_Click(BtnHideInkCanvas, null);
                 }
 
-                /*
-                if (pointDesktop != new Point(-1, -1))
-                {
-                    ViewboxFloatingBar.Margin = new Thickness(pointDesktop.X, pointDesktop.Y, -2000, -200);
-                }
-                */
                 ViewboxFloatingBarMarginAnimation(100);
 
                 if (Settings.Appearance.IsColorfulViewboxFloatingBar) {
@@ -4065,6 +4056,7 @@ namespace Ink_Canvas {
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawLine.BeginAnimation(OpacityProperty, dA);
             }
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawDashedLine_Click(object sender, EventArgs e) {
@@ -4081,6 +4073,7 @@ namespace Ink_Canvas {
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawDashedLine.BeginAnimation(OpacityProperty, dA);
             }
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawDotLine_Click(object sender, EventArgs e) {
@@ -4097,6 +4090,7 @@ namespace Ink_Canvas {
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawDotLine.BeginAnimation(OpacityProperty, dA);
             }
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawArrow_Click(object sender, EventArgs e) {
@@ -4113,6 +4107,7 @@ namespace Ink_Canvas {
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawArrow.BeginAnimation(OpacityProperty, dA);
             }
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawParallelLine_Click(object sender, EventArgs e) {
@@ -4129,6 +4124,7 @@ namespace Ink_Canvas {
                 var dA = new DoubleAnimation(1, 1, new Duration(TimeSpan.FromMilliseconds(0)));
                 ImageDrawParallelLine.BeginAnimation(OpacityProperty, dA);
             }
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCoordinate1_Click(object sender, EventArgs e) {
@@ -4137,6 +4133,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCoordinate2_Click(object sender, EventArgs e) {
@@ -4145,6 +4142,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCoordinate3_Click(object sender, EventArgs e) {
@@ -4153,6 +4151,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCoordinate4_Click(object sender, EventArgs e) {
@@ -4161,6 +4160,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCoordinate5_Click(object sender, EventArgs e) {
@@ -4169,6 +4169,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawRectangle_Click(object sender, EventArgs e) {
@@ -4177,6 +4178,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawRectangleCenter_Click(object sender, EventArgs e) {
@@ -4185,6 +4187,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawEllipse_Click(object sender, EventArgs e) {
@@ -4193,6 +4196,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCircle_Click(object sender, EventArgs e) {
@@ -4201,6 +4205,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCenterEllipse_Click(object sender, EventArgs e) {
@@ -4209,6 +4214,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCenterEllipseWithFocalPoint_Click(object sender, EventArgs e) {
@@ -4217,6 +4223,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawDashedCircle_Click(object sender, EventArgs e) {
@@ -4225,6 +4232,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawHyperbola_Click(object sender, EventArgs e) {
@@ -4234,6 +4242,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawHyperbolaWithFocalPoint_Click(object sender, EventArgs e) {
@@ -4243,6 +4252,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawParabola1_Click(object sender, EventArgs e) {
@@ -4251,6 +4261,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawParabolaWithFocalPoint_Click(object sender, EventArgs e) {
@@ -4259,6 +4270,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawParabola2_Click(object sender, EventArgs e) {
@@ -4267,6 +4279,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCylinder_Click(object sender, EventArgs e) {
@@ -4275,6 +4288,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCone_Click(object sender, EventArgs e) {
@@ -4283,6 +4297,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         private void BtnDrawCuboid_Click(object sender, EventArgs e) {
@@ -4294,6 +4309,7 @@ namespace Ink_Canvas {
             inkCanvas.EditingMode = InkCanvasEditingMode.None;
             inkCanvas.IsManipulationEnabled = true;
             CancelSingleFingerDragMode();
+            DrawShapePromptToPen();
         }
 
         #endregion
@@ -6601,18 +6617,6 @@ namespace Ink_Canvas {
                     Not_Enter_Blackboard_fir_Mouse_Click = false;
                 }
 
-                /*
-                if (BtnPPTSlideShowEnd.Visibility == Visibility.Collapsed)
-                {
-                    pointDesktop = new Point(ViewboxFloatingBar.Margin.Left, ViewboxFloatingBar.Margin.Top);
-                }
-                else
-                {
-                    pointPPT = new Point(ViewboxFloatingBar.Margin.Left, ViewboxFloatingBar.Margin.Top);
-                }
-                */
-                //ViewboxFloatingBar.Margin = new Thickness(10, SystemParameters.PrimaryScreenHeight - 60, -2000, -200);
-
                 new Thread(new ThreadStart(() => {
                     Thread.Sleep(100);
                     Application.Current.Dispatcher.Invoke(() => {
@@ -6657,17 +6661,7 @@ namespace Ink_Canvas {
 
                 if (isInMultiTouchMode) BorderMultiTouchMode_MouseUp(null, null);
 
-                if (BtnPPTSlideShowEnd.Visibility == Visibility.Collapsed) {/*
-                    if (pointDesktop != new Point(-1, -1))
-                    {
-                        
-                        ViewboxFloatingBar.Margin = new Thickness(pointDesktop.X, pointDesktop.Y, -2000, -200);
-                        
-                        ViewboxFloatingBarMarginAnimation(100);
-                        pointDesktop = new Point(-1, -1);
-                    }
-                    ViewboxFloatingBarMarginAnimation(100);
-                    */
+                if (BtnPPTSlideShowEnd.Visibility == Visibility.Collapsed) {
                     new Thread(new ThreadStart(() => {
                         Thread.Sleep(100);
                         Application.Current.Dispatcher.Invoke(() => {
@@ -7157,16 +7151,27 @@ namespace Ink_Canvas {
 
                 pos.X = (SystemParameters.PrimaryScreenWidth - ViewboxFloatingBar.ActualWidth * ViewboxFloatingBarScaleTransform.ScaleX) / 2;
                 pos.Y = SystemParameters.PrimaryScreenHeight - heightFromBottom * ((ViewboxFloatingBarScaleTransform.ScaleY == 1) ? 1 : 0.9);
-                if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
-                    if (pointPPT.X != -1 || pointPPT.Y != -1) {
-                        pos = pointPPT;
-                    }
-                } else {
-                    if (pointDesktop.X != -1 || pointDesktop.Y != -1) {
-                        pos = pointDesktop;
+
+                if (heightFromBottom != -60) {
+                    if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
+                        if (pointPPT.X != -1 || pointPPT.Y != -1) {
+                            if (Math.Abs(pointPPT.Y - pos.Y) > 50) {
+                                pos = pointPPT;
+                            } else {
+                                pointPPT = pos;
+                            }
+                        }
+                    } else {
+                        if (pointDesktop.X != -1 || pointDesktop.Y != -1) {
+                            if (Math.Abs(pointDesktop.Y - pos.Y) > 50) {
+                                pos = pointDesktop;
+                            } else {
+                                pointDesktop = pos;
+                            }
+                        }
                     }
                 }
-                
+
                 ThicknessAnimation marginAnimation = new ThicknessAnimation {
                     Duration = TimeSpan.FromSeconds(0.5),
                     From = ViewboxFloatingBar.Margin,
@@ -7346,7 +7351,6 @@ namespace Ink_Canvas {
         private void CursorWithDelIcon_Click(object sender, RoutedEventArgs e) {
             SymbolIconDelete_MouseUp(sender, null);
             CursorIcon_Click(null, null);
-            HideSubPanels("cursor", true);
         }
 
         private void SelectIcon_MouseUp(object sender, RoutedEvent e) {
@@ -7426,7 +7430,9 @@ namespace Ink_Canvas {
         private void CollapseBorderDrawShape(bool isLongPressSelected = false) {
             AnimationHelper.HideWithSlideAndFade(BorderDrawShape);
             AnimationHelper.HideWithSlideAndFade(BoardBorderDrawShape);
+        }
 
+        private void DrawShapePromptToPen() {
             if (isLongPressSelected == true) {
                 HideSubPanels("pen");
             } else {
