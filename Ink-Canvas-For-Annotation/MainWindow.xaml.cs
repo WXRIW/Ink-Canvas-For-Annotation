@@ -181,6 +181,7 @@ namespace Ink_Canvas {
                     if (isFloatingBarFolded && !foldFloatingBarByUser) {
                         UnFoldFloatingBar_MouseUp(null, null);
                     }
+                    unfoldFloatingBarByUser = false;
                 }
             } catch { }
         }
@@ -6568,15 +6569,6 @@ namespace Ink_Canvas {
 
         private void SymbolIconSelect_MouseUp(object sender, MouseButtonEventArgs e) {
             BtnSelect_Click(null, null);
-
-            //ImageEraser.Visibility = Visibility.Visible;
-            ViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-
             HideSubPanels("select");
         }
 
