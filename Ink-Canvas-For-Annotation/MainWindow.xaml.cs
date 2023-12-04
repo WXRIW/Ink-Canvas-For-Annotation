@@ -6580,7 +6580,7 @@ namespace Ink_Canvas {
 
         bool Not_Enter_Blackboard_fir_Mouse_Click = true;
         bool isDisplayingOrHidingBlackboard = false;
-        private async void ImageBlackboard_MouseUp(object sender, MouseButtonEventArgs e) {
+        private void ImageBlackboard_MouseUp(object sender, MouseButtonEventArgs e) {
             if (isDisplayingOrHidingBlackboard) return;
             isDisplayingOrHidingBlackboard = true;
 
@@ -6599,8 +6599,7 @@ namespace Ink_Canvas {
                     //ToggleSwitchEnableTwoFingerRotation.IsOn = false;
                 }
 
-                Topmost = false;
-
+                /*
                 if (Not_Enter_Blackboard_fir_Mouse_Click) {// BUG-Fixed_tmp：程序启动后直接进入白板会导致后续撤销功能、退出白板无法恢复墨迹
                     BtnColorRed_Click(BorderPenColorRed, null);
                     await Task.Delay(200);
@@ -6608,6 +6607,9 @@ namespace Ink_Canvas {
                     await Task.Delay(10);
                     Not_Enter_Blackboard_fir_Mouse_Click = false;
                 }
+                */
+
+                Topmost = false;
 
                 new Thread(new ThreadStart(() => {
                     Thread.Sleep(100);
@@ -6644,7 +6646,7 @@ namespace Ink_Canvas {
                 }
 
 
-                if (/*Settings.Automation.IsAutoSaveStrokesAtClear && */inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber) {
+                if (Settings.Automation.IsAutoSaveStrokesAtClear && inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber) {
                     SaveScreenShot(true);
                     SaveInkCanvasStrokes(false, false); // 自动保存当前页墨迹
                 }
