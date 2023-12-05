@@ -157,9 +157,9 @@ namespace Ink_Canvas {
         private void timerCheckAutoFold_Elapsed(object sender, ElapsedEventArgs e) {
             if (isFloatingBarChangingHideMode) return;
             try {
-                string windowTitle = ForegroundWindowInfo.WindowTitle();
+                //string windowTitle = ForegroundWindowInfo.WindowTitle();
                 string windowProcessName = ForegroundWindowInfo.ProcessName();
-                LogHelper.WriteLogToFile("windowTitle | " + windowProcessName + "windowProcessName | " + windowTitle);
+                //LogHelper.WriteLogToFile("windowTitle | " + windowProcessName + "windowProcessName | " + windowTitle);
 
                 if (Settings.Automation.IsAutoFoldInEasiNote && windowProcessName == "EasiNote" // 希沃白板
                     || Settings.Automation.IsAutoFoldInEasiCamera && windowProcessName == "EasiCamera" // 希沃视频展台
