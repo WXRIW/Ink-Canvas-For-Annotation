@@ -2196,32 +2196,7 @@ namespace Ink_Canvas {
                         FileInfo[] files = new DirectoryInfo(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count).GetFiles();
                         int count = 0;
                         foreach (FileInfo file in files) {
-                            if (file.Name == "Position") break;
-                            int i = -1;
-                            try {
-                                LogHelper.WriteLogToFile("DEBUG | file.Name: " + file.Name);
-                                i = int.Parse(System.IO.Path.GetFileNameWithoutExtension(file.Name));
-                                //var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
-                                //MemoryStream ms = new MemoryStream(File.ReadAllBytes(file.FullName));
-                                //new StrokeCollection(fs).Save(ms);
-                                //ms.Position = 0;
-                                memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
-                                memoryStreams[i].Position = 0;
-                                count++;
-                            } catch (Exception ex) {
-                                LogHelper.WriteLogToFile(string.Format("Failed to load strokes on Slide {0}\n{1}", i, ex.ToString()), LogHelper.LogType.Error);
-                            }
-                        }
-                        LogHelper.WriteLogToFile(string.Format("Loaded {0} saved strokes", count.ToString()));
-                    } else if (defaultFolderPath == $@"D:\Ink Canvas\Auto Saved - Presentations\") // 使用原版 InkCanvas 保存地点
-                      {
-                        defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
-                        if (Directory.Exists(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count)) {
-                            LogHelper.WriteLogToFile("Found saved strokes", LogHelper.LogType.Trace);
-                            FileInfo[] files = new DirectoryInfo(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count).GetFiles();
-                            int count = 0;
-                            foreach (FileInfo file in files) {
-                                if (file.Name == "Position") break;
+                            if (file.Name != "Position") {
                                 int i = -1;
                                 try {
                                     i = int.Parse(System.IO.Path.GetFileNameWithoutExtension(file.Name));
@@ -2234,6 +2209,32 @@ namespace Ink_Canvas {
                                     count++;
                                 } catch (Exception ex) {
                                     LogHelper.WriteLogToFile(string.Format("Failed to load strokes on Slide {0}\n{1}", i, ex.ToString()), LogHelper.LogType.Error);
+                                }
+                            }
+                        }
+                        LogHelper.WriteLogToFile(string.Format("Loaded {0} saved strokes", count.ToString()));
+                    } else if (defaultFolderPath == $@"D:\Ink Canvas\Auto Saved - Presentations\") // 使用原版 InkCanvas 保存地点
+                      {
+                        defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas Strokes\Auto Saved\Presentations\";
+                        if (Directory.Exists(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count)) {
+                            LogHelper.WriteLogToFile("Found saved strokes", LogHelper.LogType.Trace);
+                            FileInfo[] files = new DirectoryInfo(defaultFolderPath + Wn.Presentation.Name + "_" + Wn.Presentation.Slides.Count).GetFiles();
+                            int count = 0;
+                            foreach (FileInfo file in files) {
+                                if (file.Name != "Position") {
+                                    int i = -1;
+                                    try {
+                                        i = int.Parse(System.IO.Path.GetFileNameWithoutExtension(file.Name));
+                                        //var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
+                                        //MemoryStream ms = new MemoryStream(File.ReadAllBytes(file.FullName));
+                                        //new StrokeCollection(fs).Save(ms);
+                                        //ms.Position = 0;
+                                        memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
+                                        memoryStreams[i].Position = 0;
+                                        count++;
+                                    } catch (Exception ex) {
+                                        LogHelper.WriteLogToFile(string.Format("Failed to load strokes on Slide {0}\n{1}", i, ex.ToString()), LogHelper.LogType.Error);
+                                    }
                                 }
                             }
                             LogHelper.WriteLogToFile(string.Format("Loaded {0} saved strokes", count.ToString()));
