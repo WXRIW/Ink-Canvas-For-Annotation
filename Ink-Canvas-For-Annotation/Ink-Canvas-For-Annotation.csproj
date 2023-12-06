@@ -161,6 +161,9 @@
     <Compile Include="Windows\ChangeLogWindow.xaml.cs">
       <DependentUpon>ChangeLogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\OperatingGuideWindow.xaml.cs">
+      <DependentUpon>OperatingGuideWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\CycleProcessBar.xaml.cs">
       <DependentUpon>CycleProcessBar.xaml</DependentUpon>
     </Compile>
@@ -193,6 +196,10 @@
     <Page Include="Windows\ChangeLogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\OperatingGuideWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\CycleProcessBar.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -407,9 +414,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_cursor_24_regular.png" />
-    <Resource Include="Resources\Icons-Fluent\ic_fluent_eraser_24_regular.png" />
-    <Resource Include="Resources\Icons-Fluent\ic_fluent_eraser_medium_24_regular.png" />
-    <Resource Include="Resources\Icons-Fluent\ic_fluent_eye_hide_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_lasso_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_settings_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_whiteboard_24_regular.png" />
@@ -417,7 +421,6 @@
   <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_dark_theme_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_dual_screen_span_24_regular.png" />
-    <Resource Include="Resources\Icons-Fluent\ic_fluent_tap_single_24_regular.png" />
     <Resource Include="Resources\Icons-Fluent\ic_fluent_timer_24_regular.png" />
   </ItemGroup>
   <ItemGroup>
@@ -481,6 +484,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons-Fluent\ic_fluent_clock_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_book_question_mark_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_keyboard_24_regular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons-Fluent\ic_fluent_control_button_24_regular.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

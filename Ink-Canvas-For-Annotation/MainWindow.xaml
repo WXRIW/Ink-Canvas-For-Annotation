@@ -32,6 +32,7 @@
         <RoutedUICommand x:Key="KeyExit" Text=" "/>
         <RoutedUICommand x:Key="HotKey_Command_Undo" Text=" "/>
         <RoutedUICommand x:Key="HotKey_Command_Redo" Text=" "/>
+        <RoutedUICommand x:Key="HotKey_Command_Clear" Text=" "/>
         <RoutedUICommand x:Key="HotKey_Capture" Text=" "/>
         <RoutedUICommand x:Key="HotKey_Hide" Text=" "/>
         <RoutedUICommand x:Key="HotKey_ChangeToDrawTool" Text=" "/>
@@ -49,29 +50,33 @@
         <KeyBinding Gesture="Shift+Esc" Command="{StaticResource KeyExit}"/>
         <KeyBinding Modifiers="Control" Key="Z" Command="{StaticResource HotKey_Command_Undo}"/>
         <KeyBinding Modifiers="Control" Key="Y" Command="{StaticResource HotKey_Command_Redo}"/>
+        <KeyBinding Modifiers="Control" Key="E" Command="{StaticResource HotKey_Command_Clear}" />
+        <KeyBinding Modifiers="Alt" Key="C" Command="{StaticResource HotKey_Capture}" />
+        <KeyBinding Modifiers="Alt" Key="V" Command="{StaticResource HotKey_Hide}" />
         <KeyBinding Modifiers="Alt" Key="S" Command="{StaticResource HotKey_ChangeToSelect}" />
         <KeyBinding Modifiers="Alt" Key="D" Command="{StaticResource HotKey_ChangeToDrawTool}" />
         <KeyBinding Modifiers="Alt" Key="E" Command="{StaticResource HotKey_ChangeToEraser}" />
-        <KeyBinding Modifiers="Alt" Key="C" Command="{StaticResource HotKey_Capture}" />
         <KeyBinding Modifiers="Alt" Key="D1" Command="{StaticResource HotKey_ChangeToPen1}" />
         <KeyBinding Modifiers="Alt" Key="D2" Command="{StaticResource HotKey_ChangeToPen2}" />
         <KeyBinding Modifiers="Alt" Key="D3" Command="{StaticResource HotKey_ChangeToPen3}" />
         <KeyBinding Modifiers="Alt" Key="D4" Command="{StaticResource HotKey_ChangeToPen4}" />
         <KeyBinding Modifiers="Alt" Key="D5" Command="{StaticResource HotKey_ChangeToPen5}" />
-        <KeyBinding Modifiers="Alt" Key="V" Command="{StaticResource HotKey_Hide}" />
         <KeyBinding Modifiers="Alt" Key="L" Command="{StaticResource HotKey_DrawLine}" />
     </Window.InputBindings>
     <!--命令执行方法绑定-->
     <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource KeyExit}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="KeyExit"/>
         <CommandBinding Command="{StaticResource HotKey_Command_Undo}"
                         CanExecute="CommandBinding_CanExecute"
                         Executed="HotKey_Undo"/>
         <CommandBinding Command="{StaticResource HotKey_Command_Redo}"
                         CanExecute="CommandBinding_CanExecute"
                         Executed="HotKey_Redo"/>
-        <CommandBinding Command="{StaticResource KeyExit}"
+        <CommandBinding Command="{StaticResource HotKey_Command_Clear}"
                         CanExecute="CommandBinding_CanExecute"
-                        Executed="KeyExit"/>
+                        Executed="HotKey_Clear"/>
         <CommandBinding Command="{StaticResource HotKey_ChangeToDrawTool}"
                         CanExecute="CommandBinding_CanExecute"
                         Executed="KeyChangeToDrawTool"/>
@@ -1616,11 +1621,12 @@
                                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_folder_open_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconOpenStrokes_MouseUp"/>
                                                 <Image Source="/Resources/Icons-png/playCircle.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="GridInkReplayButton_MouseUp"/>
                                             </ui:SimpleStackPanel>
-                                            <Label Content="截图 | 设置 | 收纳" FontSize="12" HorizontalAlignment="Left"/>
+                                            <Label Content="截图 | 设置 | 指南" FontSize="12" HorizontalAlignment="Left"/>
                                             <ui:SimpleStackPanel Orientation="Horizontal" Margin="2.5,0,0,0" Height="25" Spacing="14">
                                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_camera_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="20" Width="20" MouseDown="Border_MouseDown" MouseUp="SymbolIconScreenshot_MouseUp" Margin="0,2,0,3"/>
                                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_settings_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="SymbolIconSettings_Click"/>
-                                                <Image Margin="-1,0,0,0" x:Name="hiddenButtonInBorderTools" Source="/Resources/Icons-Fluent/ic_fluent_dual_screen_span_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="FoldFloatingBar_MouseUp"/>
+                                                <!--<Image Margin="-1,0,0,0" x:Name="hiddenButtonInBorderTools" Source="/Resources/Icons-Fluent/ic_fluent_dual_screen_span_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="FoldFloatingBar_MouseUp"/>-->
+                                                <Image Margin="-3,0,0,0" Source="/Resources/Icons-Fluent/ic_fluent_book_question_mark_24_regular.png" RenderOptions.BitmapScalingMode="HighQuality" Height="22" Width="22" MouseDown="Border_MouseDown" MouseUp="OperatingGuideWindowIcon_MouseUp"/>
                                             </ui:SimpleStackPanel>
                                         </ui:SimpleStackPanel>
                                     </ui:SimpleStackPanel>

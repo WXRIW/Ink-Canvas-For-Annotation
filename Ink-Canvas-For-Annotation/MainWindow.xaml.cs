@@ -281,7 +281,7 @@ namespace Ink_Canvas {
         private void Main_Grid_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (StackPanelPPTControls.Visibility != Visibility.Visible || currentMode != 0) return;
 
-            if (e.Key == Key.Down || e.Key == Key.PageDown || e.Key == Key.Right || e.Key == Key.N) {
+            if (e.Key == Key.Down || e.Key == Key.PageDown || e.Key == Key.Right || e.Key == Key.N || e.Key == Key.Space) {
                 BtnPPTSlidesDown_Click(BtnPPTSlidesDown, null);
             }
             if (e.Key == Key.Up || e.Key == Key.PageUp || e.Key == Key.Left || e.Key == Key.P) {
@@ -302,7 +302,6 @@ namespace Ink_Canvas {
         private void HotKey_Undo(object sender, ExecutedRoutedEventArgs e) {
             try {
                 SymbolIconUndo_MouseUp(lastBorderMouseDownObject, null);
-                //inkCanvas.Strokes.Remove(inkCanvas.Strokes[inkCanvas.Strokes.Count - 1]);
             } catch { }
         }
 
@@ -312,29 +311,32 @@ namespace Ink_Canvas {
             } catch { }
         }
 
+        private void HotKey_Clear(object sender, ExecutedRoutedEventArgs e) {
+            SymbolIconDelete_MouseUp(lastBorderMouseDownObject, null);
+        }
+
 
         private void KeyExit(object sender, ExecutedRoutedEventArgs e) {
             BtnPPTSlideShowEnd_Click(BtnPPTSlideShowEnd, null);
         }
 
         private void KeyChangeToDrawTool(object sender, ExecutedRoutedEventArgs e) {
-            if (inkCanvas.Visibility == Visibility.Collapsed) {
-                BtnHideInkCanvas_Click(sender, e);
+            if (StackPanelCanvasControls.Visibility == Visibility.Collapsed) {
+                KeyChangeToDrawTool(lastBorderMouseDownObject, null);
             }
         }
 
         private void KeyChangeToSelect(object sender, ExecutedRoutedEventArgs e) {
-            if (inkCanvas.Visibility == Visibility.Visible) {
-                BtnHideInkCanvas_Click(sender, e);
+            if (StackPanelCanvasControls.Visibility == Visibility.Visible) {
+                SymbolIconSelect_MouseUp(lastBorderMouseDownObject, null);
             }
         }
 
         private void KeyChangeToEraser(object sender, ExecutedRoutedEventArgs e) {
-            //if (ImageEraserMask.Visibility == Visibility.Visible)
             if (forceEraser) {
                 BtnColorRed_Click(sender, null);
             } else {
-                BtnErase_Click(sender, e);
+                EraserIcon_Click(lastBorderMouseDownObject, null);
             }
         }
 
@@ -347,7 +349,11 @@ namespace Ink_Canvas {
         }
 
         private void KeyHide(object sender, ExecutedRoutedEventArgs e) {
-            SymbolIconEmoji_MouseUp(sender, null);
+            if (StackPanelCanvasControls.Visibility == Visibility.Visible) {
+                CursorIcon_Click(lastMouseDownSender, null);
+            } else {
+                PenIcon_Click(lastMouseDownSender, null);
+            }
         }
 
         #endregion Hotkeys
@@ -6704,6 +6710,15 @@ namespace Ink_Canvas {
             new CountdownTimerWindow().Show();
         }
 
+        private void OperatingGuideWindowIcon_MouseUp(object sender, MouseButtonEventArgs e) {
+            //if (lastBorderMouseDownObject != sender) return;
+
+            AnimationHelper.HideWithSlideAndFade(BorderTools);
+            AnimationHelper.HideWithSlideAndFade(BoardBorderTools);
+
+            new OperatingGuideWindow().Show();
+        }
+
         private void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e) {
             if (lastBorderMouseDownObject != sender) return;
 
@@ -7033,10 +7048,10 @@ namespace Ink_Canvas {
                 }
             }
             if (isFloatingBarChangingHideMode) return;
-            if (sender == hiddenButtonInBorderTools) {
+            /*if (sender == hiddenButtonInBorderTools) {
                 AnimationHelper.HideWithSlideAndFade(BorderTools);
                 AnimationHelper.HideWithSlideAndFade(BoardBorderTools);
-            }
+            }*/
 
             await Dispatcher.InvokeAsync(() => {
                 isFloatingBarChangingHideMode = true;
