@@ -9,8 +9,8 @@
         mc:Ignorable="d" WindowStyle="None" AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         Title="Ink Canvas Annotation 使用指南"
-        Height="700" Width="1100">
-    <Border Background="#F0F3F9" CornerRadius="10" BorderThickness="1" BorderBrush="#0066BF" Margin="60">
+        Height="600" Width="500">
+    <Border Background="#F0F3F9" CornerRadius="10" BorderThickness="1" BorderBrush="#0066BF" Margin="10,10,10,50">
         <Grid>
             <Border MouseMove="WindowDragMove" Visibility="Visible" Width="64" Height="15" CornerRadius="8" Background="Gray" Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
             <ScrollViewer Margin="0,0,0,30" VerticalScrollBarVisibility="Auto"
@@ -20,10 +20,10 @@
                     <ui:SimpleStackPanel Margin="20,20,20,0" Orientation="Horizontal" HorizontalAlignment="Left">
                         <Image Margin="5, 0" Source="/Resources/Icons-Fluent/ic_fluent_keyboard_24_regular.png"
                            RenderOptions.BitmapScalingMode="HighQuality" Height="40" Width="40"/>
-                        <TextBlock FontSize="22" Text="ICA 软件快捷键" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock FontSize="22" Text="软件快捷键" TextWrapping="Wrap" VerticalAlignment="Center"/>
                     </ui:SimpleStackPanel>
 
-                    <Viewbox Height="300" HorizontalAlignment="Left">
+                    <Viewbox Height="320" HorizontalAlignment="Left">
                         <ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
                                 <Image Source="/Resources/Icons-Fluent/ic_fluent_control_button_24_regular.png"
@@ -41,22 +41,25 @@
                                 <TextBlock FontSize="10" Text=" + E  ——  清屏" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
-                                <TextBlock FontSize="10" Text=" Alt  + V  ——  进入/退出批注模式" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                <TextBlock FontSize="10" Text=" Alt  + V  ——  显示/隐藏笑脸右侧工具栏（Visibility）" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
                                 <TextBlock FontSize="10" Text=" Alt  + C  ——  截屏（Capture）" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
-                                <TextBlock FontSize="10" Text=" Alt  + S  ——  切换至选择功能（Select）" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                <TextBlock FontSize="10" Text=" Alt  + S  ——  切换至选择模式（Select）" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
-                                <TextBlock FontSize="10" Text=" Alt  + E  ——  切换至面积擦功能（Eraser）" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                <TextBlock FontSize="10" Text=" Alt  + D  ——  切换/退出批注功能（Draw）" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock FontSize="10" Text=" Alt  + B  ——  切换/退出画板模式（Board）" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock FontSize="10" Text=" Alt  + E  ——  切换至面积擦/墨迹擦功能（Eraser）" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
                                 <TextBlock FontSize="10" Text=" Alt  + L  ——  切换至单次直线绘制功能（Line）" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                            </ui:SimpleStackPanel>
-                            <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
-                                <TextBlock FontSize="10" Text=" Alt  + D  ——  切换至选择图形绘制功能（DrawTools）" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
                                 <TextBlock FontSize="10" Text="Shift + Esc  ——  退出 PPT 放映" TextWrapping="Wrap" VerticalAlignment="Center"/>
@@ -67,6 +70,16 @@
             </ScrollViewer>
             <Viewbox Visibility="{Binding ElementName=BigViewController, Path=Visibility}" Margin="20,20,20,20" HorizontalAlignment="Right">
                 <ui:SimpleStackPanel Height="180" Orientation="Horizontal">
+                    <Border x:Name="BtnFullscreen" MouseUp="BtnFullscreen_MouseUp" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Margin="5"
+                            Background="#FBFBFD" Height="20" Width="20" CornerRadius="100">
+                        <Border.Effect>
+                            <DropShadowEffect Direction="0" ShadowDepth="0" Opacity="0.1" BlurRadius="3"/>
+                        </Border.Effect>
+                        <Viewbox Margin="5.5">
+                            <ui:SymbolIcon Name="SymbolIconFullscreen" Symbol="FullScreen" Foreground="Black"/>
+                        </Viewbox>
+                    </Border>
                     <Border x:Name="BtnClose" MouseUp="BtnClose_MouseUp" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                         Margin="5"
                         Background="#E32A34" Height="20" Width="20" CornerRadius="100">

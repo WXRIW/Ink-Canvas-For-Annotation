@@ -321,8 +321,13 @@ namespace Ink_Canvas {
         }
 
         private void KeyChangeToDrawTool(object sender, ExecutedRoutedEventArgs e) {
-            if (StackPanelCanvasControls.Visibility == Visibility.Collapsed) {
-                KeyChangeToDrawTool(lastBorderMouseDownObject, null);
+            if (Pen_Icon.Background == null) {
+                PenIcon_Click(lastBorderMouseDownObject, null);
+            } else {
+                if (currentMode != 0) {
+                    ImageBlackboard_MouseUp(lastBorderMouseDownObject, null);
+                }
+                CursorIcon_Click(lastBorderMouseDownObject, null);
             }
         }
 
@@ -333,11 +338,17 @@ namespace Ink_Canvas {
         }
 
         private void KeyChangeToEraser(object sender, ExecutedRoutedEventArgs e) {
-            if (forceEraser) {
-                BtnColorRed_Click(sender, null);
-            } else {
-                EraserIcon_Click(lastBorderMouseDownObject, null);
+            if (StackPanelCanvasControls.Visibility == Visibility.Visible) {
+                if (Eraser_Icon.Background != null) {
+                    EraserIconByStrokes_Click(lastBorderMouseDownObject, null);
+                } else {
+                    EraserIcon_Click(lastBorderMouseDownObject, null);
+                }
             }
+        }
+
+        private void KeyChangeToBoard(object sender, ExecutedRoutedEventArgs e) {
+            ImageBlackboard_MouseUp(lastBorderMouseDownObject, null);
         }
 
         private void KeyCapture(object sender, ExecutedRoutedEventArgs e) {
@@ -345,15 +356,13 @@ namespace Ink_Canvas {
         }
 
         private void KeyDrawLine(object sender, ExecutedRoutedEventArgs e) {
-            BtnDrawLine_Click(lastMouseDownSender, e);
+            if (StackPanelCanvasControls.Visibility == Visibility.Visible) {
+                BtnDrawLine_Click(lastMouseDownSender, e);
+            }
         }
 
         private void KeyHide(object sender, ExecutedRoutedEventArgs e) {
-            if (StackPanelCanvasControls.Visibility == Visibility.Visible) {
-                CursorIcon_Click(lastMouseDownSender, null);
-            } else {
-                PenIcon_Click(lastMouseDownSender, null);
-            }
+            SymbolIconEmoji_MouseUp(null, null);
         }
 
         #endregion Hotkeys
@@ -3871,7 +3880,7 @@ namespace Ink_Canvas {
             if (Width - borderLeft < BorderStrokeSelectionControlWidth || double.IsNaN(borderLeft)) borderLeft = Width - BorderStrokeSelectionControlWidth;
             if (Height - borderTop < BorderStrokeSelectionControlHeight || double.IsNaN(borderTop)) borderTop = Height - BorderStrokeSelectionControlHeight;
 
-            if (borderTop > 100) borderTop -= 100;
+            if (borderTop > 60) borderTop -= 60;
             BorderStrokeSelectionControl.Margin = new Thickness(borderLeft, borderTop, 0, 0);
         }
 
@@ -6868,7 +6877,7 @@ namespace Ink_Canvas {
                     BorderFloatingBarMainControls.Visibility = Visibility.Visible;
                 }
             }
-
+            
             GridForFloatingBarDraging.Visibility = Visibility.Collapsed;
             SymbolIconEmoji.Symbol = ModernWpf.Controls.Symbol.Emoji2;
         }
