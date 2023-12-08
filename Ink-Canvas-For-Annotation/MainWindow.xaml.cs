@@ -39,8 +39,8 @@ namespace Ink_Canvas {
 
         public MainWindow() {
             /*
-                判断是否处于画板模式内：Topmost / currentMode
-                判断是否处于 PPT 放映内：BtnPPTSlideShowEnd
+                处于画板模式内：Topmost == false / currentMode != 0
+                处于 PPT 放映内：BtnPPTSlideShowEnd.Visibility
             */
             InitializeComponent();
 
@@ -159,12 +159,12 @@ namespace Ink_Canvas {
             try {
                 //string windowTitle = ForegroundWindowInfo.WindowTitle();
                 string windowProcessName = ForegroundWindowInfo.ProcessName();
-                //LogHelper.WriteLogToFile("windowTitle | " + windowProcessName + "windowProcessName | " + windowTitle);
+                //LogHelper.WriteLogToFile("windowTitle | " + windowTitle + " | windowProcessName | " + windowProcessName);
 
                 if (Settings.Automation.IsAutoFoldInEasiNote && windowProcessName == "EasiNote" // 希沃白板
                     || Settings.Automation.IsAutoFoldInEasiCamera && windowProcessName == "EasiCamera" // 希沃视频展台
                     || Settings.Automation.IsAutoFoldInEasiNote3C && windowProcessName == "EasiNote" // 希沃轻白板
-                    || Settings.Automation.IsAutoFoldInSeewoPincoTeacher && windowProcessName == "BoardService" // 希沃品课
+                    || Settings.Automation.IsAutoFoldInSeewoPincoTeacher && (windowProcessName == "BoardService" || windowProcessName == "seewoPincoTeacher") // 希沃品课
                     || Settings.Automation.IsAutoFoldInHiteCamera && windowProcessName == "HiteCamera" // 鸿合视频展台
                     || Settings.Automation.IsAutoFoldInHiteTouchPro && windowProcessName == "HiteTouchPro" // 鸿合白板
                     || Settings.Automation.IsAutoFoldInWxBoardMain && windowProcessName == "WxBoardMain" // 文香白板
@@ -1097,6 +1097,20 @@ namespace Ink_Canvas {
             forceEraser = false;
             //BorderClearInDelete.Visibility = Visibility.Collapsed;
 
+            if (currentMode == 0) { // 先回到画笔再清屏，避免 TimeMachine 的相关 bug 影响
+                if (Pen_Icon.Background == null) {
+                    PenIcon_Click(null, null);
+                }
+            } else {
+                if (Pen_Icon.Background == null) {
+                    if (Settings.Canvas.UsingWhiteboard) {
+                        PenIcon_Click(null, null);
+                    } else {
+                        PenIcon_Click(null, null);
+                    }
+                }
+            }
+
             if (inkCanvas.Strokes.Count != 0) {
                 int whiteboardIndex = CurrentWhiteboardIndex;
                 if (currentMode == 0) {
@@ -1437,8 +1451,6 @@ namespace Ink_Canvas {
 
             if (inkColor == 0) { // Black
                 inkCanvas.DefaultDrawingAttributes.Color = Colors.Black;
-            } else if (inkColor == 3) { // Blue
-                inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF239AD6");
             } else if (inkColor == 5) { // White
                 inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFEFEFE");
             } else if (isUselightThemeColor) {
@@ -1446,6 +1458,8 @@ namespace Ink_Canvas {
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFF3333");
                 } else if (inkColor == 2) { // Green
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF1ED760");
+                } else if (inkColor == 3) { // Blue
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF23C0D6");
                 } else if (inkColor == 4) { // Yellow
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFFFC000");
                 } else if (inkColor == 6) { // Pink
@@ -1456,19 +1470,23 @@ namespace Ink_Canvas {
                     inkCanvas.DefaultDrawingAttributes.Color = Colors.Red;
                 } else if (inkColor == 2) { // Green
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF169141");
+                } else if (inkColor == 3) { // Blue
+                    inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF239AD6");
                 } else if (inkColor == 4) { // Yellow
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FFF38B00");
                 } else if (inkColor == 6) { // Pink ( Purple )
                     inkCanvas.DefaultDrawingAttributes.Color = StringToColor("#FF331EB5");
                 }
             }
-            if (isUselightThemeColor) {
+            if (isUselightThemeColor) { // 亮色系
                 BorderPenColorRed.Background = new SolidColorBrush(StringToColor("#FFFF3333"));
                 BorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF1ED760"));
+                BorderPenColorBlue.Background = new SolidColorBrush(StringToColor("#FF23C0D6"));
                 BorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFFFC000"));
                 BorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF#c72ec7"));
                 BoardBorderPenColorRed.Background = new SolidColorBrush(StringToColor("#FFFF3333"));
                 BoardBorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF1ED760"));
+                BoardBorderPenColorBlue.Background = new SolidColorBrush(StringToColor("#FF23C0D6"));
                 BoardBorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFFFC000"));
                 BoardBorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF#c72ec7"));
 
@@ -1481,13 +1499,15 @@ namespace Ink_Canvas {
 
                 ColorThemeSwitchTextBlock.Text = "暗色系";
                 BoardColorThemeSwitchTextBlock.Text = "暗色系";
-            } else {
+            } else { // 暗色系
                 BorderPenColorRed.Background = new SolidColorBrush(Colors.Red);
                 BorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF169141"));
+                BorderPenColorBlue.Background = new SolidColorBrush(StringToColor("#FF239AD6"));
                 BorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFF38B00"));
                 BorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF331EB5"));
                 BoardBorderPenColorRed.Background = new SolidColorBrush(Colors.Red);
                 BoardBorderPenColorGreen.Background = new SolidColorBrush(StringToColor("#FF169141"));
+                BoardBorderPenColorBlue.Background = new SolidColorBrush(StringToColor("#FF239AD6"));
                 BoardBorderPenColorYellow.Background = new SolidColorBrush(StringToColor("#FFF38B00"));
                 BoardBorderPenColorPink.Background = new SolidColorBrush(StringToColor("#FF331EB5"));
 
@@ -6873,8 +6893,10 @@ namespace Ink_Canvas {
             if (e is null || (downPos.X == e.GetPosition(null).X && downPos.Y == e.GetPosition(null).Y)) {
                 if (BorderFloatingBarMainControls.Visibility == Visibility.Visible) {
                     BorderFloatingBarMainControls.Visibility = Visibility.Collapsed;
+                    EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
                 } else {
                     BorderFloatingBarMainControls.Visibility = Visibility.Visible;
+                    EnableTwoFingerGestureBorder.Visibility = Visibility.Visible;
                 }
             }
             
@@ -7050,12 +7072,7 @@ namespace Ink_Canvas {
                 foldFloatingBarByUser = true;
             }
             unfoldFloatingBarByUser = false;
-
-            if (StackPanelCanvasControls.Visibility == Visibility.Visible) {
-                if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2) {
-                    ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
-                }
-            }
+            
             if (isFloatingBarChangingHideMode) return;
             /*if (sender == hiddenButtonInBorderTools) {
                 AnimationHelper.HideWithSlideAndFade(BorderTools);
@@ -7066,6 +7083,11 @@ namespace Ink_Canvas {
                 isFloatingBarChangingHideMode = true;
                 isFloatingBarFolded = true;
                 if (currentMode != 0) ImageBlackboard_MouseUp(null, null);
+                if (StackPanelCanvasControls.Visibility == Visibility.Visible) {
+                    if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2) {
+                        ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
+                    }
+                }
                 lastBorderMouseDownObject = sender;
                 CursorWithDelIcon_Click(sender, null);
                 SidePannelMarginAnimation(-200);
@@ -7078,7 +7100,7 @@ namespace Ink_Canvas {
                 LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
                 RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
                 ViewboxFloatingBarMarginAnimation(-60);
-                HideSubPanels();
+                HideSubPanels("cursor");
                 SidePannelMarginAnimation(-200);
             });
             isFloatingBarChangingHideMode = false;
