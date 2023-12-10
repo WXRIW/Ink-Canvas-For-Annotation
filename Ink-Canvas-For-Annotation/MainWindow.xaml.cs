@@ -321,14 +321,14 @@ namespace Ink_Canvas {
         }
 
         private void KeyChangeToDrawTool(object sender, ExecutedRoutedEventArgs e) {
-            if (Pen_Icon.Background == null) {
-                PenIcon_Click(lastBorderMouseDownObject, null);
-            } else {
-                if (currentMode != 0) {
-                    ImageBlackboard_MouseUp(lastBorderMouseDownObject, null);
-                }
-                CursorIcon_Click(lastBorderMouseDownObject, null);
+            PenIcon_Click(lastBorderMouseDownObject, null);
+        }
+
+        private void KeyChangeToQuitDrawTool(object sender, ExecutedRoutedEventArgs e) {
+            if (currentMode != 0) {
+                ImageBlackboard_MouseUp(lastBorderMouseDownObject, null);
             }
+            CursorIcon_Click(lastBorderMouseDownObject, null);
         }
 
         private void KeyChangeToSelect(object sender, ExecutedRoutedEventArgs e) {
@@ -1126,10 +1126,6 @@ namespace Ink_Canvas {
             CancelSingleFingerDragMode();
         }
 
-        private void BtnClear_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            BtnHideInkCanvas_Click(BtnHideInkCanvas, null);
-        }
-
         private void CancelSingleFingerDragMode() {
             if (ToggleSwitchDrawShapeBorderAutoHide.IsOn) {
                 CollapseBorderDrawShape();
@@ -1270,8 +1266,8 @@ namespace Ink_Canvas {
                 GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
                 //if (ImageEraserMask.Visibility == Visibility.Visible)
-                if (forceEraser && currentMode == 0)
-                    BtnColorRed_Click(sender, null);
+                /*if (forceEraser && currentMode == 0)
+                    BtnColorRed_Click(sender, null);*/
 
                 if (GridBackgroundCover.Visibility == Visibility.Collapsed) {
                     if (BtnSwitchTheme.Content.ToString() == "浅色") {
@@ -1299,7 +1295,7 @@ namespace Ink_Canvas {
                                 SaveScreenShot(true);
                             }
 
-                            BtnClear_Click(BtnClear, null);
+                            BtnClear_Click(null, null);
                         }
                     }
                     /*
@@ -1321,7 +1317,7 @@ namespace Ink_Canvas {
                                 SaveScreenShot(true);
                             }
 
-                            BtnClear_Click(BtnClear, null);
+                            BtnClear_Click(null, null);
                         }
                     }
 
@@ -1432,13 +1428,12 @@ namespace Ink_Canvas {
             isLongPressSelected = false;
         }
 
-        bool isUselightThemeColor = false;
+        bool isUselightThemeColor = false, isDesktopUselightThemeColor = false;
+        int lastDesktopInkColor = 1, lastBoardInkColor = 5;
 
         private void CheckColorTheme(bool changeColorTheme = false) {
             if (changeColorTheme) {
-                if (Topmost == true) {
-                    isUselightThemeColor = false;
-                } else {
+                if (currentMode != 0) {
                     if (Settings.Canvas.UsingWhiteboard) {
                         GridBackgroundCover.Background = new SolidColorBrush(StringToColor("#FFF2F2F2"));
                         isUselightThemeColor = false;
@@ -1447,6 +1442,13 @@ namespace Ink_Canvas {
                         isUselightThemeColor = true;
                     }
                 }
+            }
+
+            if (currentMode == 0) {
+                isUselightThemeColor = isDesktopUselightThemeColor;
+                inkColor = lastDesktopInkColor;
+            } else {
+                inkColor = lastBoardInkColor;
             }
 
             if (inkColor == 0) { // Black
@@ -1570,43 +1572,78 @@ namespace Ink_Canvas {
         }
 
         private void BtnColorBlack_Click(object sender, RoutedEventArgs e) {
-            inkColor = 0;
+            if (currentMode == 0) {
+                lastDesktopInkColor = 0;
+            } else {
+                lastBoardInkColor = 0;
+            }
+            //inkColor = 0;
             forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorRed_Click(object sender, RoutedEventArgs e) {
-            inkColor = 1;
+            if (currentMode == 0) {
+                lastDesktopInkColor = 1;
+            } else {
+                lastBoardInkColor = 1;
+            }
+            //inkColor = 1;
             forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorGreen_Click(object sender, RoutedEventArgs e) {
-            inkColor = 2;
+            if (currentMode == 0) {
+                lastDesktopInkColor = 2;
+            } else {
+                lastBoardInkColor = 2;
+            }
+            //inkColor = 2;
             forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorBlue_Click(object sender, RoutedEventArgs e) {
-            inkColor = 3;
+            if (currentMode == 0) {
+                lastDesktopInkColor = 3;
+            } else {
+                lastBoardInkColor = 3;
+            }
+            //inkColor = 3;
             forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorYellow_Click(object sender, RoutedEventArgs e) {
-            inkColor = 4;
+            if (currentMode == 0) {
+                lastDesktopInkColor = 4;
+            } else {
+                lastBoardInkColor = 4;
+            }
+            //inkColor = 4;
             forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorWhite_Click(object sender, RoutedEventArgs e) {
-            inkColor = 5;
+            if (currentMode == 0) {
+                lastDesktopInkColor = 5;
+            } else {
+                lastBoardInkColor = 5;
+            }
+            //inkColor = 5;
             forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorPink_Click(object sender, RoutedEventArgs e) {
-            inkColor = 6;
+            if (currentMode == 0) {
+                lastDesktopInkColor = 6;
+            } else {
+                lastBoardInkColor = 6;
+            }
+            //inkColor = 6;
             forceEraser = false;
             ColorSwitchCheck();
         }
@@ -2210,6 +2247,8 @@ namespace Ink_Canvas {
                 } else if (screenRatio == -256 / 135) {
 
                 }
+                lastDesktopInkColor = 1;
+
 
                 slidescount = Wn.Presentation.Slides.Count;
                 previousSlideID = 0;
@@ -6310,7 +6349,7 @@ namespace Ink_Canvas {
 
                 if (isHideNotification) {
                     Application.Current.Dispatcher.Invoke(() => {
-                        BtnClear_Click(BtnClear, null);
+                        BtnClear_Click(null, null);
                     });
                 }
             })).Start();
@@ -6588,7 +6627,7 @@ namespace Ink_Canvas {
                     else
                         SaveScreenShot(true);
                 }
-                BtnClear_Click(BtnClear, null);
+                BtnClear_Click(null, null);
             }/*
             else
             {
@@ -6601,7 +6640,7 @@ namespace Ink_Canvas {
 
         private void SymbolIconSettings_Click(object sender, RoutedEventArgs e) {
             HideSubPanels();
-            BtnSettings_Click(BtnSettings, null);
+            BtnSettings_Click(null, null);
         }
 
         private void SymbolIconSelect_MouseUp(object sender, MouseButtonEventArgs e) {
@@ -6707,7 +6746,10 @@ namespace Ink_Canvas {
                         });
                     })).Start();
                 }
-                BorderPenColorRed_MouseUp(BorderPenColorRed, null);
+                if (Pen_Icon.Background == null) {
+                    PenIcon_Click(null, null);
+                }
+                //BorderPenColorRed_MouseUp(BorderPenColorRed, null);
             }
 
             BtnSwitch_Click(BtnSwitch, null);
@@ -7308,8 +7350,8 @@ namespace Ink_Canvas {
                 GridBackgroundCoverHolder.Visibility = Visibility.Visible;
                 GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
-                if (forceEraser && currentMode == 0)
-                    BtnColorRed_Click(sender, null);
+                /*if (forceEraser && currentMode == 0)
+                    BtnColorRed_Click(sender, null);*/
 
                 if (GridBackgroundCover.Visibility == Visibility.Collapsed) {
                     if (BtnSwitchTheme.Content.ToString() == "浅色") {
@@ -7344,6 +7386,9 @@ namespace Ink_Canvas {
 
         private void ColorThemeSwitch_MouseUp(object sender, RoutedEventArgs e) {
             isUselightThemeColor = !isUselightThemeColor;
+            if (currentMode == 0) {
+                isDesktopUselightThemeColor = isUselightThemeColor;
+            }
             CheckColorTheme();
         }
 

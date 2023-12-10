@@ -50,7 +50,10 @@
                                 <TextBlock FontSize="10" Text=" Alt  + S  ——  切换至选择模式（Select）" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
-                                <TextBlock FontSize="10" Text=" Alt  + D  ——  切换/退出批注功能（Draw）" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                <TextBlock FontSize="10" Text=" Alt  + D  ——  切换至批注模式 / 墨迹颜色选择器（Draw）" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock FontSize="10" Text=" Alt  + Q  ——  退出批注模式（Quit）" TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </ui:SimpleStackPanel>
                             <ui:SimpleStackPanel Margin="20, 0" Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
                                 <TextBlock FontSize="10" Text=" Alt  + B  ——  切换/退出画板模式（Board）" TextWrapping="Wrap" VerticalAlignment="Center"/>
