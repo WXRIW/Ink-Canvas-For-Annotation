@@ -6935,13 +6935,13 @@ namespace Ink_Canvas {
             if (e is null || (downPos.X == e.GetPosition(null).X && downPos.Y == e.GetPosition(null).Y)) {
                 if (BorderFloatingBarMainControls.Visibility == Visibility.Visible) {
                     BorderFloatingBarMainControls.Visibility = Visibility.Collapsed;
-                    EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
+                    CheckEnableTwoFingerGestureBtnVisibility(false);
                 } else {
                     BorderFloatingBarMainControls.Visibility = Visibility.Visible;
-                    EnableTwoFingerGestureBorder.Visibility = Visibility.Visible;
+                    CheckEnableTwoFingerGestureBtnVisibility(true);
                 }
             }
-            
+
             GridForFloatingBarDraging.Visibility = Visibility.Collapsed;
             SymbolIconEmoji.Symbol = ModernWpf.Controls.Symbol.Emoji2;
         }
@@ -7114,7 +7114,7 @@ namespace Ink_Canvas {
                 foldFloatingBarByUser = true;
             }
             unfoldFloatingBarByUser = false;
-            
+
             if (isFloatingBarChangingHideMode) return;
             /*if (sender == hiddenButtonInBorderTools) {
                 AnimationHelper.HideWithSlideAndFade(BorderTools);
@@ -7555,7 +7555,10 @@ namespace Ink_Canvas {
         }
 
         private void CheckEnableTwoFingerGestureBtnVisibility(bool isVisible) {
-            if (isVisible == true) {
+            if (StackPanelCanvasControls.Visibility != Visibility.Visible
+                || BorderFloatingBarMainControls.Visibility != Visibility.Visible) {
+                EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
+            } else if (isVisible == true) {
                 if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
                 else EnableTwoFingerGestureBorder.Visibility = Visibility.Visible;
             } else EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
