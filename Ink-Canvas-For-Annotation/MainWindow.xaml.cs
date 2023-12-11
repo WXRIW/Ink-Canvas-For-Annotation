@@ -157,8 +157,8 @@ namespace Ink_Canvas {
         private void timerCheckAutoFold_Elapsed(object sender, ElapsedEventArgs e) {
             if (isFloatingBarChangingHideMode) return;
             try {
-                //string windowTitle = ForegroundWindowInfo.WindowTitle();
                 string windowProcessName = ForegroundWindowInfo.ProcessName();
+                //string windowTitle = ForegroundWindowInfo.WindowTitle();
                 //LogHelper.WriteLogToFile("windowTitle | " + windowTitle + " | windowProcessName | " + windowProcessName);
 
                 if (Settings.Automation.IsAutoFoldInEasiNote && windowProcessName == "EasiNote" // 希沃白板
@@ -168,6 +168,7 @@ namespace Ink_Canvas {
                     || Settings.Automation.IsAutoFoldInHiteCamera && windowProcessName == "HiteCamera" // 鸿合视频展台
                     || Settings.Automation.IsAutoFoldInHiteTouchPro && windowProcessName == "HiteTouchPro" // 鸿合白板
                     || Settings.Automation.IsAutoFoldInWxBoardMain && windowProcessName == "WxBoardMain" // 文香白板
+                    || Settings.Automation.IsAutoFoldInMSWhiteboard && (windowProcessName == "MicrosoftWhiteboard" || windowProcessName == "msedgewebview2") // 微软白板
                     || Settings.Automation.IsAutoFoldInOldZyBoard && // 中原旧白板
                     (WinTabWindowsChecker.IsWindowExisted("WhiteBoard - DrawingWindow")
                     || WinTabWindowsChecker.IsWindowExisted("InstantAnnotationWindow"))) {
@@ -801,37 +802,31 @@ namespace Ink_Canvas {
                 } else {
                     ToggleSwitchAutoFoldInEasiNote.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoFoldInEasiCamera) {
                     ToggleSwitchAutoFoldInEasiCamera.IsOn = true;
                 } else {
                     ToggleSwitchAutoFoldInEasiCamera.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoFoldInEasiNote3C) {
                     ToggleSwitchAutoFoldInEasiNote3C.IsOn = true;
                 } else {
                     ToggleSwitchAutoFoldInEasiNote3C.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoFoldInSeewoPincoTeacher) {
                     ToggleSwitchAutoFoldInSeewoPincoTeacher.IsOn = true;
                 } else {
                     ToggleSwitchAutoFoldInSeewoPincoTeacher.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoFoldInHiteTouchPro) {
                     ToggleSwitchAutoFoldInHiteTouchPro.IsOn = true;
                 } else {
                     ToggleSwitchAutoFoldInHiteTouchPro.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoFoldInHiteCamera) {
                     ToggleSwitchAutoFoldInHiteCamera.IsOn = true;
                 } else {
                     ToggleSwitchAutoFoldInHiteCamera.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoFoldInWxBoardMain) {
                     ToggleSwitchAutoFoldInWxBoardMain.IsOn = true;
                 } else {
@@ -849,13 +844,16 @@ namespace Ink_Canvas {
                 } else {
                     ToggleSwitchAutoFoldInOldZyBoard.IsOn = false;
                 }
-
+                if (Settings.Automation.IsAutoFoldInMSWhiteboard) {
+                    ToggleSwitchAutoFoldInMSWhiteboard.IsOn = true;
+                } else {
+                    ToggleSwitchAutoFoldInMSWhiteboard.IsOn = false;
+                }
                 if (Settings.Automation.IsAutoFoldInPPTSlideShow) {
                     ToggleSwitchAutoFoldInPPTSlideShow.IsOn = true;
                 } else {
                     ToggleSwitchAutoFoldInPPTSlideShow.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoKillEasiNote || Settings.Automation.IsAutoKillPptService) {
                     timerKillProcess.Start();
                 } else {
@@ -867,7 +865,6 @@ namespace Ink_Canvas {
                 } else {
                     ToggleSwitchAutoKillEasiNote.IsOn = false;
                 }
-
                 if (Settings.Automation.IsAutoKillPptService) {
                     ToggleSwitchAutoKillPptService.IsOn = true;
                 } else {
@@ -1098,16 +1095,12 @@ namespace Ink_Canvas {
             //BorderClearInDelete.Visibility = Visibility.Collapsed;
 
             if (currentMode == 0) { // 先回到画笔再清屏，避免 TimeMachine 的相关 bug 影响
-                if (Pen_Icon.Background == null) {
+                if (Pen_Icon.Background == null && StackPanelCanvasControls.Visibility == Visibility.Visible) {
                     PenIcon_Click(null, null);
                 }
             } else {
                 if (Pen_Icon.Background == null) {
-                    if (Settings.Canvas.UsingWhiteboard) {
-                        PenIcon_Click(null, null);
-                    } else {
-                        PenIcon_Click(null, null);
-                    }
+                    PenIcon_Click(null, null);
                 }
             }
 
@@ -3069,6 +3062,13 @@ namespace Ink_Canvas {
             StartOrStoptimerCheckAutoFold();
         }
 
+        private void ToggleSwitchAutoFoldInMSWhiteboard_Toggled(object sender, RoutedEventArgs e) {
+            if (!isLoaded) return;
+            Settings.Automation.IsAutoFoldInMSWhiteboard = ToggleSwitchAutoFoldInMSWhiteboard.IsOn;
+            SaveSettingsToFile();
+            StartOrStoptimerCheckAutoFold();
+        }
+
         private void ToggleSwitchAutoFoldInPPTSlideShow_Toggled(object sender, RoutedEventArgs e) {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInPPTSlideShow = ToggleSwitchAutoFoldInPPTSlideShow.IsOn;
@@ -3300,6 +3300,7 @@ namespace Ink_Canvas {
             Settings.Automation.IsAutoFoldInWxBoardMain = false;
             //Settings.Automation.IsAutoFoldInZySmartBoard = false;
             Settings.Automation.IsAutoFoldInOldZyBoard = false;
+            Settings.Automation.IsAutoFoldInMSWhiteboard = false;
             Settings.Automation.IsAutoFoldInPPTSlideShow = false;
             Settings.Automation.IsAutoKillPptService = false;// IsAutoKillPptService;
             Settings.Automation.IsAutoKillEasiNote = false;// IsAutoKillEasiNote;

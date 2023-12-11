@@ -165,7 +165,8 @@ namespace Ink_Canvas
             || IsAutoFoldInHiteCamera
             || IsAutoFoldInWxBoardMain
             || IsAutoFoldInOldZyBoard
-            || IsAutoFoldInPPTSlideShow;
+            || IsAutoFoldInPPTSlideShow
+            || IsAutoFoldInMSWhiteboard;
 
         [JsonProperty("isAutoFoldInEasiNote")]
         public bool IsAutoFoldInEasiNote { get; set; } = false;
@@ -193,6 +194,9 @@ namespace Ink_Canvas
         */
         [JsonProperty("isAutoFoldInOldZyBoard")]
         public bool IsAutoFoldInOldZyBoard { get; set; } = false;
+
+        [JsonProperty("isAutoFoldInMSWhiteboard")]
+        public bool IsAutoFoldInMSWhiteboard { get; set; } = false;
 
         [JsonProperty("isAutoFoldInPPTSlideShow")]
         public bool IsAutoFoldInPPTSlideShow { get; set; } = false;
